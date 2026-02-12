@@ -1,0 +1,19 @@
+{% extends "store/base.html" %}
+{% block title %}Product{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="text-muted small">{{ v.sku }}</div>
+    <h3 class="fw-bold">{{ v.display_name }}</h3>
+    <p class="text-muted">Stock: {{ v.stock_qty }}</p>
+    <p class="fs-5">
+      Price:
+      {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price }}{% else %}{{ v.price }}{% endif %}
+    </p>
+    <div class="d-flex gap-2">
+      <a class="btn btn-success" href="{% url 'store_add_to_cart' v.id %}">Add to cart</a>
+      <a class="btn btn-outline-secondary" href="{% url 'store_shop' %}">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>POS - Matcha Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="m-0">POS</h2>
+      <form class="mt-3" method="get" action="{% url 'pos' %}">
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control"
+      name="q"
+      placeholder="Search SKU / Name..."
+      value="{{ q|default:'' }}"
+    >
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+    <a class="btn btn-outline-secondary" href="{% url 'pos' %}">Reset</a>
+        </div>
+        </form>
+
+      <div class="d-flex gap-2 align-items-center">
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/" target="_blank">Admin</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'orders_list' %}">Orders</a>
+
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for m in messages %}
+        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row g-3">
+      <!-- Products -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <strong>Products / Variants</strong>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-sm align-middle">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th class="text-end">Price</th>
+                    <th class="text-end">Stock</th>
+                    <th class="text-end">Add</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for v in variants %}
+                  <tr>
+                    <td>{{ v.sku }}</td>
+                    <td>{{ v.display_name }}</td>
+                    <td class="text-end">
+                      {% if v.sell_price and v.sell_price > 0 %}
+                        {{ v.sell_price }}
+                      {% else %}
+                        {{ v.price }}
+                      {% endif %}
+                    </td>
+                    <td class="text-end">{{ v.stock_qty }}</td>
+                    <td class="text-end">
+                      <a class="btn btn-primary btn-sm" href="{% url 'add_to_cart' v.id %}">Add</a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-muted text-center py-3">No products</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Cart</strong>
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'clear_cart' %}">Clear</a>
+          </div>
+
+          <div class="card-body">
+            {% if cart_items %}
+              <ul class="list-group list-group-flush">
+                {% for item in cart_items %}
+                  <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div class="me-2">
+                        <div class="fw-semibold">{{ item.variant.display_name }}</div>
+                        <div class="text-muted small">
+                          Qty: {{ item.qty }} × {{ item.unit_price }}
+                        </div>
+
+                        <div class="mt-2 d-flex gap-2">
+                          <!-- ลด qty ทีละ 1 -->
+                          <a class="btn btn-sm btn-outline-danger"
+                             href="{% url 'remove_from_cart' item.variant.id %}">
+                            -1
+                          </a>
+                          <!-- เพิ่ม qty ทีละ 1 -->
+                          <a class="btn btn-sm btn-outline-primary"
+                             href="{% url 'add_to_cart' item.variant.id %}">
+                            +1
+                          </a>
+                        </div>
+                      </div>
+
+                      <div class="text-end fw-semibold">{{ item.line_total }}</div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+
+              <div class="d-flex justify-content-between mt-3">
+                <div class="fw-bold">Total</div>
+                <div class="fw-bold">{{ total }}</div>
+              </div>
+
+              <!-- ✅ Checkout -->
+              <div class="d-grid mt-3">
+                <a class="btn btn-success" href="{% url 'pos_checkout' %}">Checkout</a>
+              </div>
+
+            {% else %}
+              <div class="text-muted">Cart is empty</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

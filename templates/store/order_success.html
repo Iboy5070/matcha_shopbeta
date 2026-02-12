@@ -1,0 +1,15 @@
+{% extends "store/base.html" %}
+{% block title %}Success{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h3 class="fw-bold">Order Created!</h3>
+    <p>Order No: <span class="fw-bold">{{ order.order_no }}</span></p>
+    <p>Status: <span class="fw-bold">{{ order.status }}</span></p>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="{% url 'store_confirm_payment' %}">Confirm Payment</a>
+      <a class="btn btn-outline-secondary" href="{% url 'store_shop' %}">Back to shop</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

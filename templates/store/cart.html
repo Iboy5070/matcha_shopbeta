@@ -1,0 +1,37 @@
+{% extends "store/base.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h3>Cart</h3>
+
+{% if items %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    {% for it in items %}
+      <div class="d-flex justify-content-between border-bottom py-2">
+        <div>
+          <div class="fw-bold">{{ it.variant.display_name }}</div>
+          <div class="text-muted small">Qty: {{ it.qty }} × {{ it.unit_price }}</div>
+          <div class="d-flex gap-2 mt-2">
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'store_remove_one' it.variant.id %}">-1</a>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'store_add_to_cart' it.variant.id %}">+1</a>
+          </div>
+        </div>
+        <div class="fw-bold">{{ it.line_total }}</div>
+      </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between mt-3">
+      <div class="fw-bold">Total</div>
+      <div class="fw-bold">{{ total }}</div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <a class="btn btn-outline-danger" href="{% url 'store_clear_cart' %}">Clear</a>
+      <a class="btn btn-success" href="{% url 'store_checkout' %}">Checkout</a>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="text-muted">Cart is empty</div>
+{% endif %}
+{% endblock %}

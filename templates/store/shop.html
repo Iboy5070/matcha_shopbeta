@@ -1,0 +1,34 @@
+{% extends "store/base.html" %}
+{% block title %}Shop{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="m-0">Shop</h3>
+  <form method="get" class="d-flex gap-2" style="max-width:420px; width:100%;">
+    <input class="form-control" name="q" value="{{ q }}" placeholder="Search...">
+    <button class="btn btn-outline-primary">Search</button>
+  </form>
+</div>
+
+<div class="row g-3">
+  {% for v in variants %}
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">{{ v.sku }}</div>
+        <div class="fw-bold">{{ v.display_name }}</div>
+        <div class="mt-2">Price:
+          {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price }}{% else %}{{ v.price }}{% endif %}
+        </div>
+        <div class="text-muted small">Stock: {{ v.stock_qty }}</div>
+        <div class="d-flex gap-2 mt-3">
+          <a class="btn btn-outline-secondary btn-sm" href="{% url 'store_product_detail' v.id %}">View</a>
+          <a class="btn btn-success btn-sm" href="{% url 'store_add_to_cart' v.id %}">Add to cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="text-muted">No products</div>
+  {% endfor %}
+</div>
+{% endblock %}
