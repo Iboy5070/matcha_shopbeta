@@ -217,3 +217,19 @@ def confirm_payment(request):
         return render(request, "store/confirm_payment.html", {"success": f"ยืนยันชำระเงินแล้ว: {order.order_no}"})
 
     return render(request, "store/confirm_payment.html")
+from django.shortcuts import render
+from apps.catalog.models import ProductVariant
+
+def home(request):
+    variants = ProductVariant.objects.select_related("product").all()
+    return render(request, "store/home.html", {"variants": variants})
+def blog_list(request):
+    return render(request, "store/blog_list.html")
+
+
+def faq(request):
+    return render(request, "store/faq.html")
+
+
+def contact(request):
+    return render(request, "store/contact.html")

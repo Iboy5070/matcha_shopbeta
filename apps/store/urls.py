@@ -15,4 +15,8 @@ urlpatterns = [
     path("order/<str:order_no>/success/", views.order_success, name="store_order_success"),
 
     path("confirm-payment/", views.confirm_payment, name="store_confirm_payment"),
+        # ✅ ADD THESE
+    path("blog/", views.blog_list, name="store_blog_list"),
+    path("faq/", views.faq, name="store_faq"),
+    path("contact/", views.contact, name="store_contact"),
 ]

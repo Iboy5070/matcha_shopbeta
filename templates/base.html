@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Matcha Shop{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'site.css' %}">
+</head>
+
+<body>
+  <!-- NAV -->
+  <header class="navbar-x">
+    <div class="container-xl">
+      <div class="navbar-inner">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <!-- โลโก้: เปลี่ยนเป็นรูปจริงภายหลัง -->
+          <div style="width:40px;height:40px;border-radius:999px;border:2px solid var(--green-800);"></div>
+          <div style="font-weight:900; letter-spacing:2px;">MATCHAZUKI</div>
+        </div>
+
+        <nav class="nav-links">
+          <a href="{% url 'store_home' %}">ໜ້າຫຼັກ</a>
+          <a href="{% url 'store_shop' %}">ສິນຄ້າ</a>
+          <a href="{% url 'store_blog_list' %}">ບົດຄວາມ</a>
+          <a href="{% url 'store_faq' %}">ຖາມ-ຕອບ</a>
+          <a href="{% url 'store_confirm_payment' %}">ແຈ້ງຊຳລະ</a>
+          <a href="{% url 'store_contact' %}">ຕິດຕໍ່</a>
+        </nav>
+
+        <div class="nav-right">
+          <a href="{% url 'store_cart' %}" style="text-decoration:none;color:#111;">🛒</a>
+          <a href="/admin/" target="_blank" style="text-decoration:none;color:#111;">Admin</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container-xl" style="text-align:center;">
+      <div class="links">
+        <a href="{% url 'store_home' %}">ໜ້າຫຼັກ</a>
+        <a href="{% url 'store_shop' %}">ສິນຄ້າ</a>
+        <a href="{% url 'store_blog_list' %}">ບົດຄວາມ</a>
+        <a href="{% url 'store_faq' %}">ຖາມ-ຕອບ</a>
+        <a href="{% url 'store_contact' %}">ຕິດຕໍ່</a>
+      </div>
+      <div style="margin-top:14px; font-size:13px;">
+        © Copyright {{ now|default:"2026" }} MATCHA SHOP
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
