@@ -1,38 +1,38 @@
 {% extends "store/base.html" %}
-{% block title %}Checkout{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Checkout" %}{% endblock %}
 {% block content %}
-<h3>Checkout</h3>
+<h1 class="mz-section-title h3 mb-3">{% trans "Checkout" %}</h1>
 
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 
-<div class="card shadow-sm">
+<div class="card shadow-sm border-0">
   <div class="card-body">
-    <div class="mb-2 text-muted">Grand Total: <span class="fw-bold">{{ grand_total }}</span></div>
-
+    <div class="mb-3 text-muted">{% trans "Grand total" %}: <span class="fw-bold fs-5">{{ grand_total }} ກີບ</span></div>
     <form method="post">
       {% csrf_token %}
-      <div class="mb-2">
-        <label class="form-label">Name</label>
+      <div class="mb-3">
+        <label class="form-label">{% trans "Name" %} *</label>
         <input class="form-control" name="customer_name" required>
       </div>
-      <div class="mb-2">
-        <label class="form-label">Phone</label>
+      <div class="mb-3">
+        <label class="form-label">{% trans "Phone" %} *</label>
         <input class="form-control" name="phone" required>
       </div>
-      <div class="mb-2">
-        <label class="form-label">Address</label>
+      <div class="mb-3">
+        <label class="form-label">{% trans "Address" %}</label>
         <textarea class="form-control" name="address" rows="3"></textarea>
       </div>
       <div class="mb-3">
-        <label class="form-label">Payment</label>
+        <label class="form-label">{% trans "Payment" %}</label>
         <select class="form-select" name="payment_method">
-          <option value="transfer">Transfer</option>
-          <option value="cod">Cash on Delivery</option>
+          <option value="transfer">{% trans "Bank transfer" %}</option>
+          <option value="cod">{% trans "Cash on delivery" %}</option>
         </select>
       </div>
-      <button class="btn btn-success w-100">Place order</button>
+      <button class="btn mz-btn-primary w-100">{% trans "Place order" %}</button>
     </form>
   </div>
 </div>

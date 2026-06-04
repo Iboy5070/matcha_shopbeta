@@ -1,0 +1,31 @@
+{% extends "store/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "FAQ" %}{% endblock %}
+{% block content %}
+<div class="mz-page-hero mb-4">
+  <h1 class="mz-section-title">{% trans "FAQ" %}</h1>
+</div>
+
+{% if faq_items %}
+<div class="accordion" id="faqAccordion">
+  {% for item in faq_items %}
+  <div class="accordion-item border-0 mb-2 shadow-sm">
+    <h2 class="accordion-header">
+      <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+              data-bs-toggle="collapse" data-bs-target="#faq{{ item.id }}">
+        {% if LANGUAGE_CODE == 'en' and item.question_en %}{{ item.question_en }}{% else %}{{ item.question_th }}{% endif %}
+      </button>
+    </h2>
+    <div id="faq{{ item.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+         data-bs-parent="#faqAccordion">
+      <div class="accordion-body text-muted">
+        {% if LANGUAGE_CODE == 'en' and item.answer_en %}{{ item.answer_en|linebreaks }}{% else %}{{ item.answer_th|linebreaks }}{% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">{% trans "No FAQ entries yet. Add them in the admin panel." %}</p>
+{% endif %}
+{% endblock %}

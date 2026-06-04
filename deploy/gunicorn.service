@@ -1,0 +1,24 @@
+[Unit]
+Description=Matcha Shop — Gunicorn WSGI
+After=network.target
+
+[Service]
+User=deploy
+Group=www-data
+WorkingDirectory=/home/deploy/matcha_shopbeta
+EnvironmentFile=/home/deploy/matcha_shopbeta/.env
+ExecStart=/home/deploy/matcha_shopbeta/.venv/bin/gunicorn \
+          config.wsgi \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          --timeout 60 \
+          --access-logfile /var/log/gunicorn/access.log \
+          --error-logfile  /var/log/gunicorn/error.log
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

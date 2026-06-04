@@ -4,7 +4,8 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
-from apps.catalog.models import ProductVariant
+from apps.catalog.models import Category, Product, ProductVariant
+from apps.cms.models import ContactMessage, FAQItem
 from .models import WebOrder, WebOrderItem, PaymentConfirmation
 
 
@@ -27,27 +28,86 @@ def _make_web_order_no() -> str:
 
 
 def home(request):
-    return render(request, "store/home.html")
+    featured = (
+        Product.objects.filter(is_active=True, is_featured=True)
+        .select_related("category")
+        .prefetch_related("variants")[:6]
+    )
+    return render(request, "store/home.html", {"featured_products": featured})
+
+
+def about(request):
+    return render(request, "store/about.html")
+
+
+def faq(request):
+    items = FAQItem.objects.filter(is_active=True)
+    return render(request, "store/faq.html", {"faq_items": items})
+
+
+def privacy(request):
+    return render(request, "store/privacy.html")
+
+
+def returns(request):
+    return render(request, "store/returns.html")
+
+
+def contact(request):
+    if request.method == "POST":
+        name = (request.POST.get("name") or "").strip()
+        email = (request.POST.get("email") or "").strip()
+        phone = (request.POST.get("phone") or "").strip()
+        message = (request.POST.get("message") or "").strip()
+        if not name or not message:
+            return render(request, "store/contact.html", {
+                "error": "กรุณากรอกชื่อและข้อความ",
+            })
+        ContactMessage.objects.create(
+            name=name, email=email, phone=phone, message=message,
+        )
+        return render(request, "store/contact.html", {"success": True})
+    return render(request, "store/contact.html")
 
 
 def shop(request):
     q = (request.GET.get("q") or "").strip()
+    category_slug = (request.GET.get("category") or "").strip()
 
-    qs = ProductVariant.objects.select_related("product").all()
+    qs = ProductVariant.objects.select_related(
+        "product", "product__category",
+    ).filter(is_active=True, product__is_active=True)
     if q:
         qs = qs.filter(
-            Q(sku__icontains=q) |
-            Q(display_name__icontains=q) |
-            Q(product__name__icontains=q)
+            Q(sku__icontains=q)
+            | Q(display_name__icontains=q)
+            | Q(product__name__icontains=q)
         )
+    if category_slug:
+        qs = qs.filter(product__category__slug=category_slug)
     qs = qs.order_by("product__name", "sku")
 
-    return render(request, "store/shop.html", {"variants": qs, "q": q})
+    categories = Category.objects.all()
+    return render(request, "store/shop.html", {
+        "variants": qs,
+        "q": q,
+        "categories": categories,
+        "active_category": category_slug,
+    })
 
 
 def product_detail(request, variant_id: int):
-    v = get_object_or_404(ProductVariant.objects.select_related("product"), id=variant_id)
-    return render(request, "store/product_detail.html", {"v": v})
+    v = get_object_or_404(
+        ProductVariant.objects.select_related("product", "product__category"),
+        id=variant_id,
+    )
+    siblings = ProductVariant.objects.filter(
+        product=v.product, is_active=True,
+    ).exclude(id=v.id)
+    return render(request, "store/product_detail.html", {
+        "v": v,
+        "siblings": siblings,
+    })
 
 
 def _cart_key():

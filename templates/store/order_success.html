@@ -1,15 +1,14 @@
 {% extends "store/base.html" %}
-{% block title %}Success{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Order placed" %}{% endblock %}
 {% block content %}
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h3 class="fw-bold">Order Created!</h3>
-    <p>Order No: <span class="fw-bold">{{ order.order_no }}</span></p>
-    <p>Status: <span class="fw-bold">{{ order.status }}</span></p>
-    <div class="d-flex gap-2">
-      <a class="btn btn-outline-primary" href="{% url 'store_confirm_payment' %}">Confirm Payment</a>
-      <a class="btn btn-outline-secondary" href="{% url 'store_shop' %}">Back to shop</a>
-    </div>
-  </div>
+<div class="mz-page-hero text-center">
+  <h1 class="mz-section-title h3">{% trans "Thank you for your order" %}</h1>
+  <p class="mb-1">{% trans "Order number" %}: <strong>{{ order.order_no }}</strong></p>
+  <p class="text-muted">{% trans "Total" %}: {{ order.grand_total }} ກີບ</p>
+  {% if order.payment_method == "transfer" %}
+  <p class="alert alert-info mt-3">{% trans "Please transfer payment and submit your slip on the payment notice page." %}</p>
+  <a class="btn mz-btn-primary" href="{% url 'store_confirm_payment' %}">{% trans "Payment notice" %}</a>
+  {% endif %}
 </div>
 {% endblock %}

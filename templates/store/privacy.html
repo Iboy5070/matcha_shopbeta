@@ -1,0 +1,11 @@
+{% extends "store/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Privacy policy" %}{% endblock %}
+{% block content %}
+<div class="mz-page-hero">
+  <h1 class="mz-section-title">{% trans "Privacy policy for customers" %}</h1>
+  <p>{% trans "We collect only information needed to process orders and respond to inquiries (name, contact details, order history)." %}</p>
+  <p>{% trans "Payment slips and messages are stored securely and used only for order verification and customer support." %}</p>
+  <p class="mb-0">{% trans "You may contact us to request correction or deletion of your personal data where applicable by law." %}</p>
+</div>
+{% endblock %}

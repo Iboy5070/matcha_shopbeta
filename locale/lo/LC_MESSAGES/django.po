@@ -1,0 +1,370 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 12:31+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: lo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/store/about.html:3 templates/store/base.html:22
+#: templates/store/base.html:64 templates/store/home.html:11
+msgid "About us"
+msgstr "ກ່ຽວກັບເຮົາ"
+
+#: templates/store/about.html:6
+msgid "About MATCHAZUKI"
+msgstr "ກ່ຽວກັບ MATCHAZUKI"
+
+#: templates/store/about.html:7
+msgid ""
+"We select matcha the way true matcha lovers do — partnering with Japanese "
+"tea masters to deliver umami, aroma, and natural color suitable for premium "
+"beverages and baking."
+msgstr ""
+"ເຮົາຄັດເລືອກມັດຊາຢ່າງຜູ້ທີ່ຮັກມັດຊາຕົວຈິງ — ຮ່ວມກັບ Tea Master ຈາກຍີ່ປຸ່ນ "
+"ເພື່ອລົດຊາດ ອູມາມິ ກິ່ນຫອມ ແລະ ສີຂຽວຕາມທຳມະຊາດ ເໝາະສຳລັບເຄື່ອງດື່ມ ແລະ ຂະໜົມ"
+
+#: templates/store/about.html:8
+msgid ""
+"Every step from farm to your kitchen is quality-controlled so you receive "
+"fresh, trustworthy matcha."
+msgstr "ທຸກຂັ້ນຕອນຕັ້ງແຕ່ໄຮ່ຈົນຮອດໂຕທ່ານ ຄຸ້ມຄອງຄຸນນະພາບຢ່າງລະອຽດ"
+
+#: templates/store/about.html:10
+msgid "View products"
+msgstr "ເບິ່ງສິນຄ້າ"
+
+#: templates/store/base.html:6
+msgid "MATCHAZUKI"
+msgstr "MATCHAZUKI"
+
+#: templates/store/base.html:23 templates/store/base.html:65
+#: templates/store/home.html:12 templates/store/shop.html:3
+#: templates/store/shop.html:7
+msgid "Products"
+msgstr "ສິນຄ້າ"
+
+#: templates/store/base.html:24 templates/store/base.html:66
+#: templates/store/faq.html:3 templates/store/faq.html:6
+msgid "FAQ"
+msgstr "ຖາມ – ຕອບ"
+
+#: templates/store/base.html:25 templates/store/confirm_payment.html:3
+#: templates/store/confirm_payment.html:6
+#: templates/store/order_success.html:11
+msgid "Payment notice"
+msgstr "ແຈ້ງຊຳລະເງິນ"
+
+#: templates/store/base.html:26 templates/store/base.html:67
+#: templates/store/base.html:73 templates/store/contact.html:3
+#: templates/store/home.html:86
+msgid "Contact"
+msgstr "ຕິດຕໍ່ເຮົາ"
+
+#: templates/store/base.html:39 templates/store/cart.html:3
+#: templates/store/cart.html:5
+msgid "Cart"
+msgstr "ກະຕ່າ"
+
+#: templates/store/base.html:59
+msgid "Premium Japanese matcha for matcha lovers."
+msgstr "ມັດຊາຄຸນນະພາບດີຈາກຍີ່ປຸ່ນ ສຳລັບຜູ້ທີ່ຮັກມັດຊາ"
+
+#: templates/store/base.html:62
+msgid "Links"
+msgstr "ລິ້ງ"
+
+#: templates/store/base.html:68 templates/store/returns.html:3
+#: templates/store/returns.html:6
+msgid "Return policy"
+msgstr "ນະໂຍບາຍຄືນສິນຄ້າ"
+
+#: templates/store/base.html:69 templates/store/privacy.html:3
+msgid "Privacy policy"
+msgstr "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ"
+
+#: templates/store/base.html:86
+msgid "We use cookies to improve your experience on this site."
+msgstr "ເຮົາໃຊ້ cookies ເພື່ອປັບປຸງປະສົບການຂອງທ່ານໃນເວັບໄຊນີ້"
+
+#: templates/store/base.html:88
+msgid "Decline"
+msgstr "ປະຕິເສດ"
+
+#: templates/store/base.html:89
+msgid "Accept"
+msgstr "ຍອມຮັບ"
+
+#: templates/store/cart.html:14
+msgid "Qty"
+msgstr "ຈຳນວນ"
+
+#: templates/store/cart.html:24 templates/store/order_success.html:8
+msgid "Total"
+msgstr "ລວມ"
+
+#: templates/store/cart.html:28
+msgid "Clear"
+msgstr "ລ້າງກະຕ່າ"
+
+#: templates/store/cart.html:29 templates/store/checkout.html:3
+#: templates/store/checkout.html:5
+msgid "Checkout"
+msgstr "ຊຳລະເງິນ"
+
+#: templates/store/cart.html:34
+msgid "Your cart is empty."
+msgstr "ກະຕ່າຫວ່າງ"
+
+#: templates/store/cart.html:35
+msgid "Browse products"
+msgstr "ເລືອກຊື້ສິນຄ້າ"
+
+#: templates/store/checkout.html:13
+msgid "Grand total"
+msgstr "ລວມທັງໝົດ"
+
+#: templates/store/checkout.html:17 templates/store/contact.html:20
+msgid "Name"
+msgstr "ຊື່"
+
+#: templates/store/checkout.html:21 templates/store/contact.html:28
+msgid "Phone"
+msgstr "ເບີໂທ"
+
+#: templates/store/checkout.html:25
+msgid "Address"
+msgstr "ທີ່ຢູ່"
+
+#: templates/store/checkout.html:29
+msgid "Payment"
+msgstr "ການຊຳລະ"
+
+#: templates/store/checkout.html:31
+msgid "Bank transfer"
+msgstr "ໂອນເງິນ"
+
+#: templates/store/checkout.html:32
+msgid "Cash on delivery"
+msgstr "ເກັບເງິນປາຍທາງ"
+
+#: templates/store/checkout.html:35
+msgid "Place order"
+msgstr "ສັ່ງຊື້"
+
+#: templates/store/confirm_payment.html:7
+msgid "Upload your transfer slip after placing an order."
+msgstr "ອັບໂຫຼດສລິບຫຼັງສັ່ງຊື້"
+
+#: templates/store/confirm_payment.html:18
+msgid "Order no."
+msgstr "ເລກອໍເດີ"
+
+#: templates/store/confirm_payment.html:22
+msgid "Paid amount"
+msgstr "ຈຳນວນທີ່ໂອນ"
+
+#: templates/store/confirm_payment.html:26
+msgid "Bank"
+msgstr "ທະນາຄານ"
+
+#: templates/store/confirm_payment.html:30
+msgid "Slip image"
+msgstr "ຮູບສລິບ"
+
+#: templates/store/confirm_payment.html:34
+msgid "Note"
+msgstr "ໝາຍເຫດ"
+
+#: templates/store/confirm_payment.html:37
+msgid "Submit"
+msgstr "ສົ່ງ"
+
+#: templates/store/contact.html:6 templates/store/home.html:82
+msgid "Contact us"
+msgstr "ຕິດຕໍ່ເຮົາ"
+
+#: templates/store/contact.html:7
+msgid "Tell us what you need — our team will get back to you."
+msgstr "ບອກຄວາມຕ້ອງການຂອງທ່ານ — ທີມງານຈະຕິດຕໍ່ກັບ"
+
+#: templates/store/contact.html:13
+msgid "Thank you — we received your message."
+msgstr "ຂອບໃຈ — ເຮົາໄດ້ຮັບຂໍ້ຄວາມຂອງທ່ານແລ້ວ"
+
+#: templates/store/contact.html:24
+msgid "Email"
+msgstr "ອີເມວ"
+
+#: templates/store/contact.html:32
+msgid "Message"
+msgstr "ຂໍ້ຄວາມ"
+
+#: templates/store/contact.html:35
+msgid "Send message"
+msgstr "ສົ່ງຂໍ້ຄວາມ"
+
+#: templates/store/faq.html:29
+msgid "No FAQ entries yet. Add them in the admin panel."
+msgstr "ຍັງບໍ່ມີຄຳຖາມ ກະລຸນາເພີ່ມໃນ admin"
+
+#: templates/store/home.html:3
+msgid "Home"
+msgstr "ໜ້າຫຼັກ"
+
+#: templates/store/home.html:8
+msgid "Because we choose matcha like matcha lovers do"
+msgstr "MATCHAZUKI ເພາະເຮົາຄັດເລືອກມັດຊາ ຢ່າງຜູ້ທີ່ຮັກມັດຊາ"
+
+#: templates/store/home.html:9
+msgid "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking."
+msgstr "ມັດຊາ ອູມາມິ ກິ່ນຫອມ ສີຂຽວຕາມທຳມະຊາດ ສຳລັບເຄື່ອງດື່ມ ແລະ ຂະໜົມ"
+
+#: templates/store/home.html:19
+msgid "Distinct matcha taste"
+msgstr "ລົດຊາດມັດຊາໂດດເດັ່ນ"
+
+#: templates/store/home.html:20
+msgid ""
+"Developed with Japanese tea masters for balanced umami, aroma, and color."
+msgstr "ພັດທະນາຮ່ວມກັບ Tea Master ຍີ່ປຸ່ນ ເພື່ອ ອູມາມິ ກິ່ນ ແລະ ສີທີ່ສົມດຸນ"
+
+#: templates/store/home.html:25
+msgid "Meticulous quality control"
+msgstr "ຄວບຄຸມຄຸນນະພາບຢ່າງລະອຽດ"
+
+#: templates/store/home.html:26
+msgid "From cultivation and production to storage — every step is cared for."
+msgstr "ຕັ້ງແຕ່ປູກ ຜະລິດ ຈົນຮອດການເກັບຮັກສາ — ທຸກຂັ້ນຕອນໃສ່ໃຈ"
+
+#: templates/store/home.html:31
+msgid "Care like a matcha lover"
+msgstr "ດູແລຢ່າງຜູ້ທີ່ຮັກມັດຊາ"
+
+#: templates/store/home.html:32
+msgid "We help you choose the right matcha and get the best results."
+msgstr "ຊ່ວຍໃຫ້ທ່ານເລືອກມັດຊາໄດ້ຖືກ ແລະ ໄດ້ຜົນດີທີ່ສຸດ"
+
+#: templates/store/home.html:39
+msgid "Featured products"
+msgstr "ສິນຄ້າແນະນຳ"
+
+#: templates/store/home.html:54 templates/store/shop.html:44
+msgid "View"
+msgstr "ເບິ່ງ"
+
+#: templates/store/home.html:67
+msgid "What partners say"
+msgstr "ສຽງຕອບຮັບຈາກລູກຄ້າ"
+
+#: templates/store/home.html:83
+msgid ""
+"Ask about products — we are happy to help via email, LINE, or our contact "
+"form."
+msgstr "ສອບຖາມລາຍລະອຽດສິນຄ້າໄດ້ທາງອີເມວ LINE ຫຼື ຟອມຕິດຕໍ່ເຮົາ"
+
+#: templates/store/home.html:85
+msgid "Chat with us"
+msgstr "ສົນທະນາກັບເຮົາ"
+
+#: templates/store/order_success.html:3
+msgid "Order placed"
+msgstr "ສັ່ງຊື້ສຳເລັດ"
+
+#: templates/store/order_success.html:6
+msgid "Thank you for your order"
+msgstr "ຂອບໃຈສຳລັບການສັ່ງຊື້"
+
+#: templates/store/order_success.html:7
+msgid "Order number"
+msgstr "ເລກອໍເດີ"
+
+#: templates/store/order_success.html:10
+msgid ""
+"Please transfer payment and submit your slip on the payment notice page."
+msgstr "ກະລຸນາໂອນເງິນ ແລະ ແຈ້ງຊຳລະໃນໜ້າແຈ້ງຊຳລະ"
+
+#: templates/store/privacy.html:6
+msgid "Privacy policy for customers"
+msgstr "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວສຳລັບລູກຄ້າ"
+
+#: templates/store/privacy.html:7
+msgid ""
+"We collect only information needed to process orders and respond to "
+"inquiries (name, contact details, order history)."
+msgstr "ເຮົາເກັບສະເພາະຂໍ້ມູນທີ່ຈຳເປັນ ສຳລັບການດຳເນີນອໍເດີ"
+
+#: templates/store/privacy.html:8
+msgid ""
+"Payment slips and messages are stored securely and used only for order "
+"verification and customer support."
+msgstr "ສລິບ ແລະ ຂໍ້ຄວາມ ຈັດເກັບຢ່າງປອດໄພ ໃຊ້ເພື່ອຢັ້ງຢືນອໍເດີ"
+
+#: templates/store/privacy.html:9
+msgid ""
+"You may contact us to request correction or deletion of your personal data "
+"where applicable by law."
+msgstr "ທ່ານສາມາດຕິດຕໍ່ເຮົາ ເພື່ອຂໍແກ້ໄຂ ຫຼື ລຶບຂໍ້ມູນສ່ວນຕົວຕາມກົດໝາຍ"
+
+#: templates/store/product_detail.html:24
+msgid "In stock"
+msgstr "ຄົງເຫຼືອ"
+
+#: templates/store/product_detail.html:26 templates/store/shop.html:45
+msgid "Add to cart"
+msgstr "ໃສ່ກະຕ່າ"
+
+#: templates/store/product_detail.html:27
+msgid "Back to shop"
+msgstr "ກັບຮ້ານຄ້າ"
+
+#: templates/store/product_detail.html:32
+msgid "Other variants"
+msgstr "ຕົວເລືອກອື່ນ"
+
+#: templates/store/returns.html:7
+msgid ""
+"Unopened products in original packaging may be returned within 7 days of "
+"delivery if damaged or incorrect."
+msgstr "ສິນຄ້າທີ່ຍັງບໍ່ເປີດ ສາມາດຄືນໄດ້ພາຍໃນ 7 ວັນ ຖ້າເສຍຫາຍ ຫຼື ສົ່ງຜິດ"
+
+#: templates/store/returns.html:8
+msgid ""
+"Opened food products cannot be returned for hygiene reasons unless "
+"defective."
+msgstr "ສິນຄ້າອາຫານທີ່ເປີດແລ້ວ ຄືນບໍ່ໄດ້ ເວັ້ນແຕ່ບົກຜ່ອງ"
+
+#: templates/store/returns.html:9
+msgid "Please contact us with your order number before sending any return."
+msgstr "ກະລຸນາຕິດຕໍ່ເຮົາພ້ອມເລກອໍເດີ ກ່ອນສົ່ງຄືນສິນຄ້າ"
+
+#: templates/store/shop.html:8
+msgid "Premium matcha and related items"
+msgstr "ມັດຊາ ແລະ ສິນຄ້າທີ່ກ່ຽວຂ້ອງ"
+
+#: templates/store/shop.html:12
+msgid "Search..."
+msgstr "ຄົ້ນຫາ..."
+
+#: templates/store/shop.html:13
+msgid "Search"
+msgstr "ຄົ້ນຫາ"
+
+#: templates/store/shop.html:20
+msgid "All"
+msgstr "ທັງໝົດ"
+
+#: templates/store/shop.html:51
+msgid "No products found."
+msgstr "ບໍ່ພົບສິນຄ້າ"

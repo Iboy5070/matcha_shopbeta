@@ -11,6 +11,10 @@ venv/
 
 # Database
 db.sqlite3
+pgdata/
+
+# Media uploads
+media/
 
 # OS
 .DS_Store

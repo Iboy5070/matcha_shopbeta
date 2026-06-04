@@ -1,0 +1,373 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 12:14+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: templates/store/about.html:3 templates/store/base.html:22
+#: templates/store/base.html:63 templates/store/home.html:11
+msgid "About us"
+msgstr "เกี่ยวกับเรา"
+
+#: templates/store/about.html:6
+msgid "About MATCHAZUKI"
+msgstr "เกี่ยวกับ MATCHAZUKI"
+
+#: templates/store/about.html:7
+msgid ""
+"We select matcha the way true matcha lovers do — partnering with Japanese "
+"tea masters to deliver umami, aroma, and natural color suitable for premium "
+"beverages and baking."
+msgstr ""
+"เราเลือกมัทฉะอย่างคนรักมัทฉะ — พัฒนาร่วมกับ Tea Master ที่ญี่ปุ่น "
+"เพื่อรสอูมามิ หอมกลมกล่อม สีสวยตามธรรมชาติ "
+"เหมาะสำหรับเครื่องดื่มและเบเกอรีพรีเมียม"
+
+#: templates/store/about.html:8
+msgid ""
+"Every step from farm to your kitchen is quality-controlled so you receive "
+"fresh, trustworthy matcha."
+msgstr "ทุกขั้นตอนตั้งแต่เพาะปลูกจนถึงมือคุณ ถูกควบคุมคุณภาพอย่างพิถีพิถัน"
+
+#: templates/store/about.html:10
+msgid "View products"
+msgstr "ดูสินค้า"
+
+#: templates/store/base.html:6
+msgid "MATCHAZUKI"
+msgstr "MATCHAZUKI"
+
+#: templates/store/base.html:23 templates/store/base.html:64
+#: templates/store/home.html:12 templates/store/shop.html:3
+#: templates/store/shop.html:7
+msgid "Products"
+msgstr "สินค้า"
+
+#: templates/store/base.html:24 templates/store/base.html:65
+#: templates/store/faq.html:3 templates/store/faq.html:6
+msgid "FAQ"
+msgstr "ถาม – ตอบ"
+
+#: templates/store/base.html:25 templates/store/confirm_payment.html:3
+#: templates/store/confirm_payment.html:6
+#: templates/store/order_success.html:11
+msgid "Payment notice"
+msgstr "แจ้งชำระเงิน"
+
+#: templates/store/base.html:26 templates/store/base.html:66
+#: templates/store/base.html:72 templates/store/contact.html:3
+#: templates/store/home.html:86
+msgid "Contact"
+msgstr "ติดต่อเรา"
+
+#: templates/store/base.html:38 templates/store/cart.html:3
+#: templates/store/cart.html:5
+msgid "Cart"
+msgstr "ตะกร้า"
+
+#: templates/store/base.html:58
+msgid "Premium Japanese matcha for matcha lovers."
+msgstr "มัทฉะคุณภาพดีจากญี่ปุ่นเพื่อคนรักมัทฉะโดยเฉพาะ"
+
+#: templates/store/base.html:61
+msgid "Links"
+msgstr "ลิงก์"
+
+#: templates/store/base.html:67 templates/store/returns.html:3
+#: templates/store/returns.html:6
+msgid "Return policy"
+msgstr "นโยบายการคืนสินค้า"
+
+#: templates/store/base.html:68 templates/store/privacy.html:3
+msgid "Privacy policy"
+msgstr "นโยบายความเป็นส่วนตัว"
+
+#: templates/store/base.html:85
+msgid "We use cookies to improve your experience on this site."
+msgstr "เราใช้คุกกี้เพื่อพัฒนาประสบการณ์ที่ดีในการใช้เว็บไซต์"
+
+#: templates/store/base.html:87
+msgid "Decline"
+msgstr "ไม่ยอมรับ"
+
+#: templates/store/base.html:88
+msgid "Accept"
+msgstr "ยอมรับ"
+
+#: templates/store/cart.html:14
+msgid "Qty"
+msgstr "จำนวน"
+
+#: templates/store/cart.html:24 templates/store/order_success.html:8
+msgid "Total"
+msgstr "รวม"
+
+#: templates/store/cart.html:28
+msgid "Clear"
+msgstr "ล้างตะกร้า"
+
+#: templates/store/cart.html:29 templates/store/checkout.html:3
+#: templates/store/checkout.html:5
+msgid "Checkout"
+msgstr "ชำระเงิน"
+
+#: templates/store/cart.html:34
+msgid "Your cart is empty."
+msgstr "ตะกร้าว่าง"
+
+#: templates/store/cart.html:35
+msgid "Browse products"
+msgstr "เลือกซื้อสินค้า"
+
+#: templates/store/checkout.html:13
+msgid "Grand total"
+msgstr "ยอดรวม"
+
+#: templates/store/checkout.html:17 templates/store/contact.html:20
+msgid "Name"
+msgstr "ชื่อ"
+
+#: templates/store/checkout.html:21 templates/store/contact.html:28
+msgid "Phone"
+msgstr "เบอร์โทร"
+
+#: templates/store/checkout.html:25
+msgid "Address"
+msgstr "ที่อยู่"
+
+#: templates/store/checkout.html:29
+msgid "Payment"
+msgstr "การชำระเงิน"
+
+#: templates/store/checkout.html:31
+msgid "Bank transfer"
+msgstr "โอนเงิน"
+
+#: templates/store/checkout.html:32
+msgid "Cash on delivery"
+msgstr "เก็บเงินปลายทาง"
+
+#: templates/store/checkout.html:35
+msgid "Place order"
+msgstr "สั่งซื้อ"
+
+#: templates/store/confirm_payment.html:7
+msgid "Upload your transfer slip after placing an order."
+msgstr "อัปโหลดสลิปหลังสั่งซื้อ"
+
+#: templates/store/confirm_payment.html:18
+msgid "Order no."
+msgstr "เลขออเดอร์"
+
+#: templates/store/confirm_payment.html:22
+msgid "Paid amount"
+msgstr "ยอดที่โอน"
+
+#: templates/store/confirm_payment.html:26
+msgid "Bank"
+msgstr "ธนาคาร"
+
+#: templates/store/confirm_payment.html:30
+msgid "Slip image"
+msgstr "รูปสลิป"
+
+#: templates/store/confirm_payment.html:34
+msgid "Note"
+msgstr "หมายเหตุ"
+
+#: templates/store/confirm_payment.html:37
+msgid "Submit"
+msgstr "ส่ง"
+
+#: templates/store/contact.html:6 templates/store/home.html:82
+msgid "Contact us"
+msgstr "ติดต่อเรา"
+
+#: templates/store/contact.html:7
+msgid "Tell us what you need — our team will get back to you."
+msgstr "แจ้งความต้องการของคุณ ทีมงานจะติดต่อกลับ"
+
+#: templates/store/contact.html:13
+msgid "Thank you — we received your message."
+msgstr "ขอบคุณ — เราได้รับข้อความแล้ว"
+
+#: templates/store/contact.html:24
+msgid "Email"
+msgstr "อีเมล"
+
+#: templates/store/contact.html:32
+msgid "Message"
+msgstr "ข้อความ"
+
+#: templates/store/contact.html:35
+msgid "Send message"
+msgstr "ส่งข้อความ"
+
+#: templates/store/faq.html:29
+msgid "No FAQ entries yet. Add them in the admin panel."
+msgstr "ยังไม่มีคำถาม กรุณาเพิ่มในแอดมิน"
+
+#: templates/store/home.html:3
+msgid "Home"
+msgstr "หน้าแรก"
+
+#: templates/store/home.html:8
+msgid "Because we choose matcha like matcha lovers do"
+msgstr "MATCHAZUKI เพราะเราเลือกมัทฉะ อย่างคนรักมัทฉะ"
+
+#: templates/store/home.html:9
+msgid "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking."
+msgstr "มัทฉะอูมามิ หอมกลมกล่อม สีสวยตามธรรมชาติ สำหรับเครื่องดื่มและขนม"
+
+#: templates/store/home.html:19
+msgid "Distinct matcha taste"
+msgstr "รสชาติมัทฉะอันเป็นเอกลักษณ์"
+
+#: templates/store/home.html:20
+msgid ""
+"Developed with Japanese tea masters for balanced umami, aroma, and color."
+msgstr "พัฒนาร่วมกับ Tea Master ที่ญี่ปุ่น เพื่อรสอูมามิ กลิ่น และสีที่สมดุล"
+
+#: templates/store/home.html:25
+msgid "Meticulous quality control"
+msgstr "ควบคุมคุณภาพอย่างพิถีพิถัน"
+
+#: templates/store/home.html:26
+msgid "From cultivation and production to storage — every step is cared for."
+msgstr "ตั้งแต่เพาะปลูก ผลิต เก็บรักษา ทุกขั้นตอนใส่ใจ"
+
+#: templates/store/home.html:31
+msgid "Care like a matcha lover"
+msgstr "ดูแลใส่ใจอย่างคนที่รักมัทฉะ"
+
+#: templates/store/home.html:32
+msgid "We help you choose the right matcha and get the best results."
+msgstr "ช่วยให้การเลือกมัทฉะแต่ละครั้งง่าย และได้ผลลัพธ์ที่ดีที่สุด"
+
+#: templates/store/home.html:39
+msgid "Featured products"
+msgstr "สินค้าแนะนำ"
+
+#: templates/store/home.html:54 templates/store/shop.html:44
+msgid "View"
+msgstr "ดู"
+
+#: templates/store/home.html:67
+msgid "What partners say"
+msgstr "เสียงตอบรับจากผู้ที่ร่วมงาน"
+
+#: templates/store/home.html:83
+msgid ""
+"Ask about products — we are happy to help via email, LINE, or our contact "
+"form."
+msgstr "สอบถามรายละเอียดสินค้าได้ทางอีเมล LINE หรือฟอร์มติดต่อเรา"
+
+#: templates/store/home.html:85
+msgid "Chat with us"
+msgstr "แชทกับเรา"
+
+#: templates/store/order_success.html:3
+msgid "Order placed"
+msgstr "สั่งซื้อสำเร็จ"
+
+#: templates/store/order_success.html:6
+msgid "Thank you for your order"
+msgstr "ขอบคุณสำหรับคำสั่งซื้อ"
+
+#: templates/store/order_success.html:7
+msgid "Order number"
+msgstr "เลขออเดอร์"
+
+#: templates/store/order_success.html:10
+msgid ""
+"Please transfer payment and submit your slip on the payment notice page."
+msgstr "กรุณาโอนเงินและแจ้งชำระที่หน้าแจ้งชำระเงิน"
+
+#: templates/store/privacy.html:6
+msgid "Privacy policy for customers"
+msgstr "นโยบายความเป็นส่วนตัวสำหรับลูกค้า"
+
+#: templates/store/privacy.html:7
+msgid ""
+"We collect only information needed to process orders and respond to "
+"inquiries (name, contact details, order history)."
+msgstr "เราเก็บเฉพาะข้อมูลที่จำเป็นสำหรับการสั่งซื้อและการติดต่อ"
+
+#: templates/store/privacy.html:8
+msgid ""
+"Payment slips and messages are stored securely and used only for order "
+"verification and customer support."
+msgstr "สลิปและข้อความถูกเก็บอย่างปลอดภัยเพื่อยืนยันออเดอร์และบริการลูกค้า"
+
+#: templates/store/privacy.html:9
+msgid ""
+"You may contact us to request correction or deletion of your personal data "
+"where applicable by law."
+msgstr "คุณสามารถติดต่อเราเพื่อขอแก้ไขหรือลบข้อมูลส่วนบุคคลตามกฎหมาย"
+
+#: templates/store/product_detail.html:24
+msgid "In stock"
+msgstr "คงเหลือ"
+
+#: templates/store/product_detail.html:26 templates/store/shop.html:45
+msgid "Add to cart"
+msgstr "ใส่ตะกร้า"
+
+#: templates/store/product_detail.html:27
+msgid "Back to shop"
+msgstr "กลับร้านค้า"
+
+#: templates/store/product_detail.html:32
+msgid "Other variants"
+msgstr "ตัวเลือกอื่น"
+
+#: templates/store/returns.html:7
+msgid ""
+"Unopened products in original packaging may be returned within 7 days of "
+"delivery if damaged or incorrect."
+msgstr ""
+"สินค้าที่ยังไม่เปิดบรรจุภัณฑ์เดิม สามารถคืนได้ภายใน 7 "
+"วันหากเสียหายหรือส่งผิด"
+
+#: templates/store/returns.html:8
+msgid ""
+"Opened food products cannot be returned for hygiene reasons unless "
+"defective."
+msgstr "สินค้าอาหารที่เปิดแล้วไม่สามารถคืนได้ เว้นแต่มีข้อบกพร่อง"
+
+#: templates/store/returns.html:9
+msgid "Please contact us with your order number before sending any return."
+msgstr "กรุณาติดต่อเราพร้อมเลขออเดอร์ก่อนส่งคืนสินค้า"
+
+#: templates/store/shop.html:8
+msgid "Premium matcha and related items"
+msgstr "มัทฉะและผลิตภัณฑ์ที่เกี่ยวข้อง"
+
+#: templates/store/shop.html:12
+msgid "Search..."
+msgstr "ค้นหา..."
+
+#: templates/store/shop.html:13
+msgid "Search"
+msgstr "ค้นหา"
+
+#: templates/store/shop.html:20
+msgid "All"
+msgstr "ทั้งหมด"
+
+#: templates/store/shop.html:51
+msgid "No products found."
+msgstr "ไม่พบสินค้า"

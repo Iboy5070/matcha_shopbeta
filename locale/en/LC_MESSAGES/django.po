@@ -1,0 +1,366 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-04 12:14+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: templates/store/about.html:3 templates/store/base.html:22
+#: templates/store/base.html:63 templates/store/home.html:11
+msgid "About us"
+msgstr ""
+
+#: templates/store/about.html:6
+msgid "About MATCHAZUKI"
+msgstr ""
+
+#: templates/store/about.html:7
+msgid ""
+"We select matcha the way true matcha lovers do — partnering with Japanese "
+"tea masters to deliver umami, aroma, and natural color suitable for premium "
+"beverages and baking."
+msgstr ""
+
+#: templates/store/about.html:8
+msgid ""
+"Every step from farm to your kitchen is quality-controlled so you receive "
+"fresh, trustworthy matcha."
+msgstr ""
+
+#: templates/store/about.html:10
+msgid "View products"
+msgstr ""
+
+#: templates/store/base.html:6
+msgid "MATCHAZUKI"
+msgstr ""
+
+#: templates/store/base.html:23 templates/store/base.html:64
+#: templates/store/home.html:12 templates/store/shop.html:3
+#: templates/store/shop.html:7
+msgid "Products"
+msgstr ""
+
+#: templates/store/base.html:24 templates/store/base.html:65
+#: templates/store/faq.html:3 templates/store/faq.html:6
+msgid "FAQ"
+msgstr ""
+
+#: templates/store/base.html:25 templates/store/confirm_payment.html:3
+#: templates/store/confirm_payment.html:6 templates/store/order_success.html:11
+msgid "Payment notice"
+msgstr ""
+
+#: templates/store/base.html:26 templates/store/base.html:66
+#: templates/store/base.html:72 templates/store/contact.html:3
+#: templates/store/home.html:86
+msgid "Contact"
+msgstr ""
+
+#: templates/store/base.html:38 templates/store/cart.html:3
+#: templates/store/cart.html:5
+msgid "Cart"
+msgstr ""
+
+#: templates/store/base.html:58
+msgid "Premium Japanese matcha for matcha lovers."
+msgstr ""
+
+#: templates/store/base.html:61
+msgid "Links"
+msgstr ""
+
+#: templates/store/base.html:67 templates/store/returns.html:3
+#: templates/store/returns.html:6
+msgid "Return policy"
+msgstr ""
+
+#: templates/store/base.html:68 templates/store/privacy.html:3
+msgid "Privacy policy"
+msgstr ""
+
+#: templates/store/base.html:85
+msgid "We use cookies to improve your experience on this site."
+msgstr ""
+
+#: templates/store/base.html:87
+msgid "Decline"
+msgstr ""
+
+#: templates/store/base.html:88
+msgid "Accept"
+msgstr ""
+
+#: templates/store/cart.html:14
+msgid "Qty"
+msgstr ""
+
+#: templates/store/cart.html:24 templates/store/order_success.html:8
+msgid "Total"
+msgstr ""
+
+#: templates/store/cart.html:28
+msgid "Clear"
+msgstr ""
+
+#: templates/store/cart.html:29 templates/store/checkout.html:3
+#: templates/store/checkout.html:5
+msgid "Checkout"
+msgstr ""
+
+#: templates/store/cart.html:34
+msgid "Your cart is empty."
+msgstr ""
+
+#: templates/store/cart.html:35
+msgid "Browse products"
+msgstr ""
+
+#: templates/store/checkout.html:13
+msgid "Grand total"
+msgstr ""
+
+#: templates/store/checkout.html:17 templates/store/contact.html:20
+msgid "Name"
+msgstr ""
+
+#: templates/store/checkout.html:21 templates/store/contact.html:28
+msgid "Phone"
+msgstr ""
+
+#: templates/store/checkout.html:25
+msgid "Address"
+msgstr ""
+
+#: templates/store/checkout.html:29
+msgid "Payment"
+msgstr ""
+
+#: templates/store/checkout.html:31
+msgid "Bank transfer"
+msgstr ""
+
+#: templates/store/checkout.html:32
+msgid "Cash on delivery"
+msgstr ""
+
+#: templates/store/checkout.html:35
+msgid "Place order"
+msgstr ""
+
+#: templates/store/confirm_payment.html:7
+msgid "Upload your transfer slip after placing an order."
+msgstr ""
+
+#: templates/store/confirm_payment.html:18
+msgid "Order no."
+msgstr ""
+
+#: templates/store/confirm_payment.html:22
+msgid "Paid amount"
+msgstr ""
+
+#: templates/store/confirm_payment.html:26
+msgid "Bank"
+msgstr ""
+
+#: templates/store/confirm_payment.html:30
+msgid "Slip image"
+msgstr ""
+
+#: templates/store/confirm_payment.html:34
+msgid "Note"
+msgstr ""
+
+#: templates/store/confirm_payment.html:37
+msgid "Submit"
+msgstr ""
+
+#: templates/store/contact.html:6 templates/store/home.html:82
+msgid "Contact us"
+msgstr ""
+
+#: templates/store/contact.html:7
+msgid "Tell us what you need — our team will get back to you."
+msgstr ""
+
+#: templates/store/contact.html:13
+msgid "Thank you — we received your message."
+msgstr ""
+
+#: templates/store/contact.html:24
+msgid "Email"
+msgstr ""
+
+#: templates/store/contact.html:32
+msgid "Message"
+msgstr ""
+
+#: templates/store/contact.html:35
+msgid "Send message"
+msgstr ""
+
+#: templates/store/faq.html:29
+msgid "No FAQ entries yet. Add them in the admin panel."
+msgstr ""
+
+#: templates/store/home.html:3
+msgid "Home"
+msgstr ""
+
+#: templates/store/home.html:8
+msgid "Because we choose matcha like matcha lovers do"
+msgstr ""
+
+#: templates/store/home.html:9
+msgid "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking."
+msgstr ""
+
+#: templates/store/home.html:19
+msgid "Distinct matcha taste"
+msgstr ""
+
+#: templates/store/home.html:20
+msgid ""
+"Developed with Japanese tea masters for balanced umami, aroma, and color."
+msgstr ""
+
+#: templates/store/home.html:25
+msgid "Meticulous quality control"
+msgstr ""
+
+#: templates/store/home.html:26
+msgid "From cultivation and production to storage — every step is cared for."
+msgstr ""
+
+#: templates/store/home.html:31
+msgid "Care like a matcha lover"
+msgstr ""
+
+#: templates/store/home.html:32
+msgid "We help you choose the right matcha and get the best results."
+msgstr ""
+
+#: templates/store/home.html:39
+msgid "Featured products"
+msgstr ""
+
+#: templates/store/home.html:54 templates/store/shop.html:44
+msgid "View"
+msgstr ""
+
+#: templates/store/home.html:67
+msgid "What partners say"
+msgstr ""
+
+#: templates/store/home.html:83
+msgid ""
+"Ask about products — we are happy to help via email, LINE, or our contact "
+"form."
+msgstr ""
+
+#: templates/store/home.html:85
+msgid "Chat with us"
+msgstr ""
+
+#: templates/store/order_success.html:3
+msgid "Order placed"
+msgstr ""
+
+#: templates/store/order_success.html:6
+msgid "Thank you for your order"
+msgstr ""
+
+#: templates/store/order_success.html:7
+msgid "Order number"
+msgstr ""
+
+#: templates/store/order_success.html:10
+msgid ""
+"Please transfer payment and submit your slip on the payment notice page."
+msgstr ""
+
+#: templates/store/privacy.html:6
+msgid "Privacy policy for customers"
+msgstr ""
+
+#: templates/store/privacy.html:7
+msgid ""
+"We collect only information needed to process orders and respond to "
+"inquiries (name, contact details, order history)."
+msgstr ""
+
+#: templates/store/privacy.html:8
+msgid ""
+"Payment slips and messages are stored securely and used only for order "
+"verification and customer support."
+msgstr ""
+
+#: templates/store/privacy.html:9
+msgid ""
+"You may contact us to request correction or deletion of your personal data "
+"where applicable by law."
+msgstr ""
+
+#: templates/store/product_detail.html:24
+msgid "In stock"
+msgstr ""
+
+#: templates/store/product_detail.html:26 templates/store/shop.html:45
+msgid "Add to cart"
+msgstr ""
+
+#: templates/store/product_detail.html:27
+msgid "Back to shop"
+msgstr ""
+
+#: templates/store/product_detail.html:32
+msgid "Other variants"
+msgstr ""
+
+#: templates/store/returns.html:7
+msgid ""
+"Unopened products in original packaging may be returned within 7 days of "
+"delivery if damaged or incorrect."
+msgstr ""
+
+#: templates/store/returns.html:8
+msgid ""
+"Opened food products cannot be returned for hygiene reasons unless defective."
+msgstr ""
+
+#: templates/store/returns.html:9
+msgid "Please contact us with your order number before sending any return."
+msgstr ""
+
+#: templates/store/shop.html:8
+msgid "Premium matcha and related items"
+msgstr ""
+
+#: templates/store/shop.html:12
+msgid "Search..."
+msgstr ""
+
+#: templates/store/shop.html:13
+msgid "Search"
+msgstr ""
+
+#: templates/store/shop.html:20
+msgid "All"
+msgstr ""
+
+#: templates/store/shop.html:51
+msgid "No products found."
+msgstr ""

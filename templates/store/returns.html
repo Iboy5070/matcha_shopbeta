@@ -1,0 +1,11 @@
+{% extends "store/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Return policy" %}{% endblock %}
+{% block content %}
+<div class="mz-page-hero">
+  <h1 class="mz-section-title">{% trans "Return policy" %}</h1>
+  <p>{% trans "Unopened products in original packaging may be returned within 7 days of delivery if damaged or incorrect." %}</p>
+  <p>{% trans "Opened food products cannot be returned for hygiene reasons unless defective." %}</p>
+  <p class="mb-0">{% trans "Please contact us with your order number before sending any return." %}</p>
+</div>
+{% endblock %}

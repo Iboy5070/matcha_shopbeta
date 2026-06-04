@@ -1,0 +1,11 @@
+{% extends "store/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "About us" %}{% endblock %}
+{% block content %}
+<div class="mz-page-hero">
+  <h1 class="mz-section-title">{% trans "About MATCHAZUKI" %}</h1>
+  <p>{% trans "We select matcha the way true matcha lovers do — partnering with Japanese tea masters to deliver umami, aroma, and natural color suitable for premium beverages and baking." %}</p>
+  <p class="mb-0">{% trans "Every step from farm to your kitchen is quality-controlled so you receive fresh, trustworthy matcha." %}</p>
+</div>
+<a class="btn mz-btn-primary" href="{% url 'store_shop' %}">{% trans "View products" %}</a>
+{% endblock %}
