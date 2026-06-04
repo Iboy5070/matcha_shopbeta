@@ -8,10 +8,19 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
 DEBUG = os.getenv("DEBUG", "0") == "1"
-ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-    if h.strip()
+
+# ALLOWED_HOSTS: ຮອງຮັບ Railway (.up.railway.app) ແລະ domain ກຳນົດເອງ
+_raw_hosts = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = [h.strip() for h in _raw_hosts.split(",") if h.strip()]
+
+# Railway inject RAILWAY_STATIC_URL; ຮັບ domain ອັດຕະໂນມັດ
+_railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "")
+if _railway_domain and _railway_domain not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_railway_domain)
+
+# CSRF — ຕ້ອງລິດ domain production ໄວ້ດ້ວຍ
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{h}" for h in ALLOWED_HOSTS if "." in h
 ]
 
 INSTALLED_APPS = [
@@ -62,13 +71,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+_db_default = os.getenv(
+    "DATABASE_URL",
+    f"sqlite:///{BASE_DIR / 'db.sqlite3'}"  # fallback local dev only
+)
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.getenv(
-            "DATABASE_URL",
-            "postgres://matcha:matcha@127.0.0.1:5432/matcha_shop",
-        ),
+        default=_db_default,
         conn_max_age=600,
+        conn_health_checks=True,
     )
 }
 
