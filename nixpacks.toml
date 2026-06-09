@@ -11,4 +11,5 @@ cmds = [
 ]
 
 [start]
-cmd = "python manage.py migrate --noinput && python manage.py create_admin && python manage.py seed_demo && python manage.py seed_catalog && gunicorn config.wsgi --workers 2 --bind 0.0.0.0:$PORT --timeout 60"
+# migrate ເທົ່ານັ້ນ — seed ຮັນຄັ້ງດຽວຕອນ deploy ຄັ້ງທຳອິດ (ໃຫ້ cold start ໄວຂຶ້ນ)
+cmd = "python manage.py migrate --noinput && gunicorn config.wsgi --workers 1 --bind 0.0.0.0:$PORT --timeout 120"
