@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if bank_account_number %}
+<div class="alert alert-light border mb-3">
+  <div class="fw-bold mb-2">{% trans "Transfer to" %}</div>
+  {% if bank_name %}<div>{% trans "Bank" %}: <strong>{{ bank_name }}</strong></div>{% endif %}
+  <div>{% trans "Account no." %}: <strong>{{ bank_account_number }}</strong></div>
+  {% if bank_account_name %}<div>{% trans "Account name" %}: <strong>{{ bank_account_name }}</strong></div>{% endif %}
+  <div class="small text-muted mt-2">{% trans "Please include your order number in the transfer note." %}</div>
+</div>
+{% endif %}

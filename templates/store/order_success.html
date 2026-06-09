@@ -7,8 +7,9 @@
   <p class="mb-1">{% trans "Order number" %}: <strong>{{ order.order_no }}</strong></p>
   <p class="text-muted">{% trans "Total" %}: {{ order.grand_total }} ກີບ</p>
   {% if order.payment_method == "transfer" %}
+  <div class="text-start mt-3">{% include "store/_bank_transfer.html" %}</div>
   <p class="alert alert-info mt-3">{% trans "Please transfer payment and submit your slip on the payment notice page." %}</p>
-  <a class="btn mz-btn-primary" href="{% url 'store_confirm_payment' %}">{% trans "Payment notice" %}</a>
+  <a class="btn mz-btn-primary" href="{% url 'store_confirm_payment' %}?order_no={{ order.order_no }}&paid_amount={{ order.grand_total }}">{% trans "Payment notice" %}</a>
   {% endif %}
 </div>
 {% endblock %}

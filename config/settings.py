@@ -125,6 +125,11 @@ if not WHATSAPP_URL:
     if _wa_phone:
         WHATSAPP_URL = f"https://wa.me/{_wa_phone}"
 
+# ບັນຊີໂອນເງິນ (ສະແດງໃນ Checkout + ໜ້າສຳເລັດສັ່ງຊື່)
+BANK_NAME = os.getenv("BANK_NAME", "")
+BANK_ACCOUNT_NUMBER = os.getenv("BANK_ACCOUNT_NUMBER", "")
+BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

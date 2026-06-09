@@ -12,5 +12,8 @@ def site_context(request):
         "line_url": settings.LINE_URL,
         "whatsapp_url": settings.WHATSAPP_URL,
         "facebook_url": settings.FACEBOOK_URL,
+        "bank_name": settings.BANK_NAME,
+        "bank_account_number": settings.BANK_ACCOUNT_NUMBER,
+        "bank_account_name": settings.BANK_ACCOUNT_NAME,
         "active_testimonials": testimonials,
     }

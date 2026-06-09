@@ -276,7 +276,10 @@ def confirm_payment(request):
 
         return render(request, "store/confirm_payment.html", {"success": f"ยืนยันชำระเงินแล้ว: {order.order_no}"})
 
-    return render(request, "store/confirm_payment.html")
+    return render(request, "store/confirm_payment.html", {
+        "prefill_order_no": (request.GET.get("order_no") or "").strip(),
+        "prefill_paid_amount": (request.GET.get("paid_amount") or "").strip(),
+    })
 
 
 def blog_list(request):
