@@ -1,10 +1,20 @@
 {% load i18n %}
-{% if bank_account_number %}
+{% if bank_account_number or bank_qr_image_url %}
 <div class="alert alert-light border mb-3">
   <div class="fw-bold mb-2">{% trans "Transfer to" %}</div>
-  {% if bank_name %}<div>{% trans "Bank" %}: <strong>{{ bank_name }}</strong></div>{% endif %}
-  <div>{% trans "Account no." %}: <strong>{{ bank_account_number }}</strong></div>
-  {% if bank_account_name %}<div>{% trans "Account name" %}: <strong>{{ bank_account_name }}</strong></div>{% endif %}
-  <div class="small text-muted mt-2">{% trans "Please include your order number in the transfer note." %}</div>
+  <div class="row g-3 align-items-center">
+    <div class="{% if bank_qr_image_url %}col-md-7{% else %}col-12{% endif %}">
+      {% if bank_name %}<div>{% trans "Bank" %}: <strong>{{ bank_name }}</strong></div>{% endif %}
+      {% if bank_account_number %}<div>{% trans "Account no." %}: <strong>{{ bank_account_number }}</strong></div>{% endif %}
+      {% if bank_account_name %}<div>{% trans "Account name" %}: <strong>{{ bank_account_name }}</strong></div>{% endif %}
+      <div class="small text-muted mt-2">{% trans "Please include your order number in the transfer note." %}</div>
+    </div>
+    {% if bank_qr_image_url %}
+    <div class="col-md-5 text-center">
+      <img class="mz-bank-qr img-fluid rounded border" src="{{ bank_qr_image_url }}" alt="{% trans 'Scan to pay' %}">
+      <div class="small text-muted mt-1">{% trans "Scan with BCEL / bank app" %}</div>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endif %}

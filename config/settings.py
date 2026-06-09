@@ -129,6 +129,8 @@ if not WHATSAPP_URL:
 BANK_NAME = os.getenv("BANK_NAME", "")
 BANK_ACCOUNT_NUMBER = os.getenv("BANK_ACCOUNT_NUMBER", "")
 BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
+# ຮູບ LAO QR ຈາກ BCEL One (screenshot/save ແລ້ວອັບໂຫຼດ CDN)
+BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
 LOGGING = {
     "version": 1,

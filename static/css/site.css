@@ -160,3 +160,8 @@ body.mz-body {
   border: 1px solid rgba(45, 90, 61, 0.1);
   margin-bottom: 1.5rem;
 }
+
+.mz-bank-qr {
+  max-width: 200px;
+  background: #fff;
+}

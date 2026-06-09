@@ -15,5 +15,6 @@ def site_context(request):
         "bank_name": settings.BANK_NAME,
         "bank_account_number": settings.BANK_ACCOUNT_NUMBER,
         "bank_account_name": settings.BANK_ACCOUNT_NAME,
+        "bank_qr_image_url": settings.BANK_QR_IMAGE_URL,
         "active_testimonials": testimonials,
     }
