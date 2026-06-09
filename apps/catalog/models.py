@@ -8,7 +8,16 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name) or "category"
+            base = slugify(self.name) or f"cat-{self.name[:20]}"
+            # fallback ໃຊ້ id ຖ້າ slugify ສ້າງ empty (ຕົວອັກສອນ lao/thai)
+            if not base or not base.replace("-", ""):
+                base = f"category-{abs(hash(self.name)) % 10000}"
+            slug = base
+            n = 1
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base}-{n}"
+                n += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self):
