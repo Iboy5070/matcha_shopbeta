@@ -80,9 +80,9 @@
 
 <section class="text-center py-4 bg-white rounded border mb-2">
   <h2 class="mz-section-title h4">{% trans "Contact us" %}</h2>
-  <p class="text-muted">{% trans "Ask about products — we are happy to help via email, LINE, or our contact form." %}</p>
+  <p class="text-muted">{% trans "Ask about products — we are happy to help via WhatsApp, Facebook, LINE, email, or our contact form." %}</p>
   <div class="d-flex flex-wrap gap-2 justify-content-center">
-    {% if line_url %}<a class="btn mz-btn-outline" href="{{ line_url }}" target="_blank" rel="noopener">{% trans "Chat with us" %}</a>{% endif %}
+    {% include "store/_contact_buttons.html" %}
     <a class="btn mz-btn-primary" href="{% url 'store_contact' %}">{% trans "Contact" %}</a>
   </div>
 </section>

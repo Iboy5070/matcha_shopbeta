@@ -10,5 +10,7 @@ def site_context(request):
     return {
         "contact_email": settings.CONTACT_EMAIL,
         "line_url": settings.LINE_URL,
+        "whatsapp_url": settings.WHATSAPP_URL,
+        "facebook_url": settings.FACEBOOK_URL,
         "active_testimonials": testimonials,
     }

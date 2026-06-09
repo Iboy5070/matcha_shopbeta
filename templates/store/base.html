@@ -71,8 +71,7 @@
       </div>
       <div class="col-md-4">
         <div class="fw-bold mb-2">{% trans "Contact" %}</div>
-        {% if contact_email %}<div class="small"><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></div>{% endif %}
-        {% if line_url %}<div class="small mt-1"><a href="{{ line_url }}" target="_blank" rel="noopener">LINE</a></div>{% endif %}
+        {% include "store/_contact_channels.html" with compact=True %}
       </div>
     </div>
     <div class="text-center small mt-4 pt-3 border-top border-light border-opacity-25">

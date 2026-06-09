@@ -1,0 +1,21 @@
+{% load i18n %}
+{% if contact_email %}
+  <div class="{% if compact %}small{% endif %}">
+    <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+  </div>
+{% endif %}
+{% if whatsapp_url %}
+  <div class="{% if compact %}small mt-1{% else %}mt-2{% endif %}">
+    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+{% endif %}
+{% if facebook_url %}
+  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %}">
+    <a href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a>
+  </div>
+{% endif %}
+{% if line_url %}
+  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %}">
+    <a href="{{ line_url }}" target="_blank" rel="noopener">LINE</a>
+  </div>
+{% endif %}

@@ -58,6 +58,9 @@ postgres://USER:PASSWORD@HOST:5432/DATABASE
 | `ALLOWED_HOSTS` | Comma-separated hosts |
 | `DATABASE_URL` | PostgreSQL connection URL |
 | `CONTACT_EMAIL` | Shown on contact/footer |
+| `WHATSAPP_PHONE` | Lao number with country code, e.g. `8562012345678` (auto-builds `wa.me` link) |
+| `WHATSAPP_URL` | Full WhatsApp link (optional; overrides `WHATSAPP_PHONE`) |
+| `FACEBOOK_URL` | Facebook page or Messenger link |
 | `LINE_URL` | LINE official account link |
 
 ## Content

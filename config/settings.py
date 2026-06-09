@@ -116,6 +116,14 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 LINE_URL = os.getenv("LINE_URL", "")
+FACEBOOK_URL = os.getenv("FACEBOOK_URL", "")
+
+# WhatsApp: ໃຊ້ WHATSAPP_URL ຫຼື WHATSAPP_PHONE (ເຊັ່ນ 8562012345678)
+WHATSAPP_URL = os.getenv("WHATSAPP_URL", "")
+if not WHATSAPP_URL:
+    _wa_phone = os.getenv("WHATSAPP_PHONE", "").strip().lstrip("+").replace(" ", "").replace("-", "")
+    if _wa_phone:
+        WHATSAPP_URL = f"https://wa.me/{_wa_phone}"
 
 LOGGING = {
     "version": 1,

@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if whatsapp_url %}
+  <a class="btn mz-btn-outline" href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
+{% endif %}
+{% if facebook_url %}
+  <a class="btn mz-btn-outline" href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a>
+{% endif %}
+{% if line_url %}
+  <a class="btn mz-btn-outline" href="{{ line_url }}" target="_blank" rel="noopener">LINE</a>
+{% endif %}
