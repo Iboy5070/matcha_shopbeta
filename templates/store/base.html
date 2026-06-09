@@ -5,6 +5,12 @@
   <meta charset="utf-8">
   <title>{% block title %}{% trans "MATCHAZUKI" %}{% endblock %} | MATCHAZUKI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block meta_description %}{% trans "Premium Japanese matcha shop in Laos — ceremonial grade, iced matcha, and more." %}{% endblock %}">
+  <meta property="og:title" content="MATCHAZUKI">
+  <meta property="og:description" content="{% trans "Premium Japanese matcha for matcha lovers." %}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ site_url }}{{ request.path }}">
+  <link rel="canonical" href="{{ site_url }}{{ request.path }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -92,5 +98,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/cookies.js' %}"></script>
+{% if ga_measurement_id %}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ ga_measurement_id }}');
+</script>
+{% endif %}
 </body>
 </html>

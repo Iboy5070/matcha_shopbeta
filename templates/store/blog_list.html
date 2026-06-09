@@ -1,0 +1,14 @@
+{% extends "store/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Blog" %}{% endblock %}
+{% block content %}
+<div class="mz-page-hero">
+  <h1 class="mz-section-title h3">{% trans "Blog" %}</h1>
+  <p class="text-muted mb-0">{% trans "Matcha tips, recipes, and shop news — coming soon." %}</p>
+</div>
+<div class="card border-0 shadow-sm mt-3">
+  <div class="card-body p-4">
+    <p class="mb-0">{% trans "We are preparing articles about ceremonial matcha, iced matcha, and how to store your powder. Check back soon or contact us on WhatsApp." %}</p>
+  </div>
+</div>
+{% endblock %}

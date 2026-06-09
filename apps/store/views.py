@@ -7,6 +7,7 @@ from django.utils import timezone
 from apps.catalog.models import Category, Product, ProductVariant
 from apps.cms.models import ContactMessage, FAQItem
 from .models import WebOrder, WebOrderItem, PaymentConfirmation
+from .notifications import notify_shop
 
 
 def _to_decimal(x) -> Decimal:
@@ -61,10 +62,14 @@ def contact(request):
         message = (request.POST.get("message") or "").strip()
         if not name or not message:
             return render(request, "store/contact.html", {
-                "error": "กรุณากรอกชื่อและข้อความ",
+                "error": "ກະລຸນາໃສ່ຊື່ ແລະ ຂໍ້ຄວາມ",
             })
         ContactMessage.objects.create(
             name=name, email=email, phone=phone, message=message,
+        )
+        notify_shop(
+            f"[MATCHAZUKI] ຂໍ້ຄວາມໃໝ່",
+            f"ຊື່: {name}\nໂທ: {phone}\nEmail: {email}\n\n{message}",
         )
         return render(request, "store/contact.html", {"success": True})
     return render(request, "store/contact.html")
@@ -194,7 +199,7 @@ def checkout(request):
         if not name or not phone:
             return render(request, "store/checkout.html", {
                 "items": items, "subtotal": subtotal, "discount": discount, "grand_total": grand_total,
-                "error": "กรุณากรอกชื่อและเบอร์โทร",
+                "error": "ກະລຸນາໃສ່ຊື່ ແລະ ເບີໂທ",
             })
 
         # เช็ค stock
@@ -203,7 +208,7 @@ def checkout(request):
             if int(v.stock_qty) < int(it["qty"]):
                 return render(request, "store/checkout.html", {
                     "items": items, "subtotal": subtotal, "discount": discount, "grand_total": grand_total,
-                    "error": f"Stock ไม่พอ: {v.sku} (มี {v.stock_qty})",
+                    "error": f"ສິນຄ້າບໍ່ພໍ: {v.display_name} (ຄົງ {v.stock_qty})",
                 })
 
         order = WebOrder.objects.create(
@@ -234,6 +239,11 @@ def checkout(request):
             v.stock_qty = int(v.stock_qty) - qty
             v.save(update_fields=["stock_qty"])
 
+        notify_shop(
+            f"[MATCHAZUKI] ອໍເດີໃໝ່ {order.order_no}",
+            f"ຊື່: {name}\nໂທ: {phone}\nລວມ: {grand_total} ກີບ\nຊຳລະ: {payment_method}\nAdmin: /admin/store/weborder/",
+        )
+
         request.session[_cart_key()] = {}
         return redirect("store_order_success", order_no=order.order_no)
 
@@ -260,7 +270,11 @@ def confirm_payment(request):
 
         order = WebOrder.objects.filter(order_no=order_no).first()
         if not order:
-            return render(request, "store/confirm_payment.html", {"error": "ไม่พบเลขออเดอร์"})
+            return render(request, "store/confirm_payment.html", {
+                "error": "ບໍ່ພົບເລກອໍເດີ",
+                "prefill_order_no": order_no,
+                "prefill_paid_amount": (request.POST.get("paid_amount") or "").strip(),
+            })
 
         PaymentConfirmation.objects.create(
             order=order,
@@ -274,7 +288,14 @@ def confirm_payment(request):
         order.status = "PAID"
         order.save(update_fields=["status"])
 
-        return render(request, "store/confirm_payment.html", {"success": f"ยืนยันชำระเงินแล้ว: {order.order_no}"})
+        notify_shop(
+            f"[MATCHAZUKI] ແຈ້ງໂອນ {order.order_no}",
+            f"ຈຳນວນ: {paid_amount} ກີບ\nທະນາຄານ: {bank_name}\nໝາຍເຫດ: {note}",
+        )
+
+        return render(request, "store/confirm_payment.html", {
+            "success": f"ຢືນຢັນຊຳລະເງິນແລ້ວ: {order.order_no}",
+        })
 
     return render(request, "store/confirm_payment.html", {
         "prefill_order_no": (request.GET.get("order_no") or "").strip(),

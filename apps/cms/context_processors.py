@@ -16,5 +16,7 @@ def site_context(request):
         "bank_account_number": settings.BANK_ACCOUNT_NUMBER,
         "bank_account_name": settings.BANK_ACCOUNT_NAME,
         "bank_qr_image_url": settings.BANK_QR_IMAGE_URL,
+        "site_url": settings.SITE_URL,
+        "ga_measurement_id": settings.GA_MEASUREMENT_ID,
         "active_testimonials": testimonials,
     }

@@ -132,6 +132,25 @@ BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
 # ຮູບ LAO QR ຈາກ BCEL One (screenshot/save ແລ້ວອັບໂຫຼດ CDN)
 BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
+SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip("/")
+NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
+GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
+LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@matchazuki.com")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+if EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "1") == "1"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

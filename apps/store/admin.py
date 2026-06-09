@@ -24,10 +24,14 @@ class WebOrderAdmin(admin.ModelAdmin):
     search_fields = ("order_no", "customer_name", "phone")
     readonly_fields = ("order_no", "created_at")
     inlines = [WebOrderItemInline]
+    ordering = ("-created_at",)
+    list_editable = ("status",)
 
 
 @admin.register(PaymentConfirmation)
 class PaymentConfirmationAdmin(admin.ModelAdmin):
     list_display = ("order", "paid_amount", "bank_name", "created_at")
+    list_filter = ("created_at",)
     search_fields = ("order__order_no",)
     readonly_fields = ("created_at",)
+    ordering = ("-created_at",)
