@@ -66,3 +66,21 @@ postgres://USER:PASSWORD@HOST:5432/DATABASE
 ## Content
 
 Manage products, images, categories, testimonials, and FAQ in Django admin.
+
+## Free tier (Render)
+
+Render free sleeps after ~15 minutes idle. This repo includes:
+
+- **`/healthz/`** — lightweight health check
+- **`.github/workflows/keep-warm.yml`** — pings every 5 minutes (auto after push)
+- **`docs/index.html`** — wake page for mobile (enable GitHub Pages once)
+
+### One-time setup (GitHub Pages)
+
+1. GitHub repo → **Settings** → **Pages**
+2. Source: branch **main**, folder **/docs** → Save
+3. Share this link on Facebook/LINE (not the Render URL directly):
+
+   `https://iboy5070.github.io/matcha_shopbeta/`
+
+Optional: [UptimeRobot](https://uptimerobot.com) monitor on `https://matcha-shopbeta.onrender.com/healthz/` every 5 min as backup.

@@ -133,6 +133,8 @@ BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
 BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
 SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip("/")
+# ໜ້າ wake ຟຣີ (GitHub Pages) — ແຊຮລິ້ກນີ້ໃນ Facebook/LINE ແທນ Render URL ໂດຍກົງ
+WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", "https://iboy5070.github.io/matcha_shopbeta/").rstrip("/") + "/"
 NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
