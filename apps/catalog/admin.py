@@ -16,5 +16,20 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [VariantInline]
 
 
-admin.site.register(Category)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+    search_fields = ("name",)
+
+    def save_model(self, request, obj, form, change):
+        if not obj.slug:
+            from django.utils.text import slugify
+            base = slugify(obj.name) or f"cat-{abs(hash(obj.name)) % 99999}"
+            slug, n = base, 1
+            from apps.catalog.models import Category as Cat
+            while Cat.objects.filter(slug=slug).exclude(pk=obj.pk).exists():
+                slug, n = f"{base}-{n}", n + 1
+            obj.slug = slug
+        super().save_model(request, obj, form, change)
+
 admin.site.register(ProductVariant)
