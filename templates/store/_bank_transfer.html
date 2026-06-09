@@ -1,19 +1,21 @@
 {% load i18n static %}
 {% if bank_account_number or bank_qr_image_url %}
-<div class="alert alert-light border mb-3">
-  <div class="fw-bold mb-2">{% trans "Transfer to" %}</div>
+<div class="mz-bank-transfer mb-3">
+  <div class="mz-bank-transfer-title">{% trans "Transfer to" %}</div>
   <div class="row g-3 align-items-center">
-    <div class="col-md-7">
-      {% if bank_name %}<div>{% trans "Bank" %}: <strong>{{ bank_name }}</strong></div>{% endif %}
-      {% if bank_account_number %}<div>{% trans "Account no." %}: <strong>{{ bank_account_number }}</strong></div>{% endif %}
-      {% if bank_account_name %}<div>{% trans "Account name" %}: <strong>{{ bank_account_name }}</strong></div>{% endif %}
+    <div class="col-sm-7">
+      {% if bank_name %}<div class="mb-1">{% trans "Bank" %}: <strong>{{ bank_name }}</strong></div>{% endif %}
+      {% if bank_account_number %}<div class="mb-1">{% trans "Account no." %}: <strong>{{ bank_account_number }}</strong></div>{% endif %}
+      {% if bank_account_name %}<div class="mb-1">{% trans "Account name" %}: <strong>{{ bank_account_name }}</strong></div>{% endif %}
       <div class="small text-muted mt-2">{% trans "Please include your order number in the transfer note." %}</div>
     </div>
-    <div class="col-md-5 text-center">
-      <img class="mz-bank-qr img-fluid rounded border"
-           src="{% if bank_qr_image_url %}{{ bank_qr_image_url }}{% else %}{% static 'img/bcel-qr.jpg' %}{% endif %}"
-           alt="{% trans 'Scan to pay' %}">
-      <div class="small text-muted mt-1">{% trans "Scan with BCEL / bank app" %}</div>
+    <div class="col-sm-5 text-center text-sm-end">
+      <div class="mz-bank-qr-wrap d-inline-block text-center">
+        <img class="mz-bank-qr"
+             src="{% if bank_qr_image_url %}{{ bank_qr_image_url }}{% else %}{% static 'img/bcel-qr.jpg' %}{% endif %}"
+             alt="{% trans 'Scan to pay' %}">
+        <div class="small text-muted mt-2">{% trans "Scan with BCEL / bank app" %}</div>
+      </div>
     </div>
   </div>
 </div>
