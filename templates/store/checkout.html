@@ -9,9 +9,16 @@
 {% endif %}
 
 <div class="card shadow-sm border-0">
-  <div class="card-body">
-    <div class="mb-3 text-muted">{% trans "Grand total" %}: <span class="fw-bold fs-5">{{ grand_total }} ກີບ</span></div>
+  <div class="card-body p-4">
+    <div class="mz-checkout-total mb-4">
+      <span class="text-muted">{% trans "Grand total" %}</span>
+      <span class="mz-checkout-amount">{{ grand_total }} <small>ກີບ</small></span>
+    </div>
+
     {% include "store/_bank_transfer.html" %}
+
+    <hr class="my-4 opacity-25">
+
     <form method="post">
       {% csrf_token %}
       <div class="mb-3">
