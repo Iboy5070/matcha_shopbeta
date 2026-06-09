@@ -41,8 +41,8 @@
     {% for product in featured_products %}
     <div class="col-md-4">
       <div class="mz-product-card">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% if product.display_image %}
+          <img src="{{ product.display_image }}" alt="{{ product.name }}">
         {% else %}
           <div class="mz-product-placeholder">MATCHA</div>
         {% endif %}

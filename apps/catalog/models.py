@@ -34,6 +34,10 @@ class Product(models.Model):
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to="products/", blank=True)
+    image_url = models.URLField(
+        blank=True,
+        help_text="ລິ້ງຮູບຈາກ CDN (ແນະນຳສຳລັບ production — ບໍ່ຫາຍເມື່ອ deploy)",
+    )
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
@@ -47,6 +51,14 @@ class Product(models.Model):
                 n += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    @property
+    def display_image(self):
+        if self.image_url:
+            return self.image_url
+        if self.image:
+            return self.image.url
+        return ""
 
     def __str__(self):
         return self.name

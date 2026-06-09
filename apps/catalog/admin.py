@@ -14,6 +14,19 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
     inlines = [VariantInline]
+    fieldsets = (
+        (None, {"fields": ("category", "name", "slug", "description", "is_featured", "is_active")}),
+        (
+            "ຮູບສິນຄ້າ",
+            {
+                "fields": ("image_url", "image"),
+                "description": (
+                    "ໃຊ້ Image URL ສຳລັບລິ້ງ CDN (ຄົງຖາວັນໃນ production). "
+                    "ຫຼືອັບໂຫຼດໄຟລ໌ໃນ Image (ໃຊ້ໄດ້ໃນ local dev)."
+                ),
+            },
+        ),
+    )
 
 
 @admin.register(Category)

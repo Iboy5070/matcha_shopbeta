@@ -29,8 +29,8 @@
   {% for v in variants %}
   <div class="col-md-4 col-lg-3">
     <div class="mz-product-card">
-      {% if v.product.image %}
-        <img src="{{ v.product.image.url }}" alt="{{ v.product.name }}">
+      {% if v.product.display_image %}
+        <img src="{{ v.product.display_image }}" alt="{{ v.product.name }}">
       {% else %}
         <div class="mz-product-placeholder">{{ v.product.name|truncatechars:12 }}</div>
       {% endif %}

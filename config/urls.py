@@ -11,5 +11,5 @@ urlpatterns = [
     path("", include("apps.sales.urls")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# serve uploaded images (admin uploads → /media/products/...)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

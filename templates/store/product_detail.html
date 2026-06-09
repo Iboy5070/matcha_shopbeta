@@ -4,8 +4,8 @@
 {% block content %}
 <div class="row g-4">
   <div class="col-md-5">
-    {% if v.product.image %}
-      <img class="img-fluid rounded" src="{{ v.product.image.url }}" alt="{{ v.product.name }}">
+    {% if v.product.display_image %}
+      <img class="img-fluid rounded" src="{{ v.product.display_image }}" alt="{{ v.product.name }}">
     {% else %}
       <div class="mz-product-placeholder rounded" style="min-height:280px">MATCHA</div>
     {% endif %}
