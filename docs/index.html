@@ -27,7 +27,7 @@
       text-align: center;
       box-shadow: 0 8px 30px rgba(45, 90, 61, 0.12);
     }
-    h1 { color: #2d5a3d; font-size: 1.5rem; margin: 0 0 0.5rem; }
+    h1 { color: #2d5a3d; font-size: 1.5rem; margin: 0 0 0.25rem; }
     p { color: #5c5c5c; line-height: 1.5; margin: 0.5rem 0; }
     .spinner {
       width: 40px; height: 40px; margin: 1rem auto;
@@ -37,63 +37,118 @@
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #2d5a3d; font-weight: 600; }
-    .btn-wa {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background: #25d366;
-      color: #fff !important;
-      text-decoration: none;
+    .progress {
+      height: 6px;
+      background: #e8e8e8;
       border-radius: 999px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2d5a3d, #4a8f62);
+      transition: width 0.4s ease;
+    }
+    a { color: #2d5a3d; font-weight: 600; }
+    .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+    .btn {
+      display: inline-block;
+      padding: 0.65rem 1.2rem;
+      border-radius: 999px;
+      text-decoration: none;
       font-weight: 600;
     }
+    .btn-wa { background: #25d366; color: #fff !important; }
+    .btn-fb { background: #1877f2; color: #fff !important; }
+    .btn-ghost { background: #f0f0f0; color: #333 !important; font-size: 0.875rem; }
     .small { font-size: 0.875rem; opacity: 0.85; }
+    .hint { color: #2d5a3d; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>MATCHAZUKI</h1>
     <div class="spinner" aria-hidden="true"></div>
-    <p id="msg">ກຳລັງເປີດຮ້ານ... ກະລຸນາລໍສັກຄູ່</p>
-    <p class="small">ເວັບຟຣີ — ຄັ້ງທຳອິດອາດໃຊ້ເວລາ 30–60 ວິນາທີ</p>
-    <p id="wa-wrap" hidden>
-      <a class="btn-wa" id="wa" href="#" target="_blank" rel="noopener">ສັ່ງຊື້ຜ່ານ WhatsApp</a>
-    </p>
-    <p class="small mt-3"><a id="direct" href="#">ເຂົ້າເວັບໂດຍກົງ</a></p>
+    <p id="msg" class="hint">ກຳລັງເປີດຮ້ານ... ລໍອັດຕະໂນມັດ</p>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+    <p class="small" id="sub">ບໍ່ຕ້ອງ reload — ລະບົບຈະເຊື່ອມຕໍ່ໃຫ້ເອງ</p>
+    <div class="actions">
+      <a class="btn btn-wa" id="wa" href="#" target="_blank" rel="noopener" hidden>ສັ່ງຊື້ຜ່ານ WhatsApp</a>
+      <a class="btn btn-fb" id="fb" href="#" target="_blank" rel="noopener" hidden>Facebook</a>
+      <a class="btn btn-ghost" id="direct" href="#">ເຂົ້າເວັບໂດຍກົງ</a>
+    </div>
   </div>
   <script>
     const SHOP = "https://matcha-shopbeta.onrender.com/";
-    const WHATSAPP = ""; /* ໃສ່ https://wa.me/85620XXXXXXXX ຖ້າມີ */
+    const qs = new URLSearchParams(location.search);
+    const WHATSAPP = qs.get("wa") ? (qs.get("wa").startsWith("http") ? qs.get("wa") : "https://wa.me/" + qs.get("wa")) : "";
+    const FACEBOOK = qs.get("fb") || "";
 
     const msg = document.getElementById("msg");
+    const sub = document.getElementById("sub");
+    const bar = document.getElementById("bar");
     const direct = document.getElementById("direct");
     direct.href = SHOP;
 
     if (WHATSAPP) {
       document.getElementById("wa").href = WHATSAPP;
-      document.getElementById("wa-wrap").hidden = false;
+      document.getElementById("wa").hidden = false;
+    }
+    if (FACEBOOK) {
+      document.getElementById("fb").href = FACEBOOK;
+      document.getElementById("fb").hidden = false;
     }
 
-    async function wake() {
-      const delays = [2000, 3000, 4000, 5000, 5000, 5000, 5000, 5000];
-      for (let i = 0; i < delays.length; i++) {
-        msg.textContent = "ກຳລັງເຊື່ອມຕໍ່... (" + (i + 1) + "/" + delays.length + ")";
-        try {
-          const ctrl = new AbortController();
-          const t = setTimeout(function () { ctrl.abort(); }, 25000);
-          const r = await fetch(SHOP + "healthz/", { cache: "no-store", signal: ctrl.signal });
-          clearTimeout(t);
-          if (r.ok) {
-            window.location.replace(SHOP);
-            return;
-          }
-        } catch (e) {}
-        await new Promise(function (r) { setTimeout(r, delays[i]); });
-      }
-      msg.textContent = "ເປີດບໍ່ສຳເລັດ — ກົດລິ້ກຂ້າງລຸ່ມ ແລ້ວ reload";
+    function pingImage(url) {
+      return new Promise(function (resolve) {
+        const img = new Image();
+        const done = function (ok) { img.onload = img.onerror = null; resolve(ok); };
+        img.onload = function () { done(true); };
+        img.onerror = function () { done(false); };
+        img.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + "_=" + Date.now();
+        setTimeout(function () { done(false); }, 20000);
+      });
     }
-    wake();
+
+    async function tryWake() {
+      const ctrl = new AbortController();
+      const t = setTimeout(function () { ctrl.abort(); }, 28000);
+      try {
+        const r = await fetch(SHOP + "healthz/", { cache: "no-store", signal: ctrl.signal });
+        clearTimeout(t);
+        if (r.ok) return true;
+      } catch (e) {
+        clearTimeout(t);
+      }
+      return pingImage(SHOP + "healthz/");
+    }
+
+    async function wake(cycle) {
+      const maxAttempts = 20;
+      for (let i = 1; i <= maxAttempts; i++) {
+        const pct = Math.min(100, Math.round((i / maxAttempts) * 100));
+        bar.style.width = pct + "%";
+        msg.textContent = "ກຳລັງເຊື່ອມຕໍ່... " + pct + "%";
+        if (await tryWake()) {
+          msg.textContent = "ເປີດແລ້ວ! ກຳລັງເຂົ້າຮ້ານ...";
+          bar.style.width = "100%";
+          window.location.replace(SHOP);
+          return;
+        }
+        const wait = i < 4 ? 2000 : i < 10 ? 3500 : 5000;
+        sub.textContent = "ລໍ " + Math.round(wait / 1000) + " ວິ... (ຄັ້ງ " + i + "/" + maxAttempts + ")";
+        await new Promise(function (r) { setTimeout(r, wait); });
+      }
+      msg.textContent = "ຍັງເປີດບໍ່ທັນ — ລອງໃໝ່ອັດຕະໂນມັດ...";
+      sub.textContent = "ຮອບ " + cycle + " — ບໍ່ຕ້ອງ reload";
+      bar.style.width = "0%";
+      await new Promise(function (r) { setTimeout(r, 4000); });
+      wake(cycle + 1);
+    }
+
+    wake(1);
   </script>
 </body>
 </html>

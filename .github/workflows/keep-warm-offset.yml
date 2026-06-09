@@ -1,0 +1,14 @@
+# Offset ping — together with keep-warm.yml this hits ~every 2 minutes.
+name: Keep Render warm (offset)
+
+on:
+  schedule:
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health check
+        run: curl -sf --max-time 60 https://matcha-shopbeta.onrender.com/healthz/

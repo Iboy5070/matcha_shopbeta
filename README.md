@@ -72,15 +72,31 @@ Manage products, images, categories, testimonials, and FAQ in Django admin.
 Render free sleeps after ~15 minutes idle. This repo includes:
 
 - **`/healthz/`** — lightweight health check
-- **`.github/workflows/keep-warm.yml`** — pings every 5 minutes (auto after push)
-- **`docs/index.html`** — wake page for mobile (enable GitHub Pages once)
+- **`.github/workflows/keep-warm.yml`** + **`keep-warm-offset.yml`** — ping ~every 2 minutes (auto)
+- **`docs/index.html`** — wake page with **automatic retry** (no manual reload)
+- **`deploy/cloudflare-worker/worker.js`** — optional best fix (server-side retry)
+
+### Link quality (best → worst)
+
+| Link | Experience |
+|------|------------|
+| Cloudflare Worker `*.workers.dev` | Best — server retries for you |
+| GitHub Pages wake URL | Good — auto-retry in browser |
+| Render URL direct | Worst — may need manual reload |
 
 ### One-time setup (GitHub Pages)
 
-1. GitHub repo → **Settings** → **Pages**
-2. Source: branch **main**, folder **/docs** → Save
-3. Share this link on Facebook/LINE (not the Render URL directly):
+1. GitHub repo → **Settings** → **Pages** → branch **main**, folder **/docs** → Save
+2. Share on Facebook/LINE:
 
    `https://iboy5070.github.io/matcha_shopbeta/`
 
-Optional: [UptimeRobot](https://uptimerobot.com) monitor on `https://matcha-shopbeta.onrender.com/healthz/` every 5 min as backup.
+   Optional query params: `?wa=85620XXXXXXXX&fb=https://facebook.com/yourpage`
+
+### Optional: Cloudflare Worker (best free UX)
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) → Workers → Create → paste `deploy/cloudflare-worker/worker.js`
+2. Add variable `ORIGIN` = `https://matcha-shopbeta.onrender.com`
+3. Share your `https://YOUR-NAME.workers.dev` link instead
+
+Backup ping: [cron-job.org](https://cron-job.org) every **1 minute** → `/healthz/`
