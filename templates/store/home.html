@@ -1,90 +1,114 @@
 {% extends "store/base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Home" %}{% endblock %}
+{% block content_wrapper %}
 {% block content %}
 
-<section class="mz-hero text-center mb-5">
-  <p class="text-uppercase small opacity-75 mb-2">MATCHAZUKI</p>
-  <h1 class="display-5">{% trans "Because we choose matcha like matcha lovers do" %}</h1>
-  <p class="lead mt-3 mb-4 opacity-90">{% trans "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking." %}</p>
-  <div class="d-flex flex-wrap gap-2 justify-content-center">
-    <a class="btn btn-light btn-lg" href="{% url 'store_about' %}">{% trans "About us" %}</a>
-    <a class="btn btn-outline-light btn-lg" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
+<section class="mz-hero-full">
+  <div class="mz-hero-inner text-center">
+    <p class="mz-hero-kicker">MATCHAZUKI</p>
+    <h1 class="mz-hero-title">{% trans "Because we choose matcha like matcha lovers do" %}</h1>
+    <p class="mz-hero-lead">{% trans "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking." %}</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <a class="btn btn-light btn-lg mz-btn-hero" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
+      <a class="btn btn-outline-light btn-lg mz-btn-hero-outline" href="{% url 'store_about' %}">{% trans "About us" %}</a>
+    </div>
   </div>
 </section>
 
-<div class="row g-4 mb-5">
-  <div class="col-md-4">
-    <div class="mz-pillar">
-      <h3>{% trans "Distinct matcha taste" %}</h3>
-      <p class="text-muted mb-0">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="mz-pillar">
-      <h3>{% trans "Meticulous quality control" %}</h3>
-      <p class="text-muted mb-0">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="mz-pillar">
-      <h3>{% trans "Care like a matcha lover" %}</h3>
-      <p class="text-muted mb-0">{% trans "We help you choose the right matcha and get the best results." %}</p>
-    </div>
-  </div>
-</div>
-
-{% if featured_products %}
-<section class="mb-5">
-  <h2 class="mz-section-title mb-3">{% trans "Featured products" %}</h2>
-  <div class="row g-3">
-    {% for product in featured_products %}
+<div class="container mz-section">
+  <div class="row g-4 mb-5">
     <div class="col-md-4">
-      <div class="mz-product-card">
-        {% if product.display_image %}
-          <img src="{{ product.display_image }}" alt="{{ product.name }}">
-        {% else %}
-          <div class="mz-product-placeholder">MATCHA</div>
-        {% endif %}
-        <div class="p-3">
-          <div class="text-muted small">{{ product.category.name }}</div>
-          <div class="fw-bold">{{ product.name }}</div>
-          {% with v=product.variants.first %}
-          {% if v %}
-          <a class="btn btn-sm mz-btn-primary mt-2" href="{% url 'store_product_detail' v.id %}">{% trans "View" %}</a>
-          {% endif %}
-          {% endwith %}
-        </div>
+      <div class="mz-pillar">
+        <div class="mz-pillar-icon">01</div>
+        <h3>{% trans "Distinct matcha taste" %}</h3>
+        <p class="text-muted mb-0">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
       </div>
     </div>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-{% if active_testimonials %}
-<section class="mb-5">
-  <h2 class="mz-section-title mb-3">{% trans "What partners say" %}</h2>
-  <div class="row g-3">
-    {% for t in active_testimonials %}
-    <div class="col-md-6">
-      <blockquote class="mz-testimonial mb-0">
-        <p class="mb-2">“{% if LANGUAGE_CODE == 'en' and t.quote_en %}{{ t.quote_en }}{% else %}{{ t.quote_th }}{% endif %}”</p>
-        <footer class="fw-bold text-muted">— {{ t.company_name }}</footer>
-      </blockquote>
+    <div class="col-md-4">
+      <div class="mz-pillar">
+        <div class="mz-pillar-icon">02</div>
+        <h3>{% trans "Meticulous quality control" %}</h3>
+        <p class="text-muted mb-0">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
+      </div>
     </div>
-    {% endfor %}
+    <div class="col-md-4">
+      <div class="mz-pillar">
+        <div class="mz-pillar-icon">03</div>
+        <h3>{% trans "Care like a matcha lover" %}</h3>
+        <p class="text-muted mb-0">{% trans "We help you choose the right matcha and get the best results." %}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if featured_products %}
+  <section class="mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+      <h2 class="mz-section-title mb-0">{% trans "Featured products" %}</h2>
+      <a class="mz-link-arrow" href="{% url 'store_shop' %}">{% trans "View all" %} →</a>
+    </div>
+    <div class="row g-4">
+      {% for product in featured_products %}
+      {% with v=product.variants.first %}
+      <div class="col-md-6 col-lg-4">
+        <div class="mz-product-card">
+          {% if v %}
+          <a class="mz-product-image-link" href="{% url 'store_product_detail' v.id %}">
+          {% else %}
+          <div class="mz-product-image-link">
+          {% endif %}
+            {% if product.display_image %}
+              <img src="{{ product.display_image }}" alt="{{ product.name }}">
+            {% else %}
+              <div class="mz-product-placeholder">MATCHA</div>
+            {% endif %}
+          {% if v %}</a>{% else %}</div>{% endif %}
+          <div class="p-3 p-md-4">
+            <div class="mz-product-cat">{{ product.category.name }}</div>
+            <div class="mz-product-name">{{ product.name }}</div>
+            {% if v %}
+            <div class="mz-product-price">
+              {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|floatformat:0 }}{% else %}{{ v.price|floatformat:0 }}{% endif %}
+              <span>ກີບ</span>
+            </div>
+            <a class="btn btn-sm mz-btn-primary w-100 mt-3" href="{% url 'store_product_detail' v.id %}">{% trans "View" %}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endwith %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if active_testimonials %}
+  <section class="mb-5">
+    <h2 class="mz-section-title text-center mb-4">{% trans "What partners say" %}</h2>
+    <div class="row g-4">
+      {% for t in active_testimonials %}
+      <div class="col-md-6">
+        <blockquote class="mz-testimonial mb-0">
+          <p class="mb-3">"{% if LANGUAGE_CODE == 'en' and t.quote_en %}{{ t.quote_en }}{% else %}{{ t.quote_th }}{% endif %}"</p>
+          <footer class="mz-testimonial-author">{{ t.company_name }}</footer>
+        </blockquote>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+<section class="mz-cta-band">
+  <div class="container text-center">
+    <h2 class="mz-section-title h4 mb-2">{% trans "Contact us" %}</h2>
+    <p class="text-muted mb-4 mx-auto" style="max-width: 36rem;">{% trans "Ask about products — we are happy to help via WhatsApp, Facebook, LINE, email, or our contact form." %}</p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      {% include "store/_contact_buttons.html" %}
+      <a class="btn mz-btn-primary" href="{% url 'store_contact' %}">{% trans "Contact" %}</a>
+    </div>
   </div>
 </section>
-{% endif %}
 
-<section class="text-center py-4 bg-white rounded border mb-2">
-  <h2 class="mz-section-title h4">{% trans "Contact us" %}</h2>
-  <p class="text-muted">{% trans "Ask about products — we are happy to help via WhatsApp, Facebook, LINE, email, or our contact form." %}</p>
-  <div class="d-flex flex-wrap gap-2 justify-content-center">
-    {% include "store/_contact_buttons.html" %}
-    <a class="btn mz-btn-primary" href="{% url 'store_contact' %}">{% trans "Contact" %}</a>
-  </div>
-</section>
-
+{% endblock %}
 {% endblock %}
