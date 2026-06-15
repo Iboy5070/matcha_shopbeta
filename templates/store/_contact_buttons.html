@@ -1,10 +1,19 @@
-{% load i18n %}
+{% load static i18n %}
 {% if whatsapp_url %}
-  <a class="btn mz-btn-outline" href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="btn mz-icon-btn mz-icon-btn-wa" href="{{ whatsapp_url }}" target="_blank" rel="noopener">
+    <img src="{% static 'img/icons/whatsapp.png' %}" alt="WhatsApp" width="20" height="20">
+    <span>WhatsApp</span>
+  </a>
 {% endif %}
 {% if facebook_url %}
-  <a class="btn mz-btn-outline" href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a>
+  <a class="btn mz-icon-btn mz-icon-btn-fb" href="{{ facebook_url }}" target="_blank" rel="noopener">
+    <img src="{% static 'img/icons/facebook.png' %}" alt="Facebook" width="20" height="20">
+    <span>Facebook</span>
+  </a>
 {% endif %}
 {% if line_url %}
-  <a class="btn mz-btn-outline" href="{{ line_url }}" target="_blank" rel="noopener">LINE</a>
+  <a class="btn mz-icon-btn mz-icon-btn-line" href="{{ line_url }}" target="_blank" rel="noopener">
+    <img src="{% static 'img/icons/line.png' %}" alt="LINE" width="20" height="20">
+    <span>LINE</span>
+  </a>
 {% endif %}

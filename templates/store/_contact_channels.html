@@ -1,21 +1,25 @@
-{% load i18n %}
+{% load i18n static %}
 {% if contact_email %}
-  <div class="{% if compact %}small{% endif %}">
+  <div class="{% if compact %}small{% endif %} mz-contact-row">
+    <img src="{% static 'img/icons/phone.png' %}" alt="" width="18" height="18" class="mz-contact-icon">
     <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
   </div>
 {% endif %}
 {% if whatsapp_url %}
-  <div class="{% if compact %}small mt-1{% else %}mt-2{% endif %}">
+  <div class="{% if compact %}small mt-1{% else %}mt-2{% endif %} mz-contact-row">
+    <img src="{% static 'img/icons/whatsapp.png' %}" alt="" width="18" height="18" class="mz-contact-icon">
     <a href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp</a>
   </div>
 {% endif %}
 {% if facebook_url %}
-  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %}">
+  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %} mz-contact-row">
+    <img src="{% static 'img/icons/facebook.png' %}" alt="" width="18" height="18" class="mz-contact-icon">
     <a href="{{ facebook_url }}" target="_blank" rel="noopener">Facebook</a>
   </div>
 {% endif %}
 {% if line_url %}
-  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %}">
+  <div class="{% if compact %}small mt-1{% else %}mt-1{% endif %} mz-contact-row">
+    <img src="{% static 'img/icons/line.png' %}" alt="" width="18" height="18" class="mz-contact-icon">
     <a href="{{ line_url }}" target="_blank" rel="noopener">LINE</a>
   </div>
 {% endif %}
