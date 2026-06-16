@@ -1,15 +1,26 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Order placed" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero text-center">
+
+{% include "store/_checkout_steps.html" with step=3 %}
+
+<div class="mz-success-card text-center">
+  <div class="mz-success-icon">✓</div>
   <h1 class="mz-section-title h3">{% trans "Thank you for your order" %}</h1>
-  <p class="mb-1">{% trans "Order number" %}: <strong>{{ order.order_no }}</strong></p>
-  <p class="text-muted">{% trans "Total" %}: {{ order.grand_total }} ກີບ</p>
+  <p class="text-muted mb-1">{% trans "Order number" %}</p>
+  <p class="mz-order-no mb-3">{{ order.order_no }}</p>
+  <p class="mb-0">{% trans "Total" %}: <strong>{{ order.grand_total|floatformat:0 }} ກີບ</strong></p>
+
   {% if order.payment_method == "transfer" %}
-  <div class="text-start mt-3">{% include "store/_bank_transfer.html" %}</div>
-  <p class="alert alert-info mt-3">{% trans "Please transfer payment and submit your slip on the payment notice page." %}</p>
-  <a class="btn mz-btn-primary" href="{% url 'store_confirm_payment' %}?order_no={{ order.order_no }}&paid_amount={{ order.grand_total }}">{% trans "Payment notice" %}</a>
+  <div class="text-start mt-4">{% include "store/_bank_transfer.html" %}</div>
+  <p class="alert alert-info mt-3 mb-0 text-start">{% trans "Please transfer payment and submit your slip on the payment notice page." %}</p>
+  <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+    <a class="btn mz-btn-primary btn-lg" href="{% url 'store_confirm_payment' %}?order_no={{ order.order_no }}&paid_amount={{ order.grand_total }}">{% trans "Upload slip" %}</a>
+    <a class="btn mz-btn-outline" href="{% url 'store_shop' %}">{% trans "Continue shopping" %}</a>
+  </div>
+  {% else %}
+  <a class="btn mz-btn-primary mt-4" href="{% url 'store_shop' %}">{% trans "Continue shopping" %}</a>
   {% endif %}
 </div>
 {% endblock %}

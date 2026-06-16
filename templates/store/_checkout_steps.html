@@ -1,0 +1,21 @@
+{% load i18n %}
+<nav class="mz-steps" aria-label="{% trans 'Order progress' %}">
+  <ol class="mz-steps-list">
+    <li class="mz-step {% if step >= 1 %}mz-step-done{% endif %} {% if step == 1 %}mz-step-current{% endif %}">
+      <span class="mz-step-num">1</span>
+      <span class="mz-step-label">{% trans "Cart" %}</span>
+    </li>
+    <li class="mz-step {% if step >= 2 %}mz-step-done{% endif %} {% if step == 2 %}mz-step-current{% endif %}">
+      <span class="mz-step-num">2</span>
+      <span class="mz-step-label">{% trans "Checkout" %}</span>
+    </li>
+    <li class="mz-step {% if step >= 3 %}mz-step-done{% endif %} {% if step == 3 %}mz-step-current{% endif %}">
+      <span class="mz-step-num">3</span>
+      <span class="mz-step-label">{% trans "Pay" %}</span>
+    </li>
+    <li class="mz-step {% if step >= 4 %}mz-step-done{% endif %} {% if step == 4 %}mz-step-current{% endif %}">
+      <span class="mz-step-num">4</span>
+      <span class="mz-step-label">{% trans "Done" %}</span>
+    </li>
+  </ol>
+</nav>

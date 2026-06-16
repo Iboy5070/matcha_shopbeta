@@ -1,10 +1,10 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load static i18n %}
 {% block title %}{% trans "Home" %}{% endblock %}
 {% block content_wrapper %}
 {% block content %}
 
-<section class="mz-hero-full">
+<section class="mz-hero-full mz-hero-has-image" style="--hero-img: url('{% static 'hero.png' %}');">
   <div class="mz-hero-inner text-center">
     <p class="mz-hero-kicker">MATCHAZUKI</p>
     <h1 class="mz-hero-title">{% trans "Because we choose matcha like matcha lovers do" %}</h1>

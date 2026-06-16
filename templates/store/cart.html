@@ -1,37 +1,54 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Cart" %}{% endblock %}
 {% block content %}
-<h1 class="mz-section-title h3 mb-3">{% trans "Cart" %}</h1>
+
+{% include "store/_checkout_steps.html" with step=1 %}
+
+<h1 class="mz-section-title h3 mb-4">{% trans "Cart" %}</h1>
 
 {% if items %}
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    {% for it in items %}
-      <div class="d-flex justify-content-between border-bottom py-3">
-        <div>
-          <div class="fw-bold">{{ it.variant.display_name }}</div>
-          <div class="text-muted small">{% trans "Qty" %}: {{ it.qty }} × {{ it.unit_price }} ກີບ</div>
-          <div class="d-flex gap-2 mt-2">
-            <a class="btn btn-sm btn-outline-danger" href="{% url 'store_remove_one' it.variant.id %}">-1</a>
-            <a class="btn btn-sm mz-btn-outline" href="{% url 'store_add_to_cart' it.variant.id %}">+1</a>
-          </div>
-        </div>
-        <div class="fw-bold">{{ it.line_total }} ກີບ</div>
-      </div>
-    {% endfor %}
-    <div class="d-flex justify-content-between mt-3 fs-5">
-      <span class="fw-bold">{% trans "Total" %}</span>
-      <span class="fw-bold">{{ total }} ກີບ</span>
+<div class="mz-cart-panel">
+  {% for it in items %}
+  <div class="mz-cart-item">
+    <div class="mz-cart-item-media">
+      {% if it.variant.product.display_image %}
+        <img src="{{ it.variant.product.display_image }}" alt="{{ it.variant.display_name }}">
+      {% else %}
+        <div class="mz-product-placeholder">MATCHA</div>
+      {% endif %}
     </div>
-    <div class="d-flex gap-2 mt-3">
+    <div class="mz-cart-item-body">
+      <div class="mz-product-cat">{{ it.variant.product.category.name }}</div>
+      <div class="mz-cart-item-name">{{ it.variant.display_name }}</div>
+      <div class="mz-cart-item-price">{{ it.unit_price|floatformat:0 }} <span>ກີບ</span></div>
+      <div class="mz-cart-qty">
+        <a class="mz-qty-btn" href="{% url 'store_remove_one' it.variant.id %}" aria-label="-1">−</a>
+        <span class="mz-qty-val">{{ it.qty }}</span>
+        <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.variant.id %}" aria-label="+1">+</a>
+      </div>
+    </div>
+    <div class="mz-cart-item-total">{{ it.line_total|floatformat:0 }} <small>ກີບ</small></div>
+  </div>
+  {% endfor %}
+
+  <div class="mz-cart-summary">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="fw-bold">{% trans "Total" %}</span>
+      <span class="mz-cart-grand">{{ total|floatformat:0 }} <small>ກີບ</small></span>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn mz-btn-outline" href="{% url 'store_shop' %}">{% trans "Continue shopping" %}</a>
       <a class="btn btn-outline-danger" href="{% url 'store_clear_cart' %}">{% trans "Clear" %}</a>
-      <a class="btn mz-btn-primary" href="{% url 'store_checkout' %}">{% trans "Checkout" %}</a>
+      <a class="btn mz-btn-primary flex-grow-1" href="{% url 'store_checkout' %}">{% trans "Checkout" %}</a>
     </div>
   </div>
 </div>
 {% else %}
-<p class="text-muted">{% trans "Your cart is empty." %}</p>
-<a class="btn mz-btn-primary" href="{% url 'store_shop' %}">{% trans "Browse products" %}</a>
+<div class="mz-empty-state text-center">
+  <img src="{% static 'img/icons/cart.png' %}" alt="" width="64" height="64" class="mb-3 opacity-50">
+  <p class="text-muted mb-3">{% trans "Your cart is empty." %}</p>
+  <a class="btn mz-btn-primary btn-lg" href="{% url 'store_shop' %}">{% trans "Browse products" %}</a>
+</div>
 {% endif %}
 {% endblock %}

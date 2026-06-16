@@ -162,6 +162,14 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   pointer-events: none;
 }
 
+.mz-hero-has-image {
+  background-image:
+    linear-gradient(160deg, rgba(20, 42, 28, 0.88) 0%, rgba(45, 90, 61, 0.82) 50%, rgba(74, 124, 89, 0.78) 100%),
+    var(--hero-img);
+  background-size: cover;
+  background-position: center;
+}
+
 .mz-hero-inner {
   position: relative;
   max-width: 42rem;
@@ -674,6 +682,197 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   line-height: 1.3;
 }
 
+/* Checkout progress steps */
+.mz-steps {
+  margin-bottom: 1.75rem;
+}
+
+.mz-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.mz-step {
+  flex: 1;
+  text-align: center;
+  padding: 0.65rem 0.25rem;
+  background: #fff;
+  border: 1px solid rgba(45, 90, 61, 0.12);
+  border-radius: 0.65rem;
+  opacity: 0.55;
+}
+
+.mz-step-current {
+  opacity: 1;
+  border-color: var(--mz-green-mid);
+  box-shadow: 0 0 0 2px rgba(45, 90, 61, 0.12);
+}
+
+.mz-step-done {
+  opacity: 1;
+  background: rgba(45, 90, 61, 0.06);
+}
+
+.mz-step-num {
+  display: inline-flex;
+  width: 1.35rem;
+  height: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--mz-green-mid);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.mz-step-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--mz-green);
+  line-height: 1.2;
+}
+
+/* Cart */
+.mz-cart-panel,
+.mz-checkout-card,
+.mz-success-card {
+  background: #fff;
+  border-radius: var(--mz-radius);
+  border: 1px solid rgba(45, 90, 61, 0.1);
+  box-shadow: var(--mz-shadow);
+  padding: 1.25rem;
+}
+
+.mz-cart-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(45, 90, 61, 0.08);
+}
+
+.mz-cart-item:last-of-type {
+  border-bottom: none;
+}
+
+.mz-cart-item-media {
+  border-radius: 0.65rem;
+  overflow: hidden;
+  width: 72px;
+  height: 72px;
+}
+
+.mz-cart-item-media img,
+.mz-cart-item-media .mz-product-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 1;
+}
+
+.mz-cart-item-name {
+  font-weight: 700;
+  color: var(--mz-green);
+  line-height: 1.3;
+}
+
+.mz-cart-item-price {
+  font-size: 0.9rem;
+  color: var(--mz-muted);
+  margin: 0.15rem 0 0.5rem;
+}
+
+.mz-cart-item-total {
+  font-weight: 700;
+  color: var(--mz-green-mid);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mz-cart-qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(45, 90, 61, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mz-qty-btn {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--mz-green-mid);
+  font-weight: 700;
+  background: #fff;
+}
+
+.mz-qty-btn:hover {
+  background: rgba(45, 90, 61, 0.08);
+  color: var(--mz-green);
+}
+
+.mz-qty-val {
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.mz-cart-summary {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid rgba(45, 90, 61, 0.1);
+}
+
+.mz-cart-grand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--mz-green-mid);
+}
+
+.mz-empty-state {
+  padding: 3rem 1.5rem;
+  background: #fff;
+  border-radius: var(--mz-radius);
+  border: 1px dashed rgba(45, 90, 61, 0.2);
+}
+
+.mz-success-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+.mz-success-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: var(--mz-green-mid);
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mz-order-no {
+  font-family: ui-monospace, monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--mz-green-mid);
+}
+
 @media (max-width: 767.98px) {
   .mz-hero-full {
     padding: 3rem 1.25rem 3.5rem;
@@ -685,6 +884,20 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 
   .mz-nav-links {
     padding-top: 0.5rem;
+  }
+
+  .mz-cart-item {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .mz-cart-item-total {
+    grid-column: 2;
+    text-align: left;
+    margin-top: -0.25rem;
+  }
+
+  .mz-step-label {
+    font-size: 0.6rem;
   }
 }
 

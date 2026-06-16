@@ -2,46 +2,53 @@
 {% load i18n %}
 {% block title %}{% trans "Checkout" %}{% endblock %}
 {% block content %}
-<h1 class="mz-section-title h3 mb-3">{% trans "Checkout" %}</h1>
+
+{% include "store/_checkout_steps.html" with step=2 %}
+
+<h1 class="mz-section-title h3 mb-4">{% trans "Checkout" %}</h1>
 
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 
-<div class="card shadow-sm border-0">
-  <div class="card-body p-4">
-    <div class="mz-checkout-total mb-4">
-      <span class="text-muted">{% trans "Grand total" %}</span>
-      <span class="mz-checkout-amount">{{ grand_total }} <small>ກີບ</small></span>
+<div class="row g-4">
+  <div class="col-lg-7 order-2 order-lg-1">
+    <div class="mz-checkout-card">
+      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Delivery details" %}</h2>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">{% trans "Name" %} *</label>
+          <input class="form-control form-control-lg" name="customer_name" required placeholder="{% trans 'Your name' %}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Phone" %} *</label>
+          <input class="form-control form-control-lg" name="phone" required placeholder="020 XXXXXXXX">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{% trans "Address" %}</label>
+          <textarea class="form-control" name="address" rows="3" placeholder="{% trans 'Delivery address (optional for pickup)' %}"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">{% trans "Payment" %}</label>
+          <select class="form-select form-select-lg" name="payment_method">
+            <option value="transfer">{% trans "Bank transfer" %}</option>
+            <option value="cod">{% trans "Cash on delivery" %}</option>
+          </select>
+        </div>
+        <button class="btn mz-btn-primary btn-lg w-100">{% trans "Place order" %}</button>
+      </form>
     </div>
-
+  </div>
+  <div class="col-lg-5 order-1 order-lg-2">
+    <div class="mz-checkout-card mb-3">
+      <div class="mz-checkout-total mb-0">
+        <span class="text-muted">{% trans "Grand total" %}</span>
+        <span class="mz-checkout-amount">{{ grand_total|floatformat:0 }} <small>ກີບ</small></span>
+      </div>
+    </div>
     {% include "store/_bank_transfer.html" %}
-
-    <hr class="my-4 opacity-25">
-
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">{% trans "Name" %} *</label>
-        <input class="form-control" name="customer_name" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Phone" %} *</label>
-        <input class="form-control" name="phone" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Address" %}</label>
-        <textarea class="form-control" name="address" rows="3"></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Payment" %}</label>
-        <select class="form-select" name="payment_method">
-          <option value="transfer">{% trans "Bank transfer" %}</option>
-          <option value="cod">{% trans "Cash on delivery" %}</option>
-        </select>
-      </div>
-      <button class="btn mz-btn-primary w-100">{% trans "Place order" %}</button>
-    </form>
+    <p class="small text-muted mt-3 mb-0">{% trans "Transfer the exact amount, then upload your slip on the next page." %}</p>
   </div>
 </div>
 {% endblock %}

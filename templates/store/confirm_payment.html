@@ -1,7 +1,10 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Payment notice" %}{% endblock %}
 {% block content %}
+
+{% include "store/_checkout_steps.html" with step=4 %}
+
 <div class="mz-page-hero mb-4">
   <h1 class="mz-section-title h3">{% trans "Payment notice" %}</h1>
   <p class="text-muted mb-0">{% trans "Upload your transfer slip after placing an order." %}</p>
