@@ -753,12 +753,110 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 /* Cart */
 .mz-cart-panel,
 .mz-checkout-card,
+.mz-auth-card,
 .mz-success-card {
   background: #fff;
   border-radius: var(--mz-radius);
   border: 1px solid rgba(45, 90, 61, 0.1);
   box-shadow: var(--mz-shadow);
   padding: 1.25rem;
+}
+
+.mz-auth-card {
+  padding: 1.75rem 1.5rem;
+}
+
+.mz-account-dl dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mz-muted);
+  margin-bottom: 0.15rem;
+}
+
+.mz-account-dl dd {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.mz-account-dl dd:last-child {
+  margin-bottom: 0;
+}
+
+/* Login modal (matchazuki-style) */
+.mz-auth-modal-content {
+  border: none;
+  border-radius: 1.25rem;
+  padding: 0.25rem 0.5rem 0.5rem;
+  box-shadow: 0 24px 64px rgba(30, 61, 42, 0.18);
+}
+
+.mz-auth-modal-title {
+  font-family: var(--mz-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--mz-text);
+}
+
+.mz-auth-input {
+  border-radius: 999px;
+  border-color: rgba(45, 90, 61, 0.15);
+  padding: 0.75rem 1.25rem;
+}
+
+.mz-auth-input:focus {
+  border-color: var(--mz-green-light);
+  box-shadow: 0 0 0 0.2rem rgba(45, 90, 61, 0.12);
+}
+
+.mz-auth-link {
+  color: var(--mz-green-mid);
+  text-decoration: none;
+}
+
+.mz-auth-link:hover {
+  text-decoration: underline;
+}
+
+.mz-btn-icon-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid rgba(45, 90, 61, 0.15);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--mz-green-mid);
+}
+
+.mz-btn-icon-only:hover {
+  background: var(--mz-cream);
+  color: var(--mz-green);
+}
+
+.mz-btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(45, 90, 61, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--mz-text);
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+}
+
+.mz-btn-google:hover {
+  background: var(--mz-cream);
+  border-color: rgba(45, 90, 61, 0.25);
+  color: var(--mz-text);
+}
+
+.mz-google-g {
+  flex-shrink: 0;
 }
 
 .mz-cart-item {

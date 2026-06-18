@@ -268,6 +268,62 @@ msgstr "ຊ່ວຍໃຫ້ທ່ານເລືອກມັດຊາໄດ້
 msgid "Featured products"
 msgstr "ສິນຄ້າແນະນຳ"
 
+#: templates/store/_auth_modal.html:6 templates/store/login.html:9
+msgid "Welcome!"
+msgstr "ຍິນດີຕ້ອນຮັບ!"
+
+#: templates/store/_auth_modal.html:15 templates/store/login.html:18
+msgid "Email or username"
+msgstr "ອີເມວ ຫຼື ຊື່ຜູ້ໃຊ້"
+
+#: templates/store/_auth_modal.html:19 templates/store/login.html:22
+msgid "Password"
+msgstr "ລະຫັດຜ່ານ"
+
+#: templates/store/_auth_modal.html:25 templates/store/login.html:27
+msgid "Remember me"
+msgstr "ຈົດຈຳໄວ້"
+
+#: templates/store/_auth_modal.html:27 templates/store/login.html:29
+msgid "Forgot password?"
+msgstr "ລືມລະຫັດຜ່ານ?"
+
+#: templates/store/base.html:57
+msgid "Log out"
+msgstr "ອອກຈາກລະບົບ"
+
+#: templates/store/base.html:39 templates/store/register.html:3 templates/store/register.html:9 templates/store/login.html:35
+msgid "Register"
+msgstr "ລົງທະບຽນ"
+
+#: templates/store/register.html:10
+msgid "Create an account to order matcha faster."
+msgstr "ສ້າງບັນຊີເພື່ອສັ່ງຊື້ມັດຊາໄດ້ໄວຂຶ້ນ"
+
+#: templates/store/register.html:30
+msgid "Create account"
+msgstr "ສ້າງບັນຊີ"
+
+#: templates/store/register.html:34
+msgid "Already have an account?"
+msgstr "ມີບັນຊີແລ້ວບໍ?"
+
+#: templates/store/login.html:3 templates/store/login.html:9 templates/store/login.html:30
+msgid "Log in"
+msgstr "ເຂົ້າສູ່ລະບົບ"
+
+#: templates/store/login.html:10
+msgid "Sign in to your MATCHAZUKI account."
+msgstr "ເຂົ້າສູ່ລະບົບບັນຊີ MATCHAZUKI ຂອງທ່ານ"
+
+#: templates/store/login.html:34
+msgid "No account yet?"
+msgstr "ຍັງບໍ່ມີບັນຊີ?"
+
+#: templates/store/base.html:39
+msgid "My account"
+msgstr "ບັນຊີຂອງຂ້ອຍ"
+
 #: templates/store/home.html:48
 msgid "View all"
 msgstr "ເບິ່ງທັງໝົດ"

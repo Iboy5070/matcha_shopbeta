@@ -1,6 +1,25 @@
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from apps.catalog.models import ProductVariant
+
+
+class CustomerProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="customer_profile",
+    )
+    phone = models.CharField(max_length=30)
+    address = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Customer profile"
+        verbose_name_plural = "Customer profiles"
+
+    def __str__(self):
+        return f"{self.user.get_full_name() or self.user.username} ({self.phone})"
 
 
 class WebOrder(models.Model):

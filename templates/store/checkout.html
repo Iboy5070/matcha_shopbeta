@@ -19,15 +19,15 @@
         {% csrf_token %}
         <div class="mb-3">
           <label class="form-label">{% trans "Name" %} *</label>
-          <input class="form-control form-control-lg" name="customer_name" required placeholder="{% trans 'Your name' %}">
+          <input class="form-control form-control-lg" name="customer_name" required placeholder="{% trans 'Your name' %}" value="{{ customer_name|default:'' }}">
         </div>
         <div class="mb-3">
           <label class="form-label">{% trans "Phone" %} *</label>
-          <input class="form-control form-control-lg" name="phone" required placeholder="020 XXXXXXXX">
+          <input class="form-control form-control-lg" name="phone" required placeholder="020 XXXXXXXX" value="{{ phone|default:'' }}">
         </div>
         <div class="mb-3">
           <label class="form-label">{% trans "Address" %}</label>
-          <textarea class="form-control" name="address" rows="3" placeholder="{% trans 'Delivery address (optional for pickup)' %}"></textarea>
+          <textarea class="form-control" name="address" rows="3" placeholder="{% trans 'Delivery address (optional for pickup)' %}">{{ address|default:'' }}</textarea>
         </div>
         <div class="mb-4">
           <label class="form-label">{% trans "Payment" %}</label>

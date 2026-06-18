@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .google_auth import google_login_callback, google_login_start
 
 urlpatterns = [
     path("", views.home, name="store_home"),
@@ -18,6 +19,13 @@ urlpatterns = [
 
     path("checkout/", views.checkout, name="store_checkout"),
     path("order/<str:order_no>/success/", views.order_success, name="store_order_success"),
+
+    path("register/", views.register, name="store_register"),
+    path("login/", views.customer_login, name="store_login"),
+    path("logout/", views.customer_logout, name="store_logout"),
+    path("account/", views.account, name="store_account"),
+    path("auth/google/", google_login_start, name="store_google_login"),
+    path("auth/google/callback/", google_login_callback, name="store_google_callback"),
 
     path("confirm-payment/", views.confirm_payment, name="store_confirm_payment"),
     path("blog/", views.blog_list, name="store_blog_list"),

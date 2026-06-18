@@ -19,5 +19,8 @@ def site_context(request):
         "site_url": settings.SITE_URL,
         "wake_page_url": settings.WAKE_PAGE_URL,
         "ga_measurement_id": settings.GA_MEASUREMENT_ID,
+        "google_oauth_enabled": bool(
+            getattr(settings, "GOOGLE_CLIENT_ID", "") and getattr(settings, "GOOGLE_CLIENT_SECRET", "")
+        ),
         "active_testimonials": testimonials,
     }

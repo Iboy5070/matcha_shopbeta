@@ -109,9 +109,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = "/admin/login/"
-LOGIN_REDIRECT_URL = "/pos/"
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -134,6 +131,12 @@ BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
 BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
 SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip("/")
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/pos/"
+CUSTOMER_LOGIN_URL = "store_login"
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
 # ໜ້າ wake ຟຣີ (GitHub Pages) — ແຊຮລິ້ກນີ້ໃນ Facebook/LINE ແທນ Render URL ໂດຍກົງ
 WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", "https://iboy5070.github.io/matcha_shopbeta/").rstrip("/") + "/"
 NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)

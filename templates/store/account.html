@@ -1,0 +1,62 @@
+{% extends "store/base.html" %}
+{% load i18n mz_extras %}
+{% block title %}{% trans "My account" %}{% endblock %}
+{% block content %}
+
+<div class="mz-page-hero mb-4">
+  <h1 class="mz-section-title mb-2">{% trans "My account" %}</h1>
+  <p class="text-muted mb-0">{% trans "Your profile and recent orders." %}</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="mz-auth-card">
+      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Profile" %}</h2>
+      <dl class="mb-0 mz-account-dl">
+        <dt>{% trans "Name" %}</dt>
+        <dd>{{ user.get_full_name|default:user.username }}</dd>
+        <dt>{% trans "Email" %}</dt>
+        <dd>{{ user.email }}</dd>
+        {% if profile %}
+        <dt>{% trans "Phone" %}</dt>
+        <dd>{{ profile.phone }}</dd>
+        {% if profile.address %}
+        <dt>{% trans "Address" %}</dt>
+        <dd>{{ profile.address|linebreaksbr }}</dd>
+        {% endif %}
+        {% endif %}
+      </dl>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="mz-auth-card">
+      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Recent orders" %}</h2>
+      {% if orders %}
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>{% trans "Order number" %}</th>
+              <th>{% trans "Total" %}</th>
+              <th>{% trans "Status" %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td class="font-monospace">{{ order.order_no }}</td>
+              <td>{{ order.grand_total|kip }} ກີບ</td>
+              <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted mb-3">{% trans "No orders yet." %}</p>
+      <a class="btn mz-btn-primary btn-sm" href="{% url 'store_shop' %}">{% trans "Browse products" %}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

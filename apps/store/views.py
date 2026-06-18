@@ -1,4 +1,8 @@
 from decimal import Decimal, InvalidOperation
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
@@ -6,8 +10,11 @@ from django.utils import timezone
 
 from apps.catalog.models import Category, Product, ProductVariant
 from apps.cms.models import ContactMessage, FAQItem
-from .models import WebOrder, WebOrderItem, PaymentConfirmation
+from .forms import CustomerLoginForm, CustomerRegistrationForm
+from .models import CustomerProfile, WebOrder, WebOrderItem, PaymentConfirmation
 from .notifications import notify_shop
+
+User = get_user_model()
 
 
 def _to_decimal(x) -> Decimal:
@@ -26,6 +33,90 @@ def _unit_price(variant: ProductVariant) -> Decimal:
 
 def _make_web_order_no() -> str:
     return timezone.now().strftime("WEB%Y%m%d%H%M%S")
+
+
+def _customer_defaults(request):
+    """Prefill checkout from logged-in customer profile."""
+    if not request.user.is_authenticated:
+        return {}
+    profile = getattr(request.user, "customer_profile", None)
+    if not profile:
+        return {}
+    return {
+        "customer_name": request.user.get_full_name() or request.user.username,
+        "phone": profile.phone,
+        "address": profile.address,
+    }
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect("store_home")
+
+    form = CustomerRegistrationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data["email"]
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=form.cleaned_data["password1"],
+            first_name=form.cleaned_data["full_name"],
+        )
+        CustomerProfile.objects.create(
+            user=user,
+            phone=form.cleaned_data["phone"],
+            address=form.cleaned_data.get("address", ""),
+        )
+        login(request, user)
+        messages.success(request, "ລົງທະບຽນສຳເລັດ — ຍິນດີຕ້ອນຮັບ!")
+        return redirect("store_home")
+
+    return render(request, "store/register.html", {"form": form})
+
+
+def customer_login(request):
+    if request.user.is_authenticated:
+        return redirect("store_home")
+
+    next_url = request.POST.get("next") or request.GET.get("next") or ""
+
+    if request.method == "POST":
+        email = (request.POST.get("email") or "").strip().lower()
+        password = request.POST.get("password") or ""
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            messages.error(request, "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ")
+            if next_url.startswith("/"):
+                return redirect(next_url)
+            return redirect("store_home")
+        login(request, user)
+        if request.POST.get("remember"):
+            request.session.set_expiry(60 * 60 * 24 * 30)
+        else:
+            request.session.set_expiry(0)
+        messages.success(request, "ເຂົ້າສູ່ລະບົບສຳເລັດ")
+        if next_url.startswith("/"):
+            return redirect(next_url)
+        return redirect("store_home")
+
+    form = CustomerLoginForm()
+    return render(request, "store/login.html", {"form": form, "next": next_url})
+
+
+def customer_logout(request):
+    logout(request)
+    messages.info(request, "ອອກຈາກລະບົບແລ້ວ")
+    return redirect("store_home")
+
+
+@login_required(login_url="store_login")
+def account(request):
+    profile = getattr(request.user, "customer_profile", None)
+    orders = WebOrder.objects.filter(phone=profile.phone).order_by("-created_at")[:10] if profile else []
+    return render(request, "store/account.html", {
+        "profile": profile,
+        "orders": orders,
+    })
 
 
 def home(request):
@@ -200,6 +291,7 @@ def checkout(request):
             return render(request, "store/checkout.html", {
                 "items": items, "subtotal": subtotal, "discount": discount, "grand_total": grand_total,
                 "error": "ກະລຸນາໃສ່ຊື່ ແລະ ເບີໂທ",
+                "customer_name": name, "phone": phone, "address": address,
             })
 
         # เช็ค stock
@@ -252,6 +344,7 @@ def checkout(request):
         "subtotal": subtotal,
         "discount": discount,
         "grand_total": grand_total,
+        **_customer_defaults(request),
     })
 
 

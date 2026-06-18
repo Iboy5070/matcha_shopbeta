@@ -46,6 +46,23 @@
           </select>
         </form>
         <a class="btn btn-sm mz-btn-primary d-none d-lg-inline-flex" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
+        {% if user.is_authenticated %}
+        <div class="dropdown d-none d-lg-block">
+          <button class="btn btn-sm mz-btn-icon-only" type="button" data-bs-toggle="dropdown" aria-label="{% trans 'My account' %}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'store_account' %}">{% trans "My account" %}</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'store_logout' %}">{% trans "Log out" %}</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <button class="btn btn-sm mz-btn-icon-only d-none d-lg-inline-flex" type="button" data-bs-toggle="modal" data-bs-target="#mzLoginModal" aria-label="{% trans 'Log in' %}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </button>
+        <a class="btn btn-sm mz-btn-outline d-none d-lg-inline-flex" href="{% url 'store_register' %}">{% trans "Register" %}</a>
+        {% endif %}
         <a class="btn btn-sm mz-btn-outline mz-cart-btn" href="{% url 'store_cart' %}">
           <img src="{% static 'img/icons/cart.png' %}" alt="" width="18" height="18" class="mz-nav-icon">
           <span>{% trans "Cart" %}</span>
@@ -100,6 +117,9 @@
 </footer>
 
 {% include "store/_float_whatsapp.html" %}
+{% if not user.is_authenticated %}
+{% include "store/_auth_modal.html" %}
+{% endif %}
 
 <div id="mz-cookie-banner" class="mz-cookie-banner">
   <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">

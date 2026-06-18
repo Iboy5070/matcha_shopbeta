@@ -1,7 +1,22 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import PaymentConfirmation, WebOrder, WebOrderItem
+from .models import CustomerProfile, PaymentConfirmation, WebOrder, WebOrderItem
+
+
+@admin.register(CustomerProfile)
+class CustomerProfileAdmin(admin.ModelAdmin):
+    list_display = ("display_name", "email", "phone", "created_at")
+    search_fields = ("user__username", "user__email", "user__first_name", "phone")
+    readonly_fields = ("created_at",)
+
+    @admin.display(description="ຊື່")
+    def display_name(self, obj):
+        return obj.user.get_full_name() or obj.user.username
+
+    @admin.display(description="ອີເມວ")
+    def email(self, obj):
+        return obj.user.email
 
 
 class WebOrderItemInline(admin.TabularInline):
