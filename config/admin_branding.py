@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.contrib import admin
 
-admin.site.site_header = "MATCHAZUKI — ຈັດການຮ້ານ"
-admin.site.site_title = "MATCHAZUKI Admin"
-admin.site.index_title = "ເລືອກສ່ວນທີ່ຕ້ອງການຈັດການ (ຄລິກແຕ່ລະລາຍການຂ້າງລຸ່ມ)"
+admin.site.site_header = f"{settings.SHOP_BRAND} — ຈັດການຮ້ານ"
+admin.site.site_title = f"{settings.SHOP_BRAND} Admin"

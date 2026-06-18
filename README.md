@@ -1,6 +1,6 @@
 # Matcha Shop Beta
 
-Django store inspired by [MATCHAZUKI](https://matchazuki.com/) with PostgreSQL, bilingual TH/EN storefront, and POS for staff.
+Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, bilingual storefront, and POS for staff.
 
 ## Requirements
 

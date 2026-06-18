@@ -1,5 +1,6 @@
 from decimal import Decimal, InvalidOperation
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
@@ -159,7 +160,7 @@ def contact(request):
             name=name, email=email, phone=phone, message=message,
         )
         notify_shop(
-            f"[MATCHAZUKI] ຂໍ້ຄວາມໃໝ່",
+            f"[{settings.SHOP_BRAND}] ຂໍ້ຄວາມໃໝ່",
             f"ຊື່: {name}\nໂທ: {phone}\nEmail: {email}\n\n{message}",
         )
         return render(request, "store/contact.html", {"success": True})
@@ -332,7 +333,7 @@ def checkout(request):
             v.save(update_fields=["stock_qty"])
 
         notify_shop(
-            f"[MATCHAZUKI] ອໍເດີໃໝ່ {order.order_no}",
+            f"[{settings.SHOP_BRAND}] ອໍເດີໃໝ່ {order.order_no}",
             f"ຊື່: {name}\nໂທ: {phone}\nລວມ: {grand_total} ກີບ\nຊຳລະ: {payment_method}\nAdmin: /admin/store/weborder/",
         )
 
@@ -382,7 +383,7 @@ def confirm_payment(request):
         order.save(update_fields=["status"])
 
         notify_shop(
-            f"[MATCHAZUKI] ແຈ້ງໂອນ {order.order_no}",
+            f"[{settings.SHOP_BRAND}] ແຈ້ງໂອນ {order.order_no}",
             f"ຈຳນວນ: {paid_amount} ກີບ\nທະນາຄານ: {bank_name}\nໝາຍເຫດ: {note}",
         )
 

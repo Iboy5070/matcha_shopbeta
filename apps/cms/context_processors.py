@@ -17,6 +17,9 @@ def site_context(request):
         "bank_account_name": settings.BANK_ACCOUNT_NAME,
         "bank_qr_image_url": settings.BANK_QR_IMAGE_URL,
         "site_url": settings.SITE_URL,
+        "shop_name": settings.SHOP_NAME,
+        "shop_tagline": settings.SHOP_TAGLINE,
+        "shop_brand": settings.SHOP_BRAND,
         "wake_page_url": settings.WAKE_PAGE_URL,
         "ga_measurement_id": settings.GA_MEASUREMENT_ID,
         "google_oauth_enabled": bool(

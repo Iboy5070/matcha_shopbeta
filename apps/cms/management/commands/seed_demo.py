@@ -10,14 +10,14 @@ class Command(BaseCommand):
         testimonials = [
             {
                 "company_name": "Goodmate",
-                "quote_th": "เลือกมัทฉะของ MATCHAZUKI เพราะคุณภาพดี มีความเข้มข้น ผสมกับนมโอ๊ตแล้ว ยังได้รสและกลิ่นมัทฉะอยู่ ไม่โดนกลบ",
-                "quote_en": "We chose MATCHAZUKI matcha for its quality and intensity — even with oat milk the matcha taste and aroma stay clear.",
+                "quote_th": "เลือกมัทฉะของ The 196 Haus เพราะคุณภาพดี มีความเข้มข้น ผสมกับนมโอ๊ตแล้ว ยังได้รสและกลิ่นมัทฉะอยู่ ไม่โดนกลบ",
+                "quote_en": "We chose The 196 Haus matcha for its quality and intensity — even with oat milk the matcha taste and aroma stay clear.",
                 "sort_order": 1,
             },
             {
                 "company_name": "Proove",
-                "quote_th": "ผลตอบรับจากลูกค้าที่ลองโปรตีนรสมัทฉะ ที่ใช้ MATCHAZUKI ชื่นชอบกันมาก ๆ รสมัทฉะเข้มข้น หอมมาก",
-                "quote_en": "Customers love our matcha protein made with MATCHAZUKI — rich, aromatic, truly premium.",
+                "quote_th": "ผลตอบรับจากลูกค้าที่ลองโปรตีนรสมัทฉะ ที่ใช้ The 196 Haus ชื่นชอบกันมาก ๆ รสมัทฉะเข้มข้น หอมมาก",
+                "quote_en": "Customers love our matcha protein made with The 196 Haus — rich, aromatic, truly premium.",
                 "sort_order": 2,
             },
             {

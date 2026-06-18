@@ -12,11 +12,11 @@
 
 const LOADING_HTML = `<!DOCTYPE html>
 <html lang="lo"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MATCHAZUKI — ກຳລັງເປີດ...</title>
+<title>The 196 Haus Matcha — ກຳລັງເປີດ...</title>
 <style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;background:#f7f5f0}
 .card{text-align:center;padding:2rem;max-width:360px}.spin{width:36px;height:36px;margin:1rem auto;border:3px solid #e8e8e8;border-top-color:#2d5a3d;border-radius:50%;animation:s .8s linear infinite}
 @keyframes s{to{transform:rotate(360deg)}}</style></head>
-<body><div class="card"><h1 style="color:#2d5a3d">MATCHAZUKI</h1><div class="spin"></div><p>ກຳລັງເປີດຮ້ານ... ລໍອັດຕະໂນມັດ</p></div>
+<body><div class="card"><h1 style="color:#2d5a3d">The 196 Haus <small>MATCHA</small></h1><div class="spin"></div><p>ກຳລັງເປີດຮ້ານ... ລໍອັດຕະໂນມັດ</p></div>
 <script>setTimeout(function(){location.reload()},8000)</script></body></html>`;
 
 async function wakeOrigin(origin, maxWaitMs) {

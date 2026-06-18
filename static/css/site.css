@@ -48,6 +48,24 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   color: var(--mz-green-mid) !important;
 }
 
+.mz-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.mz-brand-name {
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.mz-brand-tagline {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: var(--mz-green-light);
+}
+
 .mz-nav-links .nav-link {
   color: var(--mz-text);
   font-weight: 500;

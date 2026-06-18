@@ -234,7 +234,7 @@ msgstr "หน้าแรก"
 
 #: templates/store/home.html:8
 msgid "Because we choose matcha like matcha lovers do"
-msgstr "MATCHAZUKI เพราะเราเลือกมัทฉะ อย่างคนรักมัทฉะ"
+msgstr "The 196 Haus Matcha เพราะเราเลือกมัทฉะ อย่างคนรักมัทฉะ"
 
 #: templates/store/home.html:9
 msgid "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking."

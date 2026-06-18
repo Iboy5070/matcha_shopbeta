@@ -3,10 +3,10 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}{% trans "MATCHAZUKI" %}{% endblock %} | MATCHAZUKI</title>
+  <title>{% block title %}{% endblock %}{% block title_suffix %} | {{ shop_brand }}{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{% block meta_description %}{% trans "Premium Japanese matcha shop in Laos — ceremonial grade, iced matcha, and more." %}{% endblock %}">
-  <meta property="og:title" content="MATCHAZUKI">
+  <meta property="og:title" content="{{ shop_brand }}">
   <meta property="og:description" content="{% trans "Premium Japanese matcha for matcha lovers." %}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{{ site_url }}{{ request.path }}">
@@ -21,7 +21,10 @@
   <div class="container">
     <a class="navbar-brand mz-brand d-flex align-items-center gap-2" href="{% url 'store_home' %}">
       <img class="mz-brand-icon" src="{% static 'img/icons/matcha.png' %}" alt="" width="34" height="34">
-      <span>MATCHAZUKI</span>
+      <span class="mz-brand-text">
+        <span class="mz-brand-name">{{ shop_name }}</span>
+        <span class="mz-brand-tagline">{{ shop_tagline }}</span>
+      </span>
     </a>
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mzNav" aria-label="Menu">
       <span class="navbar-toggler-icon"></span>
@@ -91,7 +94,7 @@
   <div class="container">
     <div class="row g-4">
       <div class="col-md-4">
-        <div class="mz-footer-brand">MATCHAZUKI</div>
+        <div class="mz-footer-brand">{{ shop_brand }}</div>
         <p class="small mb-0 opacity-75">{% trans "Premium Japanese matcha for matcha lovers." %}</p>
       </div>
       <div class="col-md-4">
@@ -111,7 +114,7 @@
       </div>
     </div>
     <div class="text-center small mt-4 pt-3 border-top border-light border-opacity-25">
-      © {% now "Y" %} MATCHAZUKI
+      © {% now "Y" %} {{ shop_brand }}
     </div>
   </div>
 </footer>

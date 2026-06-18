@@ -131,6 +131,9 @@ BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
 BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
 SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip("/")
+SHOP_NAME = os.getenv("SHOP_NAME", "The 196 Haus")
+SHOP_TAGLINE = os.getenv("SHOP_TAGLINE", "MATCHA")
+SHOP_BRAND = os.getenv("SHOP_BRAND", f"{SHOP_NAME} {SHOP_TAGLINE}")
 LOGIN_URL = "/admin/login/"
 LOGIN_REDIRECT_URL = "/pos/"
 CUSTOMER_LOGIN_URL = "store_login"
@@ -143,7 +146,7 @@ NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
 
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@matchazuki.com")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@196haus-matcha.local")
 EMAIL_HOST = os.getenv("EMAIL_HOST", "")
 if EMAIL_HOST:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

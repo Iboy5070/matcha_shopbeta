@@ -233,7 +233,7 @@ msgstr "ໜ້າຫຼັກ"
 
 #: templates/store/home.html:8
 msgid "Because we choose matcha like matcha lovers do"
-msgstr "MATCHAZUKI ເພາະເຮົາຄັດເລືອກມັດຊາ ຢ່າງຜູ້ທີ່ຮັກມັດຊາ"
+msgstr "The 196 Haus Matcha ເພາະເຮົາຄັດເລືອກມັດຊາ ຢ່າງຜູ້ທີ່ຮັກມັດຊາ"
 
 #: templates/store/home.html:9
 msgid "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking."
@@ -314,7 +314,7 @@ msgstr "ເຂົ້າສູ່ລະບົບ"
 
 #: templates/store/login.html:10
 msgid "Sign in to your MATCHAZUKI account."
-msgstr "ເຂົ້າສູ່ລະບົບບັນຊີ MATCHAZUKI ຂອງທ່ານ"
+msgstr "ເຂົ້າສູ່ລະບົບບັນຊີ %(shop_brand)s ຂອງທ່ານ"
 
 #: templates/store/login.html:34
 msgid "No account yet?"
