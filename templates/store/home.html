@@ -1,10 +1,10 @@
 {% extends "store/base.html" %}
-{% load static i18n %}
+{% load static i18n mz_extras %}
 {% block title %}{% trans "Home" %}{% endblock %}
 {% block content_wrapper %}
 {% block content %}
 
-<section class="mz-hero-full mz-hero-has-image" style="--hero-img: url('{% static 'hero.png' %}');">
+<section class="mz-hero-full mz-hero-has-image" style="--hero-img: url('{% static 'f1.jpg' %}');">
   <div class="mz-hero-inner text-center">
     <p class="mz-hero-kicker">MATCHAZUKI</p>
     <h1 class="mz-hero-title">{% trans "Because we choose matcha like matcha lovers do" %}</h1>
@@ -20,21 +20,27 @@
   <div class="row g-4 mb-5">
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">01</div>
+        <div class="mz-pillar-icon">
+          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
+        </div>
         <h3>{% trans "Distinct matcha taste" %}</h3>
         <p class="text-muted mb-0">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">02</div>
+        <div class="mz-pillar-icon">
+          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
+        </div>
         <h3>{% trans "Meticulous quality control" %}</h3>
         <p class="text-muted mb-0">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">03</div>
+        <div class="mz-pillar-icon">
+          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
+        </div>
         <h3>{% trans "Care like a matcha lover" %}</h3>
         <p class="text-muted mb-0">{% trans "We help you choose the right matcha and get the best results." %}</p>
       </div>
@@ -60,7 +66,9 @@
             {% if product.display_image %}
               <img src="{{ product.display_image }}" alt="{{ product.name }}">
             {% else %}
-              <div class="mz-product-placeholder">MATCHA</div>
+              <div class="mz-product-placeholder">
+                <img src="{% static 'img/icons/matcha.png' %}" alt="" width="48" height="48">
+              </div>
             {% endif %}
           {% if v %}</a>{% else %}</div>{% endif %}
           <div class="p-3 p-md-4">
@@ -68,7 +76,7 @@
             <div class="mz-product-name">{{ product.name }}</div>
             {% if v %}
             <div class="mz-product-price">
-              {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|floatformat:0 }}{% else %}{{ v.price|floatformat:0 }}{% endif %}
+              {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
               <span>ກີບ</span>
             </div>
             <a class="btn btn-sm mz-btn-primary w-100 mt-3" href="{% url 'store_product_detail' v.id %}">{% trans "View" %}</a>

@@ -1,5 +1,5 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n static mz_extras %}
 {% block title %}{% trans "Products" %}{% endblock %}
 {% block content %}
 <div class="mz-page-hero d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -32,18 +32,26 @@
       {% if v.product.display_image %}
         <img src="{{ v.product.display_image }}" alt="{{ v.product.name }}">
       {% else %}
-        <div class="mz-product-placeholder">{{ v.product.name|truncatechars:12 }}</div>
+        <div class="mz-product-placeholder">
+          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="40" height="40">
+        </div>
       {% endif %}
       <div class="p-3">
         <div class="mz-product-cat">{{ v.product.category.name }}</div>
         <div class="mz-product-name">{{ v.display_name }}</div>
         <div class="mz-product-price">
-          {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|floatformat:0 }}{% else %}{{ v.price|floatformat:0 }}{% endif %}
+          {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
           <span>ກີບ</span>
         </div>
         <div class="d-flex gap-2 mt-3">
-          <a class="btn btn-sm mz-btn-outline" href="{% url 'store_product_detail' v.id %}">{% trans "View" %}</a>
-          <a class="btn btn-sm mz-btn-primary" href="{% url 'store_add_to_cart' v.id %}">{% trans "Add to cart" %}</a>
+          <a class="btn btn-sm mz-btn-outline mz-btn-icon" href="{% url 'store_product_detail' v.id %}" title="{% trans 'View' %}">
+            <img src="{% static 'img/icons/matcha.png' %}" alt="" width="18" height="18">
+            <span>{% trans "View" %}</span>
+          </a>
+          <a class="btn btn-sm mz-btn-primary mz-btn-icon" href="{% url 'store_add_to_cart' v.id %}">
+            <img src="{% static 'img/icons/cart.png' %}" alt="" width="18" height="18">
+            <span>{% trans "Add to cart" %}</span>
+          </a>
         </div>
       </div>
     </div>

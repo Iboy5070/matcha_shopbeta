@@ -1,5 +1,5 @@
 {% extends "store/base.html" %}
-{% load i18n static %}
+{% load i18n static mz_extras %}
 {% block title %}{% trans "Cart" %}{% endblock %}
 {% block content %}
 
@@ -21,21 +21,21 @@
     <div class="mz-cart-item-body">
       <div class="mz-product-cat">{{ it.variant.product.category.name }}</div>
       <div class="mz-cart-item-name">{{ it.variant.display_name }}</div>
-      <div class="mz-cart-item-price">{{ it.unit_price|floatformat:0 }} <span>ກີບ</span></div>
+      <div class="mz-cart-item-price">{{ it.unit_price|kip }} <span>ກີບ</span></div>
       <div class="mz-cart-qty">
         <a class="mz-qty-btn" href="{% url 'store_remove_one' it.variant.id %}" aria-label="-1">−</a>
         <span class="mz-qty-val">{{ it.qty }}</span>
         <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.variant.id %}" aria-label="+1">+</a>
       </div>
     </div>
-    <div class="mz-cart-item-total">{{ it.line_total|floatformat:0 }} <small>ກີບ</small></div>
+    <div class="mz-cart-item-total">{{ it.line_total|kip }} <small>ກີບ</small></div>
   </div>
   {% endfor %}
 
   <div class="mz-cart-summary">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <span class="fw-bold">{% trans "Total" %}</span>
-      <span class="mz-cart-grand">{{ total|floatformat:0 }} <small>ກີບ</small></span>
+      <span class="mz-cart-grand">{{ total|kip }} <small>ກີບ</small></span>
     </div>
     <div class="d-flex flex-wrap gap-2">
       <a class="btn mz-btn-outline" href="{% url 'store_shop' %}">{% trans "Continue shopping" %}</a>

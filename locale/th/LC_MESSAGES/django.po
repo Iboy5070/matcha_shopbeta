@@ -216,9 +216,17 @@ msgstr "ข้อความ"
 msgid "Send message"
 msgstr "ส่งข้อความ"
 
+#: templates/store/faq.html:8
+msgid "Common questions about matcha, orders, and payment."
+msgstr "คำถามที่พบบ่อยเกี่ยวกับมัทฉะ การสั่งซื้อ และการชำระเงิน"
+
 #: templates/store/faq.html:29
 msgid "No FAQ entries yet. Add them in the admin panel."
 msgstr "ยังไม่มีคำถาม กรุณาเพิ่มในแอดมิน"
+
+#: templates/store/faq.html:34
+msgid "Still have questions?"
+msgstr "ยังมีคำถามอีกไหม?"
 
 #: templates/store/home.html:3
 msgid "Home"
@@ -260,6 +268,10 @@ msgstr "ช่วยให้การเลือกมัทฉะแต่ล
 #: templates/store/home.html:39
 msgid "Featured products"
 msgstr "สินค้าแนะนำ"
+
+#: templates/store/home.html:48
+msgid "View all"
+msgstr "ดูทั้งหมด"
 
 #: templates/store/home.html:54 templates/store/shop.html:44
 msgid "View"

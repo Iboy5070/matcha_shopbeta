@@ -35,6 +35,8 @@ class Command(BaseCommand):
 
         faqs = [
             {
+                "question_lo": "ສັ່ງຊື້ຢ່າງໃດ?",
+                "answer_lo": "ເລືອກສິນຄ້າ ໃສ່ກະຕ່າ ຊຳລະເງິນ ແລະແຈ້ງໂອນຜ່ານໜ້າແຈ້ງຊຳລະເງິນ",
                 "question_th": "สั่งซื้ออย่างไร?",
                 "question_en": "How do I order?",
                 "answer_th": "เลือกสินค้า ใส่ตะกร้า ชำระเงิน และแจ้งโอนผ่านหน้าแจ้งชำระเงิน",
@@ -42,6 +44,8 @@ class Command(BaseCommand):
                 "sort_order": 1,
             },
             {
+                "question_lo": "ຈັດສົ່ງກີ່ວັນ?",
+                "answer_lo": "ໂດຍທົ່ວໄປ 1–3 ວັນເຮັດວຽນຫຼັງຢືນຢັນການຊຳລະເງິນ",
                 "question_th": "จัดส่งกี่วัน?",
                 "question_en": "How long is delivery?",
                 "answer_th": "โดยทั่วไป 1–3 วันทำการหลังยืนยันการชำระเงิน",
@@ -50,9 +54,14 @@ class Command(BaseCommand):
             },
         ]
         for data in faqs:
-            FAQItem.objects.get_or_create(
-                question_th=data["question_th"],
-                defaults=data,
-            )
+            rows = FAQItem.objects.filter(sort_order=data["sort_order"]).order_by("id")
+            if rows.exists():
+                item = rows.first()
+                for key, value in data.items():
+                    setattr(item, key, value)
+                item.save()
+                rows.exclude(pk=item.pk).delete()
+            else:
+                FAQItem.objects.create(**data)
 
         self.stdout.write(self.style.SUCCESS("Demo CMS content ready."))

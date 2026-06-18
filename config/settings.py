@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "apps.catalog.apps.CatalogConfig",
     "apps.sales.apps.SalesConfig",
     "apps.inventory.apps.InventoryConfig",

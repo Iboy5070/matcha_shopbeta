@@ -1,5 +1,5 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n mz_extras %}
 {% block title %}{{ v.display_name }}{% endblock %}
 {% block content %}
 <div class="row g-4 align-items-start">
@@ -21,7 +21,7 @@
       <p class="mz-product-desc">{{ v.product.description }}</p>
       {% endif %}
       <div class="mz-product-price mb-3">
-        {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|floatformat:0 }}{% else %}{{ v.price|floatformat:0 }}{% endif %}
+        {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
         <span>ກີບ</span>
       </div>
       <p class="text-muted small mb-4">{% trans "In stock" %}: {{ v.stock_qty }}</p>

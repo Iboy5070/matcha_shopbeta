@@ -212,9 +212,17 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
+#: templates/store/faq.html:8
+msgid "Common questions about matcha, orders, and payment."
+msgstr "Common questions about matcha, orders, and payment."
+
 #: templates/store/faq.html:29
 msgid "No FAQ entries yet. Add them in the admin panel."
 msgstr ""
+
+#: templates/store/faq.html:34
+msgid "Still have questions?"
+msgstr "Still have questions?"
 
 #: templates/store/home.html:3
 msgid "Home"
@@ -256,6 +264,10 @@ msgstr ""
 #: templates/store/home.html:39
 msgid "Featured products"
 msgstr ""
+
+#: templates/store/home.html:48
+msgid "View all"
+msgstr "View all"
 
 #: templates/store/home.html:54 templates/store/shop.html:44
 msgid "View"

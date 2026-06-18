@@ -1,31 +1,37 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n mz_extras %}
 {% block title %}{% trans "FAQ" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero mb-4">
-  <h1 class="mz-section-title">{% trans "FAQ" %}</h1>
+
+<div class="mz-page-hero text-center mb-4">
+  <h1 class="mz-section-title mb-2">{% trans "FAQ" %}</h1>
+  <p class="text-muted mb-0">{% trans "Common questions about matcha, orders, and payment." %}</p>
 </div>
 
 {% if faq_items %}
-<div class="accordion" id="faqAccordion">
+<div class="mz-faq-list">
   {% for item in faq_items %}
-  <div class="accordion-item border-0 mb-2 shadow-sm">
-    <h2 class="accordion-header">
-      <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
-              data-bs-toggle="collapse" data-bs-target="#faq{{ item.id }}">
-        {% if LANGUAGE_CODE == 'en' and item.question_en %}{{ item.question_en }}{% else %}{{ item.question_th }}{% endif %}
-      </button>
-    </h2>
-    <div id="faq{{ item.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
-         data-bs-parent="#faqAccordion">
-      <div class="accordion-body text-muted">
-        {% if LANGUAGE_CODE == 'en' and item.answer_en %}{{ item.answer_en|linebreaks }}{% else %}{{ item.answer_th|linebreaks }}{% endif %}
-      </div>
+  <details class="mz-faq-item" {% if forloop.first %}open{% endif %}>
+    <summary class="mz-faq-q">
+      <span class="mz-faq-num">{{ forloop.counter }}</span>
+      {% faq_question item LANGUAGE_CODE %}
+    </summary>
+    <div class="mz-faq-a text-muted">
+      {% faq_answer item LANGUAGE_CODE as answer %}
+      {{ answer|linebreaks }}
     </div>
-  </div>
+  </details>
   {% endfor %}
 </div>
 {% else %}
-<p class="text-muted">{% trans "No FAQ entries yet. Add them in the admin panel." %}</p>
+<div class="mz-empty-state text-center">
+  <p class="text-muted mb-3">{% trans "No FAQ entries yet. Add them in the admin panel." %}</p>
+  <p class="small text-muted">Admin → CMS → FAQ items → Add</p>
+</div>
 {% endif %}
+
+<div class="text-center mt-4">
+  <p class="text-muted small mb-2">{% trans "Still have questions?" %}</p>
+  {% include "store/_contact_buttons.html" %}
+</div>
 {% endblock %}

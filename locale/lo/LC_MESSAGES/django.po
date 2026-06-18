@@ -215,9 +215,17 @@ msgstr "ຂໍ້ຄວາມ"
 msgid "Send message"
 msgstr "ສົ່ງຂໍ້ຄວາມ"
 
+#: templates/store/faq.html:8
+msgid "Common questions about matcha, orders, and payment."
+msgstr "ຄຳຖາມທີ່ພົບເລື້ອຍ ກ່ຽວກັບມັດຊາ ການສັ່ງຊື້ ແລະ ການຊຳລະເງິນ"
+
 #: templates/store/faq.html:29
 msgid "No FAQ entries yet. Add them in the admin panel."
 msgstr "ຍັງບໍ່ມີຄຳຖາມ ກະລຸນາເພີ່ມໃນ admin"
+
+#: templates/store/faq.html:34
+msgid "Still have questions?"
+msgstr "ຍັງມີຄຳຖາມອີກບໍ?"
 
 #: templates/store/home.html:3
 msgid "Home"
@@ -259,6 +267,10 @@ msgstr "ຊ່ວຍໃຫ້ທ່ານເລືອກມັດຊາໄດ້
 #: templates/store/home.html:39
 msgid "Featured products"
 msgstr "ສິນຄ້າແນະນຳ"
+
+#: templates/store/home.html:48
+msgid "View all"
+msgstr "ເບິ່ງທັງໝົດ"
 
 #: templates/store/home.html:54 templates/store/shop.html:44
 msgid "View"
