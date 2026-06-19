@@ -147,7 +147,7 @@ class ProductVariantAdmin(admin.ModelAdmin):
                 ),
                 "description": (
                     "Variant = ສິນຄ້າທີ່ຂາຍຈິງ (ເຊັ່ນ 30g, 50g). "
-                    "Sell price = ລາຄາຂາຍ. Stock = ຈຳນວນເຫຼືອ."
+                    "ວ່າງ display_name_th/en = ສະແດງຊື່ລາວອັດຕະໂນມັດ."
                 ),
             },
         ),
