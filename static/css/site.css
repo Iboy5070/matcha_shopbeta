@@ -271,6 +271,13 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   border-radius: 50%;
   background: rgba(45, 90, 61, 0.1);
   margin-bottom: 1rem;
+  color: var(--mz-green-mid);
+}
+
+.mz-pillar-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
 }
 
 .mz-pillar-icon img {
@@ -1004,7 +1011,8 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 .mz-brand-icon {
   flex-shrink: 0;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
+  background: #fff;
 }
 
 /* FAQ accordion */

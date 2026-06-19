@@ -20,27 +20,21 @@
   <div class="row g-4 mb-5">
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">
-          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
-        </div>
+        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="taste" %}</div>
         <h3>{% trans "Distinct matcha taste" %}</h3>
         <p class="text-muted mb-0">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">
-          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
-        </div>
+        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="quality" %}</div>
         <h3>{% trans "Meticulous quality control" %}</h3>
         <p class="text-muted mb-0">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="mz-pillar">
-        <div class="mz-pillar-icon">
-          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="28" height="28">
-        </div>
+        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="care" %}</div>
         <h3>{% trans "Care like a matcha lover" %}</h3>
         <p class="text-muted mb-0">{% trans "We help you choose the right matcha and get the best results." %}</p>
       </div>
