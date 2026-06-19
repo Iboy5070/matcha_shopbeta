@@ -83,22 +83,6 @@
     </div>
   </section>
   {% endif %}
-
-  {% if active_testimonials %}
-  <section class="mb-5">
-    <h2 class="mz-section-title text-center mb-4">{% trans "What partners say" %}</h2>
-    <div class="row g-4">
-      {% for t in active_testimonials %}
-      <div class="col-md-6">
-        <blockquote class="mz-testimonial mb-0">
-          <p class="mb-3">"{% if LANGUAGE_CODE == 'en' and t.quote_en %}{{ t.quote_en }}{% else %}{{ t.quote_th }}{% endif %}"</p>
-          <footer class="mz-testimonial-author">{{ t.company_name }}</footer>
-        </blockquote>
-      </div>
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
 </div>
 
 <section class="mz-cta-band">
