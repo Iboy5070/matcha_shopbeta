@@ -5,6 +5,8 @@ from django.db.models import Q
 
 from apps.catalog.models import Category, Product, ProductVariant
 
+from apps.catalog.i18n_sync import sync_catalog_i18n
+
 CEREMONIAL_IMAGE = (
     "https://getcrafti.co/cdn/shop/files/Ceremonialmatcha30gnobg.png?v=1737512532"
 )
@@ -88,5 +90,7 @@ class Command(BaseCommand):
             variant.display_name_th = "30 กรัม"
             variant.display_name_en = "30 g"
             variant.save(update_fields=["display_name_th", "display_name_en"])
+
+        sync_catalog_i18n()
 
         self.stdout.write(self.style.SUCCESS("Catalog ready (Ceremonial image synced)."))
