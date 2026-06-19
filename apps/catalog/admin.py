@@ -10,6 +10,8 @@ class VariantInline(admin.TabularInline):
     fields = (
         "sku",
         "display_name",
+        "display_name_th",
+        "display_name_en",
         "sell_price",
         "stock_qty",
         "is_active",
@@ -28,12 +30,22 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [VariantInline]
     fieldsets = (
         (
-            "ຂໍ້ມູນຫຼັກ",
+            "ຂໍ້ມູນຫຼັກ (ລາວ)",
             {
                 "fields": ("category", "name", "slug", "description"),
                 "description": (
                     "ຊື່ສິນຄ້າ + ຄຳອະທິບາຍ — ສະແດງໃນໜ້າຮ້ານ. "
                     "Slug ສ້າງອັດຕະໂນມັດຈາກຊື່."
+                ),
+            },
+        ),
+        (
+            "ພາສາໄທ / English",
+            {
+                "fields": ("name_th", "name_en", "description_th", "description_en"),
+                "description": (
+                    "ຖ້າບໍ່ກອກ TH/EN — ໜ້າຮ້ານຈະສະແດງຊື່ລາວອັດຕະໂນມັດ. "
+                    "ກອກແປພາສາໄທ/ອັງກິດເພື່ອໃຫ້ປ່ຽນຕາມພາສາທີ່ເລືອກ."
                 ),
             },
         ),
@@ -91,8 +103,8 @@ class CategoryAdmin(admin.ModelAdmin):
         (
             None,
             {
-                "fields": ("name", "slug"),
-                "description": "ຫມວດສິນຄ້າ — ເຊັ່ນ ຜົງมัชะ, อุปกรณ์",
+                "fields": ("name", "name_th", "name_en", "slug"),
+                "description": "ຫມວດສິນຄ້າ — ລາວ / ไทย / English (ວ່າງ TH/EN = ສະແດງລາວອັດຕະໂນມັດ)",
             },
         ),
     )
@@ -122,7 +134,17 @@ class ProductVariantAdmin(admin.ModelAdmin):
         (
             None,
             {
-                "fields": ("product", "sku", "display_name", "sell_price", "price", "stock_qty", "is_active"),
+                "fields": (
+                    "product",
+                    "sku",
+                    "display_name",
+                    "display_name_th",
+                    "display_name_en",
+                    "sell_price",
+                    "price",
+                    "stock_qty",
+                    "is_active",
+                ),
                 "description": (
                     "Variant = ສິນຄ້າທີ່ຂາຍຈິງ (ເຊັ່ນ 30g, 50g). "
                     "Sell price = ລາຄາຂາຍ. Stock = ຈຳນວນເຫຼືອ."

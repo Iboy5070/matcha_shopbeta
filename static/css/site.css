@@ -9,6 +9,7 @@
   --mz-muted: #5c5c5c;
   --mz-serif: "Noto Serif Lao", "Sarabun", Georgia, serif;
   --mz-sans: "Sarabun", "Segoe UI", system-ui, sans-serif;
+  --mz-lao: "Noto Sans Lao", "Noto Serif Lao", "Sarabun", sans-serif;
   --mz-radius: 1rem;
   --mz-shadow: 0 8px 32px rgba(30, 61, 42, 0.08);
 }
@@ -18,6 +19,41 @@ body.mz-body {
   color: var(--mz-text);
   background: var(--mz-cream);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[lang="lo"] body.mz-body {
+  font-family: var(--mz-lao);
+  line-height: 1.75;
+  letter-spacing: 0.012em;
+  font-feature-settings: "liga" 1;
+}
+
+html[lang="lo"] h1,
+html[lang="lo"] h2,
+html[lang="lo"] h3,
+html[lang="lo"] .mz-section-title,
+html[lang="lo"] .mz-brand,
+html[lang="lo"] .mz-hero-title {
+  font-family: "Noto Serif Lao", var(--mz-lao);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+html[lang="lo"] .mz-product-name,
+html[lang="lo"] .mz-product-detail-title,
+html[lang="lo"] .mz-cart-item-name {
+  font-family: "Noto Serif Lao", var(--mz-lao);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.015em;
+}
+
+html[lang="lo"] .mz-product-cat,
+html[lang="lo"] .mz-nav-links .nav-link {
+  font-family: var(--mz-lao);
+  letter-spacing: 0.04em;
 }
 
 h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
@@ -411,7 +447,7 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   font-weight: 600;
   font-size: 1.1rem;
   color: var(--mz-green);
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .mz-product-price {

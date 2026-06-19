@@ -1,12 +1,12 @@
 {% extends "store/base.html" %}
-{% load i18n mz_extras %}
-{% block title %}{{ v.display_name }}{% endblock %}
+{% load i18n mz_extras catalog_i18n %}
+{% block title %}{% variant_name v LANGUAGE_CODE %}{% endblock %}
 {% block content %}
 <div class="row g-4 align-items-start">
   <div class="col-md-6">
     <div class="mz-product-detail-media">
       {% if v.product.display_image %}
-        <img src="{{ v.product.display_image }}" alt="{{ v.product.name }}">
+        <img src="{{ v.product.display_image }}" alt="{% product_name v.product LANGUAGE_CODE %}">
       {% else %}
         <div class="mz-product-placeholder">MATCHA</div>
       {% endif %}
@@ -14,11 +14,12 @@
   </div>
   <div class="col-md-6">
     <div class="mz-product-detail-info">
-      <div class="mz-product-cat">{{ v.product.category.name }}</div>
-      <h1 class="mz-product-detail-title">{{ v.product.name }}</h1>
-      <p class="text-muted mb-3">{{ v.display_name }}</p>
-      {% if v.product.description %}
-      <p class="mz-product-desc">{{ v.product.description }}</p>
+      <div class="mz-product-cat">{% cat_name v.product.category LANGUAGE_CODE %}</div>
+      <h1 class="mz-product-detail-title">{% product_name v.product LANGUAGE_CODE %}</h1>
+      <p class="text-muted mb-3">{% variant_name v LANGUAGE_CODE %}</p>
+      {% product_description v.product LANGUAGE_CODE as product_desc %}
+      {% if product_desc %}
+      <p class="mz-product-desc">{{ product_desc }}</p>
       {% endif %}
       <div class="mz-product-price mb-3">
         {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
@@ -35,7 +36,7 @@
       <div class="fw-bold small text-muted mb-2">{% trans "Other variants" %}</div>
       <div class="d-flex flex-wrap gap-2">
         {% for s in siblings %}
-        <a class="btn btn-sm {% if s.id == v.id %}mz-btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'store_product_detail' s.id %}">{{ s.display_name }}</a>
+        <a class="btn btn-sm {% if s.id == v.id %}mz-btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'store_product_detail' s.id %}">{% variant_name s LANGUAGE_CODE %}</a>
         {% endfor %}
       </div>
     </div>

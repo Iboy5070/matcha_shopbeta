@@ -1,5 +1,5 @@
 {% extends "store/base.html" %}
-{% load i18n static mz_extras %}
+{% load i18n static mz_extras catalog_i18n %}
 {% block title %}{% trans "Products" %}{% endblock %}
 {% block content %}
 <div class="mz-page-hero d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -20,7 +20,7 @@
      href="{% url 'store_shop' %}{% if q %}?q={{ q|urlencode }}{% endif %}">{% trans "All" %}</a>
   {% for cat in categories %}
   <a class="btn btn-sm {% if active_category == cat.slug %}mz-btn-primary{% else %}btn-outline-secondary{% endif %}"
-     href="{% url 'store_shop' %}?category={{ cat.slug }}{% if q %}&amp;q={{ q|urlencode }}{% endif %}">{{ cat.name }}</a>
+     href="{% url 'store_shop' %}?category={{ cat.slug }}{% if q %}&amp;q={{ q|urlencode }}{% endif %}">{% cat_name cat LANGUAGE_CODE %}</a>
   {% endfor %}
 </div>
 {% endif %}
@@ -30,15 +30,15 @@
   <div class="col-md-4 col-lg-3">
     <div class="mz-product-card">
       {% if v.product.display_image %}
-        <img src="{{ v.product.display_image }}" alt="{{ v.product.name }}">
+        <img src="{{ v.product.display_image }}" alt="{% product_name v.product LANGUAGE_CODE %}">
       {% else %}
         <div class="mz-product-placeholder">
           <img src="{% static 'img/icons/matcha.png' %}" alt="" width="40" height="40">
         </div>
       {% endif %}
       <div class="p-3">
-        <div class="mz-product-cat">{{ v.product.category.name }}</div>
-        <div class="mz-product-name">{{ v.display_name }}</div>
+        <div class="mz-product-cat">{% cat_name v.product.category LANGUAGE_CODE %}</div>
+        <div class="mz-product-name">{% variant_name v LANGUAGE_CODE %}</div>
         <div class="mz-product-price">
           {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
           <span>ກີບ</span>

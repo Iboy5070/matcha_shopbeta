@@ -1,5 +1,5 @@
 {% extends "store/base.html" %}
-{% load static i18n mz_extras %}
+{% load static i18n mz_extras catalog_i18n %}
 {% block title %}{% trans "Home" %}{% endblock %}
 {% block content_wrapper %}
 {% block content %}
@@ -58,7 +58,7 @@
           <div class="mz-product-image-link">
           {% endif %}
             {% if product.display_image %}
-              <img src="{{ product.display_image }}" alt="{{ product.name }}">
+              <img src="{{ product.display_image }}" alt="{% product_name product LANGUAGE_CODE %}">
             {% else %}
               <div class="mz-product-placeholder">
                 <img src="{% static 'img/icons/matcha.png' %}" alt="" width="48" height="48">
@@ -66,8 +66,8 @@
             {% endif %}
           {% if v %}</a>{% else %}</div>{% endif %}
           <div class="p-3 p-md-4">
-            <div class="mz-product-cat">{{ product.category.name }}</div>
-            <div class="mz-product-name">{{ product.name }}</div>
+            <div class="mz-product-cat">{% cat_name product.category LANGUAGE_CODE %}</div>
+            <div class="mz-product-name">{% product_name product LANGUAGE_CODE %}</div>
             {% if v %}
             <div class="mz-product-price">
               {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
