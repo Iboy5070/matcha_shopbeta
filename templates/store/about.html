@@ -1,11 +1,50 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load static i18n %}
 {% block title %}{% trans "About us" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero">
-  <h1 class="mz-section-title">{% blocktrans %}About {{ shop_brand }}{% endblocktrans %}</h1>
-  <p>{% trans "We select matcha the way true matcha lovers do — partnering with Japanese tea masters to deliver umami, aroma, and natural color suitable for premium beverages and baking." %}</p>
-  <p class="mb-0">{% trans "Every step from farm to your kitchen is quality-controlled so you receive fresh, trustworthy matcha." %}</p>
+<div class="row g-4 align-items-center mb-5">
+  <div class="col-lg-6">
+    <div class="mz-about-media">
+      <img src="{% static 'f3.jpg' %}" alt="{{ shop_brand }}">
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="mz-page-hero border-0 shadow-none p-0 bg-transparent">
+      <h1 class="mz-section-title">{% blocktrans %}About {{ shop_brand }}{% endblocktrans %}</h1>
+      <p>{% trans "We select matcha the way true matcha lovers do — partnering with Japanese tea masters to deliver umami, aroma, and natural color suitable for premium beverages and baking." %}</p>
+      <p class="mb-0">{% trans "Every step from farm to your kitchen is quality-controlled so you receive fresh, trustworthy matcha." %}</p>
+    </div>
+    <a class="btn mz-btn-primary mt-4" href="{% url 'store_shop' %}">{% trans "View products" %}</a>
+  </div>
 </div>
-<a class="btn mz-btn-primary" href="{% url 'store_shop' %}">{% trans "View products" %}</a>
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'f2.png' %}" alt="">
+      </div>
+      <h3>{% trans "Distinct matcha taste" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'p.jpg' %}" alt="">
+      </div>
+      <h3>{% trans "Meticulous quality control" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'hero.png' %}" alt="">
+      </div>
+      <h3>{% trans "Care like a matcha lover" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "We help you choose the right matcha and get the best results." %}</p>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -12,10 +12,16 @@ class TestimonialAdmin(admin.ModelAdmin):
         (
             "ຄຳເຫັນຈາກລູກຄ້າ / Partner",
             {
-                "fields": ("company_name", "quote_th", "quote_en", "sort_order", "is_active"),
+                "fields": (
+                    "company_name",
+                    "quote_lo",
+                    "quote_th",
+                    "quote_en",
+                    "sort_order",
+                    "is_active",
+                ),
                 "description": (
-                    "ສະແດງໃນໜ້າຫຼັກ. Sort order = ເລກຍ້ອນ (0 ຂຶ້ນກ່ອນ). "
-                    "Quote TH = ພາສາລາວ (ໃຊ້ field ນີ້ເຖິງເລືອກພາສາລາວ)."
+                    "ສະແດງໃນໜ້າຫຼັກ. Sort order = ເລກຍ້ອນ (0 ຂຶ້ນກ່ອນ)."
                 ),
             },
         ),

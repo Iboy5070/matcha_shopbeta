@@ -21,3 +21,8 @@ def faq_question(item, lang):
 @register.simple_tag
 def faq_answer(item, lang):
     return item.answer_for(lang)
+
+
+@register.simple_tag
+def testimonial_quote(item, lang):
+    return item.quote_for(lang)

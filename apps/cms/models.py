@@ -3,13 +3,23 @@ from django.db import models
 
 class Testimonial(models.Model):
     company_name = models.CharField(max_length=120)
-    quote_th = models.TextField()
-    quote_en = models.TextField(blank=True)
+    quote_lo = models.TextField("ຄຳເຫັນ (ລາວ)", blank=True)
+    quote_th = models.TextField("ຄຳເຫັນ (ไทย)")
+    quote_en = models.TextField("Quote (EN)", blank=True)
     sort_order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["sort_order", "id"]
+
+    def quote_for(self, lang):
+        if lang == "en" and self.quote_en:
+            return self.quote_en
+        if lang == "th":
+            return self.quote_th
+        if lang == "lo" and self.quote_lo:
+            return self.quote_lo
+        return self.quote_lo or self.quote_th or self.quote_en
 
     def __str__(self):
         return self.company_name

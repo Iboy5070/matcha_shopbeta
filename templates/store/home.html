@@ -6,9 +6,8 @@
 
 <section class="mz-hero-full mz-hero-has-image" style="--hero-img: url('{% static 'f1.jpg' %}');">
   <div class="mz-hero-inner text-center">
-    <p class="mz-hero-kicker">{{ shop_name }} · {{ shop_tagline }}</p>
-    <h1 class="mz-hero-title">{% trans "Because we choose matcha like matcha lovers do" %}</h1>
-    <p class="mz-hero-lead">{% trans "Umami-rich, aromatic, naturally vibrant matcha for drinks and baking." %}</p>
+    <h1 class="mz-hero-title">{{ shop_brand }}</h1>
+    <p class="mz-hero-lead">{% trans "Because we choose matcha like matcha lovers do" %}</p>
     <div class="d-flex flex-wrap gap-2 justify-content-center">
       <a class="btn btn-light btn-lg mz-btn-hero" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
       <a class="btn btn-outline-light btn-lg mz-btn-hero-outline" href="{% url 'store_about' %}">{% trans "About us" %}</a>
@@ -17,28 +16,40 @@
 </section>
 
 <div class="container mz-section">
-  <div class="row g-4 mb-5">
+  <div class="row g-4 mb-4">
     <div class="col-md-4">
-      <div class="mz-pillar">
-        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="taste" %}</div>
+      <div class="mz-pillar mz-pillar-centered">
+        <div class="mz-pillar-photo">
+          <img src="{% static 'f2.png' %}" alt="">
+        </div>
         <h3>{% trans "Distinct matcha taste" %}</h3>
         <p class="text-muted mb-0">{% trans "Developed with Japanese tea masters for balanced umami, aroma, and color." %}</p>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="mz-pillar">
-        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="quality" %}</div>
+      <div class="mz-pillar mz-pillar-centered">
+        <div class="mz-pillar-photo">
+          <img src="{% static 'p.jpg' %}" alt="">
+        </div>
         <h3>{% trans "Meticulous quality control" %}</h3>
         <p class="text-muted mb-0">{% trans "From cultivation and production to storage — every step is cared for." %}</p>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="mz-pillar">
-        <div class="mz-pillar-icon">{% include "store/_pillar_icons.html" with icon="care" %}</div>
+      <div class="mz-pillar mz-pillar-centered">
+        <div class="mz-pillar-photo">
+          <img src="{% static 'f3.jpg' %}" alt="">
+        </div>
         <h3>{% trans "Care like a matcha lover" %}</h3>
         <p class="text-muted mb-0">{% trans "We help you choose the right matcha and get the best results." %}</p>
       </div>
     </div>
+  </div>
+
+  <div class="mz-home-quick-links text-center mb-5">
+    <a class="mz-home-quick-link" href="{% url 'store_about' %}">{% trans "About us" %}</a>
+    <span class="mz-home-quick-sep" aria-hidden="true"></span>
+    <a class="mz-home-quick-link" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
   </div>
 
   {% if featured_products %}
@@ -47,38 +58,34 @@
       <h2 class="mz-section-title mb-0">{% trans "Featured products" %}</h2>
       <a class="mz-link-arrow" href="{% url 'store_shop' %}">{% trans "View all" %} →</a>
     </div>
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
       {% for product in featured_products %}
       {% with v=product.variants.first %}
-      <div class="col-md-6 col-lg-4">
-        <div class="mz-product-card">
-          {% if v %}
-          <a class="mz-product-image-link" href="{% url 'store_product_detail' v.id %}">
-          {% else %}
-          <div class="mz-product-image-link">
-          {% endif %}
-            {% if product.display_image %}
-              <img src="{{ product.display_image }}" alt="{% product_name product LANGUAGE_CODE %}">
-            {% else %}
-              <div class="mz-product-placeholder">
-                <img src="{% static 'img/icons/matcha.png' %}" alt="" width="48" height="48">
-              </div>
-            {% endif %}
-          {% if v %}</a>{% else %}</div>{% endif %}
-          <div class="p-3 p-md-4">
-            <div class="mz-product-cat">{% cat_name product.category LANGUAGE_CODE %}</div>
-            <div class="mz-product-name">{% product_name product LANGUAGE_CODE %}</div>
-            {% if v %}
-            <div class="mz-product-price">
-              {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
-              <span>ກີບ</span>
-            </div>
-            <a class="btn btn-sm mz-btn-primary w-100 mt-3" href="{% url 'store_product_detail' v.id %}">{% trans "View" %}</a>
-            {% endif %}
-          </div>
-        </div>
+      {% if v %}
+      <div class="col-sm-6 col-lg-5 col-xl-4">
+        {% include "store/_product_card.html" with variant=v home_style=True show_variant_name=False %}
       </div>
+      {% endif %}
       {% endwith %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if active_testimonials %}
+  <section class="mb-5">
+    <h2 class="mz-section-title text-center mb-2">{% trans "What partners say" %}</h2>
+    <p class="text-center text-muted mb-4 mz-testimonials-sub">
+      {% blocktrans %}Voices from partners who work with {{ shop_brand }}{% endblocktrans %}
+    </p>
+    <div class="row g-4">
+      {% for t in active_testimonials %}
+      <div class="col-md-6">
+        <blockquote class="mz-testimonial">
+          <p>“{% testimonial_quote t LANGUAGE_CODE %}”</p>
+          <footer class="mz-testimonial-author">{{ t.company_name }}</footer>
+        </blockquote>
+      </div>
       {% endfor %}
     </div>
   </section>
@@ -88,7 +95,7 @@
 <section class="mz-cta-band">
   <div class="container text-center">
     <h2 class="mz-section-title h4 mb-2">{% trans "Contact us" %}</h2>
-    <p class="text-muted mb-4 mx-auto" style="max-width: 36rem;">{% trans "Ask about products — we are happy to help via WhatsApp, Facebook, LINE, email, or our contact form." %}</p>
+    <p class="text-muted mb-4 mx-auto mz-cta-lead">{% trans "Ask about products — we are happy to help via WhatsApp, Facebook, LINE, email, or our contact form." %}</p>
     <div class="d-flex flex-wrap gap-2 justify-content-center">
       {% include "store/_contact_buttons.html" %}
       <a class="btn mz-btn-primary" href="{% url 'store_contact' %}">{% trans "Contact" %}</a>

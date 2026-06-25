@@ -1,0 +1,38 @@
+{% load static i18n mz_extras catalog_i18n %}
+{% with p=variant.product %}
+<div class="mz-product-card{% if home_style %} mz-product-card-home{% endif %}">
+  <a class="mz-product-image-link" href="{% url 'store_product_detail' variant.id %}">
+    {% if p.display_image %}
+      <img src="{{ p.display_image }}" alt="{% product_name p LANGUAGE_CODE %}">
+    {% else %}
+      <div class="mz-product-placeholder">
+        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="{% if home_style %}48{% else %}40{% endif %}" height="{% if home_style %}48{% else %}40{% endif %}">
+      </div>
+    {% endif %}
+  </a>
+  <div class="mz-product-card-body">
+    <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
+    <div class="mz-product-name">{% if show_variant_name %}{% variant_name variant LANGUAGE_CODE %}{% else %}{% product_name p LANGUAGE_CODE %}{% endif %}</div>
+    <div class="mz-product-price">
+      {% if variant.sell_price and variant.sell_price > 0 %}{{ variant.sell_price|kip }}{% else %}{{ variant.price|kip }}{% endif %}
+      <span>ກີບ</span>
+    </div>
+    {% if home_style %}
+    <a class="mz-product-cart-btn" href="{% url 'store_add_to_cart' variant.id %}" title="{% trans 'Add to cart' %}">
+      <img src="{% static 'img/icons/cart.png' %}" alt="" width="20" height="20">
+    </a>
+    {% else %}
+    <div class="d-flex gap-2 mt-3">
+      <a class="btn btn-sm mz-btn-outline mz-btn-icon flex-grow-1" href="{% url 'store_product_detail' variant.id %}">
+        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="18" height="18">
+        <span>{% trans "View" %}</span>
+      </a>
+      <a class="btn btn-sm mz-btn-primary mz-btn-icon flex-grow-1" href="{% url 'store_add_to_cart' variant.id %}">
+        <img src="{% static 'img/icons/cart.png' %}" alt="" width="18" height="18">
+        <span>{% trans "Add to cart" %}</span>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endwith %}

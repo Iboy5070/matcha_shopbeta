@@ -1,14 +1,41 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Blog" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero">
+<div class="mz-page-hero text-center mx-auto" style="max-width: 40rem;">
   <h1 class="mz-section-title h3">{% trans "Blog" %}</h1>
   <p class="text-muted mb-0">{% trans "Matcha tips, recipes, and shop news — coming soon." %}</p>
 </div>
-<div class="card border-0 shadow-sm mt-3">
-  <div class="card-body p-4">
-    <p class="mb-0">{% trans "We are preparing articles about ceremonial matcha, iced matcha, and how to store your powder. Check back soon or contact us on WhatsApp." %}</p>
+<div class="row g-4 mt-2 justify-content-center">
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'f1.jpg' %}" alt="">
+      </div>
+      <h3 class="h6">{% trans "Ceremonial matcha" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "How to whisk and enjoy ceremonial grade at home." %}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'f2.png' %}" alt="">
+      </div>
+      <h3 class="h6">{% trans "Iced matcha" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "Recipes for refreshing iced matcha drinks." %}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="mz-pillar mz-pillar-centered h-100">
+      <div class="mz-pillar-photo mz-pillar-photo-sm">
+        <img src="{% static 'p.jpg' %}" alt="">
+      </div>
+      <h3 class="h6">{% trans "Storage tips" %}</h3>
+      <p class="text-muted mb-0 small">{% trans "Keep your powder fresh, vibrant, and aromatic." %}</p>
+    </div>
   </div>
 </div>
+<p class="text-center text-muted mt-4 mb-0">
+  {% trans "Full articles are on the way — contact us on WhatsApp for matcha advice today." %}
+</p>
 {% endblock %}

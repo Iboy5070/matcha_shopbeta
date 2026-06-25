@@ -7,7 +7,7 @@
     <h1 class="h3 mz-section-title m-0">{% trans "Products" %}</h1>
     <p class="text-muted mb-0 small">{% trans "Premium matcha and related items" %}</p>
   </div>
-  <form method="get" class="d-flex gap-2" style="max-width:420px; width:100%;">
+  <form method="get" class="d-flex gap-2 mz-shop-search">
     {% if active_category %}<input type="hidden" name="category" value="{{ active_category }}">{% endif %}
     <input class="form-control" name="q" value="{{ q }}" placeholder="{% trans 'Search...' %}">
     <button class="btn mz-btn-outline">{% trans "Search" %}</button>
@@ -25,36 +25,10 @@
 </div>
 {% endif %}
 
-<div class="row g-3">
+<div class="row g-4">
   {% for v in variants %}
-  <div class="col-md-4 col-lg-3">
-    <div class="mz-product-card">
-      {% if v.product.display_image %}
-        <img src="{{ v.product.display_image }}" alt="{% product_name v.product LANGUAGE_CODE %}">
-      {% else %}
-        <div class="mz-product-placeholder">
-          <img src="{% static 'img/icons/matcha.png' %}" alt="" width="40" height="40">
-        </div>
-      {% endif %}
-      <div class="p-3">
-        <div class="mz-product-cat">{% cat_name v.product.category LANGUAGE_CODE %}</div>
-        <div class="mz-product-name">{% variant_name v LANGUAGE_CODE %}</div>
-        <div class="mz-product-price">
-          {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
-          <span>ກີບ</span>
-        </div>
-        <div class="d-flex gap-2 mt-3">
-          <a class="btn btn-sm mz-btn-outline mz-btn-icon" href="{% url 'store_product_detail' v.id %}" title="{% trans 'View' %}">
-            <img src="{% static 'img/icons/matcha.png' %}" alt="" width="18" height="18">
-            <span>{% trans "View" %}</span>
-          </a>
-          <a class="btn btn-sm mz-btn-primary mz-btn-icon" href="{% url 'store_add_to_cart' v.id %}">
-            <img src="{% static 'img/icons/cart.png' %}" alt="" width="18" height="18">
-            <span>{% trans "Add to cart" %}</span>
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="col-sm-6 col-lg-4 col-xl-3">
+    {% include "store/_product_card.html" with variant=v home_style=False show_variant_name=True %}
   </div>
   {% empty %}
   <p class="text-muted">{% trans "No products found." %}</p>

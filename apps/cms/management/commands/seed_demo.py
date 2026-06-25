@@ -10,28 +10,43 @@ class Command(BaseCommand):
         testimonials = [
             {
                 "company_name": "Goodmate",
+                "quote_lo": "ເລືອກມັດຊາຂອງ The 196 Haus ເພາະຄຸນນະພາບດີ ເຂັ້ມຂຸ້ນ ຜົມກັບນົມໂອ໊ດແລ້ວ ຍັງໄດ້ລົດຊາດແລະກິ່ນມັດຊາຢູ່",
                 "quote_th": "เลือกมัทฉะของ The 196 Haus เพราะคุณภาพดี มีความเข้มข้น ผสมกับนมโอ๊ตแล้ว ยังได้รสและกลิ่นมัทฉะอยู่ ไม่โดนกลบ",
                 "quote_en": "We chose The 196 Haus matcha for its quality and intensity — even with oat milk the matcha taste and aroma stay clear.",
                 "sort_order": 1,
             },
             {
                 "company_name": "Proove",
-                "quote_th": "ผลตอบรับจากลูกค้าที่ลองโปรตีนรสมัทฉะ ที่ใช้ The 196 Haus ชื่นชอบกันมาก ๆ รสมัทฉะเข้มข้น หอมมาก",
+                "quote_lo": "ລູກຄ້າຊອບໂປຣຕີນລົດມັດຊາທີ່ໃຊ້ The 196 Haus ຫຼາຍ — ເຂັ້ມຂຸ້ນ ຫອມ ຮູ້ສຶກເຖິງຄວາມພຣີເມຍມຈິງໆ",
+                "quote_th": "ผลตอบรับจากลูกค้าที่ลองโปรตีนรสมัทฉะ ที่ใช้ The 196 Haus ชื่นชอบกันมาก ๆ รสมัทฉะเข้มข้น หอมมาก รู้สึกได้ถึงความพรีเมียมจริง ๆ",
                 "quote_en": "Customers love our matcha protein made with The 196 Haus — rich, aromatic, truly premium.",
                 "sort_order": 2,
             },
             {
                 "company_name": "BUSABA Cafe & Bake Lab",
-                "quote_th": "เป็นมัทฉะคุณภาพ เข้มข้น เลือกมาใช้ทำขนมต่อได้ง่าย อร่อย",
+                "quote_lo": "ເປັນມັດຊາຄຸນນະພາບ ເຂັ້ມຂຸ້ນ ເອົາໄປທຳຂະໜົມຕໍ່ໄດ້ງ່າຍ ອຣ່ອຍ",
+                "quote_th": "เราให้ความสำคัญกับทุกวัตถุดิบที่ใช้ พอได้ลองของ The 196 Haus ก็รู้ได้ว่าเป็นมัทฉะคุณภาพ เข้มข้น เลือกมาใช้ทำขนมต่อได้ง่าย อร่อย",
                 "quote_en": "High-quality, intense matcha — easy to use in our bakery products.",
                 "sort_order": 3,
             },
+            {
+                "company_name": "Craftsman Roastery",
+                "quote_lo": "ມັດຊາຂອງ The 196 Haus ຕອບໂຈທຍ໌ຮ້ານທີ່ຕ້ອງການຊູລົດຊາດວັດຖຸດິບໂດຍບໍ່ຕ້ອງປຸງແຕ່ງຫຼາຍ ກໍຍັງອຣ່ອຍ ລູກຄ້າຊອບຄືຈົບ",
+                "quote_th": "มัทฉะของ The 196 Haus ตอบโจทย์แนวคิดของร้านที่ต้องการชูรสชาติวัตถุดิบออกมาโดยไม่ต้องปรุงแต่งเยอะ ก็ยังอร่อย ลูกค้าชอบคือจบ",
+                "quote_en": "The 196 Haus matcha fits our focus on ingredient flavor — delicious without heavy tweaking. Customers love it.",
+                "sort_order": 4,
+            },
         ]
         for data in testimonials:
-            Testimonial.objects.get_or_create(
+            obj, created = Testimonial.objects.get_or_create(
                 company_name=data["company_name"],
                 defaults=data,
             )
+            if not created:
+                for key, value in data.items():
+                    if key != "company_name":
+                        setattr(obj, key, value)
+                obj.save()
 
         faqs = [
             {
