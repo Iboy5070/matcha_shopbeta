@@ -12,10 +12,9 @@
   </a>
   <div class="mz-product-card-body">
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
-    {% if show_variant_name %}
-    <div class="mz-product-name">{% variant_name variant LANGUAGE_CODE %}</div>
-    {% else %}
     <div class="mz-product-name">{% product_name p LANGUAGE_CODE %}</div>
+    {% if show_variant_name %}
+    <p class="mz-product-variant mb-0">{% variant_name variant LANGUAGE_CODE %}</p>
     {% endif %}
     <div class="mz-product-price">
       {% if variant.sell_price and variant.sell_price > 0 %}{{ variant.sell_price|kip }}{% else %}{{ variant.price|kip }}{% endif %}
@@ -30,15 +29,9 @@
       <span>{% trans "Add to cart" %}</span>
     </a>
     {% else %}
-    <div class="d-flex gap-2 mt-3">
-      <a class="btn btn-sm mz-btn-outline mz-btn-icon flex-grow-1" href="{% url 'store_product_detail' variant.id %}">
-        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="18" height="18">
-        <span>{% trans "View" %}</span>
-      </a>
-      <a class="btn btn-sm mz-btn-primary mz-btn-icon flex-grow-1" href="{% url 'store_add_to_cart' variant.id %}">
-        <img src="{% static 'img/icons/cart.png' %}" alt="" width="18" height="18">
-        <span>{% trans "Add to cart" %}</span>
-      </a>
+    <div class="mz-product-card-actions">
+      <a class="btn btn-sm mz-btn-outline flex-grow-1" href="{% url 'store_product_detail' variant.id %}">{% trans "View" %}</a>
+      <a class="btn btn-sm mz-btn-primary flex-grow-1" href="{% url 'store_add_to_cart' variant.id %}">{% trans "Add to cart" %}</a>
     </div>
     {% endif %}
   </div>

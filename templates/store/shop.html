@@ -25,13 +25,11 @@
 </div>
 {% endif %}
 
-<div class="row g-4">
+<div class="mz-shop-grid">
   {% for v in variants %}
-  <div class="col-sm-6 col-lg-4 col-xl-3">
-    {% include "store/_product_card.html" with variant=v home_style=False show_variant_name=True %}
-  </div>
+  {% include "store/_product_card.html" with variant=v home_style=False show_variant_name=True %}
   {% empty %}
-  <p class="text-muted">{% trans "No products found." %}</p>
+  <p class="text-muted mz-shop-empty">{% trans "No products found." %}</p>
   {% endfor %}
 </div>
 {% endblock %}

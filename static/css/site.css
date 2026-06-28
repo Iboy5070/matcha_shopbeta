@@ -429,6 +429,29 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   width: 100%;
 }
 
+.mz-shop-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+
+.mz-shop-empty {
+  grid-column: 1 / -1;
+}
+
+.mz-product-variant {
+  font-size: 0.85rem;
+  color: var(--mz-muted);
+  margin-top: 0.15rem;
+}
+
+.mz-product-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+}
+
 .mz-product-card-body {
   padding: 1rem 1.25rem 1.25rem;
   flex: 1;
