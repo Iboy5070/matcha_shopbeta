@@ -398,6 +398,14 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   margin-right: auto;
 }
 
+.mz-testimonials-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
 .mz-cta-lead {
   max-width: 36rem;
 }
@@ -433,24 +441,30 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 }
 
 .mz-product-cart-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   width: 100%;
   margin-top: 1rem;
-  padding: 0.7rem;
+  padding: 0.7rem 1rem;
   background: var(--mz-green-mid);
   border-radius: 999px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
   transition: background 0.2s, transform 0.2s;
 }
 
 .mz-product-cart-btn:hover {
   background: var(--mz-green);
+  color: #fff;
   transform: translateY(-1px);
 }
 
-.mz-product-cart-btn img {
-  filter: brightness(0) invert(1);
+.mz-cart-icon-svg {
+  flex-shrink: 0;
 }
 
 .mz-btn-primary {

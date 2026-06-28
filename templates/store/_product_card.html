@@ -22,8 +22,12 @@
       <span>ກີບ</span>
     </div>
     {% if home_style %}
-    <a class="mz-product-cart-btn" href="{% url 'store_add_to_cart' variant.id %}" title="{% trans 'Add to cart' %}">
-      <img src="{% static 'img/icons/cart.png' %}" alt="" width="20" height="20">
+    <a class="mz-product-cart-btn" href="{% url 'store_add_to_cart' variant.id %}">
+      <svg class="mz-cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
+        <path d="M2 3h2l2.4 12.4a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L21 7H6"/>
+      </svg>
+      <span>{% trans "Add to cart" %}</span>
     </a>
     {% else %}
     <div class="d-flex gap-2 mt-3">

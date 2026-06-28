@@ -78,14 +78,12 @@
     <p class="text-center text-muted mb-4 mz-testimonials-sub">
       {% blocktrans %}Voices from partners who work with {{ shop_brand }}{% endblocktrans %}
     </p>
-    <div class="row g-4">
+    <div class="mz-testimonials-grid">
       {% for t in active_testimonials %}
-      <div class="col-md-6">
-        <blockquote class="mz-testimonial">
-          <p>“{% testimonial_quote t LANGUAGE_CODE %}”</p>
-          <footer class="mz-testimonial-author">{{ t.company_name }}</footer>
-        </blockquote>
-      </div>
+      <blockquote class="mz-testimonial">
+        <p>“{% testimonial_quote t LANGUAGE_CODE %}”</p>
+        <footer class="mz-testimonial-author">{{ t.company_name }}</footer>
+      </blockquote>
       {% endfor %}
     </div>
   </section>
