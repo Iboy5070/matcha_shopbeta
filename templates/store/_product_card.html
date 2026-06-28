@@ -12,7 +12,11 @@
   </a>
   <div class="mz-product-card-body">
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
-    <div class="mz-product-name">{% if show_variant_name %}{% variant_name variant LANGUAGE_CODE %}{% else %}{% product_name p LANGUAGE_CODE %}{% endif %}</div>
+    {% if show_variant_name %}
+    <div class="mz-product-name">{% variant_name variant LANGUAGE_CODE %}</div>
+    {% else %}
+    <div class="mz-product-name">{% product_name p LANGUAGE_CODE %}</div>
+    {% endif %}
     <div class="mz-product-price">
       {% if variant.sell_price and variant.sell_price > 0 %}{{ variant.sell_price|kip }}{% else %}{{ variant.price|kip }}{% endif %}
       <span>ກີບ</span>

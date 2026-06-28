@@ -35,7 +35,6 @@
         <li class="nav-item"><a class="nav-link" href="{% url 'store_shop' %}">{% trans "Products" %}</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'store_blog_list' %}">{% trans "Blog" %}</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'store_faq' %}">{% trans "FAQ" %}</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'store_confirm_payment' %}">{% trans "Payment notice" %}</a></li>
         <li class="nav-item"><a class="nav-link" href="{% url 'store_contact' %}">{% trans "Contact" %}</a></li>
       </ul>
       <div class="d-flex align-items-center gap-2">
@@ -49,7 +48,6 @@
             <option value="en" {% if LANG == "en" %}selected{% endif %}>EN</option>
           </select>
         </form>
-        <a class="btn btn-sm mz-btn-primary d-none d-lg-inline-flex" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
         {% if user.is_authenticated %}
         <div class="dropdown d-none d-lg-block">
           <button class="btn btn-sm mz-btn-icon-only" type="button" data-bs-toggle="dropdown" aria-label="{% trans 'My account' %}">
@@ -106,6 +104,7 @@
           <li><a href="{% url 'store_blog_list' %}">{% trans "Blog" %}</a></li>
           <li><a href="{% url 'store_faq' %}">{% trans "FAQ" %}</a></li>
           <li><a href="{% url 'store_contact' %}">{% trans "Contact" %}</a></li>
+          <li><a href="{% url 'store_confirm_payment' %}">{% trans "Payment notice" %}</a></li>
           <li><a href="{% url 'store_returns' %}">{% trans "Return policy" %}</a></li>
           <li><a href="{% url 'store_privacy' %}">{% trans "Privacy policy" %}</a></li>
         </ul>

@@ -14,5 +14,10 @@ def product_name(product, lang):
 
 
 @register.simple_tag
+def variant_name(variant, lang):
+    return variant.display_name_for(lang)
+
+
+@register.simple_tag
 def product_description(product, lang):
     return product.description_for(lang)
