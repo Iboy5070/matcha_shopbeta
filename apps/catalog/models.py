@@ -80,6 +80,24 @@ class Product(models.Model):
             return self.image.url
         return ""
 
+    def default_variant(self):
+        return self.variants.filter(is_active=True).order_by("sell_price", "id").first()
+
+    def active_variants(self):
+        return self.variants.filter(is_active=True).order_by("sell_price", "id")
+
+    def price_label(self) -> str:
+        prices = [
+            v.sell_price or v.price
+            for v in self.active_variants()
+        ]
+        if not prices:
+            return ""
+        lo, hi = min(prices), max(prices)
+        if lo == hi:
+            return f"{int(lo):,}"
+        return f"{int(lo):,} – {int(hi):,}"
+
     def __str__(self):
         return self.name
 
@@ -108,8 +126,19 @@ class ProductVariant(models.Model):
     cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     stock_qty = models.IntegerField(default=0)
     reorder_level = models.IntegerField(default=0)
+    image_url = models.URLField(
+        "Variant image URL",
+        blank=True,
+        help_text="Optional — overrides product image for this option (e.g. size/grade).",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def display_image(self) -> str:
+        if self.image_url:
+            return self.image_url
+        return self.product.display_image if self.product_id else ""
 
     def display_name_for(self, lang):
         return _pick_lang(lang, self.display_name, self.display_name_th, self.display_name_en)

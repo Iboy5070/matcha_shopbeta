@@ -219,6 +219,124 @@ PRODUCTS = [
             },
         ],
     },
+    {
+        "slug": "matcha-capsule",
+        "category": "matcha-drinks",
+        "name": "ມັດຊາ Capsule (10 ແຄບຊູນ)",
+        "name_th": "มัทฉะแคปซูล (10 แคปซูล)",
+        "name_en": "Matcha Capsule (10 pcs)",
+        "description": "ມັດຊາຍີ່ປຸ່ນໃນແຄບຊູນ — ໃຊ້ກັບເຄື່ອງ Nespresso",
+        "description_th": "มัทฉะญี่ปุ่นในแคปซูล — ใช้กับเครื่อง Nespresso",
+        "description_en": "Japanese matcha capsules for Nespresso machines",
+        "image_url": CEREMONIAL_IMAGE,
+        "is_featured": True,
+        "variants": [
+            {
+                "sku": "CAP-EX-10",
+                "display_name": "Excellent Rich ×10",
+                "display_name_th": "Excellent Rich ×10",
+                "display_name_en": "Excellent Rich ×10",
+                "image_url": CEREMONIAL_IMAGE,
+                "sell_price": Decimal("55000"),
+                "stock_qty": 40,
+            },
+            {
+                "sku": "CAP-MD-10",
+                "display_name": "Medium Rich ×10",
+                "display_name_th": "Medium Rich ×10",
+                "display_name_en": "Medium Rich ×10",
+                "image_url": CRAFTI_CUP_IMAGE,
+                "sell_price": Decimal("48000"),
+                "stock_qty": 45,
+            },
+            {
+                "sku": "CAP-CL-10",
+                "display_name": "Classic Rich ×10",
+                "display_name_th": "Classic Rich ×10",
+                "display_name_en": "Classic Rich ×10",
+                "image_url": CULINARY_IMAGE,
+                "sell_price": Decimal("42000"),
+                "stock_qty": 50,
+            },
+        ],
+    },
+    {
+        "slug": "genmaicha-powder",
+        "category": "matcha-powder",
+        "name": "ຜົງ Genmaicha",
+        "name_th": "ผงเกนmaicha",
+        "name_en": "Genmaicha Powder",
+        "description": "ຊາເຂົ້າຄົ່ມັດຊາ — ກລິ່ນຫອມ รสกลมกล่อม",
+        "description_th": "ชาเกนmaicha ผสมข้าวคั่ว",
+        "description_en": "Roasted rice and green tea blend powder",
+        "image_url": _static_image("f3.jpg"),
+        "is_featured": False,
+        "variants": [
+            {
+                "sku": "GENMAICHA-80",
+                "display_name": "80 ກຣາມ",
+                "display_name_th": "80 กรัม",
+                "display_name_en": "80 g",
+                "weight_g": 80,
+                "sell_price": Decimal("52000"),
+                "stock_qty": 35,
+            },
+        ],
+    },
+    {
+        "slug": "matcha-starter-set",
+        "category": "equipment",
+        "name": "Matcha Starter Set",
+        "name_th": "ชุดเริ่มต้นชงมัทฉะ",
+        "name_en": "Matcha Starter Set",
+        "description": "ເຊັນ + ຊາວັນ + ຊີວ Chashaku — ພ້ອມເລີ່ມຊົງ",
+        "description_th": "ชาเซ็น + ชawan + ช้อนตวง — พร้อมเริ่มชง",
+        "description_en": "Whisk, bowl, and scoop — everything to begin",
+        "image_url": CHAWAN_IMAGE,
+        "is_featured": True,
+        "variants": [
+            {
+                "sku": "SET-STARTER",
+                "display_name": "1 ຊຸດ",
+                "display_name_th": "1 ชุด",
+                "display_name_en": "1 set",
+                "sell_price": Decimal("185000"),
+                "stock_qty": 15,
+            },
+        ],
+    },
+    {
+        "slug": "matcha-rich-blend",
+        "category": "matcha-powder",
+        "name": "Matcha Rich (ສຳລັບຮ້ານ)",
+        "name_th": "มัทฉะริช (สำหรับร้าน)",
+        "name_en": "Matcha Rich (for cafés)",
+        "description": "ສູດມັດຊາເຂັ້ມ — ເຫມາະສຳລັບຮ້ານກາເຟ ແລະ ຊານม",
+        "description_th": "สูตรมัทฉะเข้ม — เหมาะสำหรับร้านกาแฟ",
+        "description_en": "Rich blend crafted for cafés and bubble tea shops",
+        "image_url": LATTE_IMAGE,
+        "is_featured": True,
+        "variants": [
+            {
+                "sku": "RICH-100",
+                "display_name": "100 ກຣາມ",
+                "display_name_th": "100 กรัม",
+                "display_name_en": "100 g",
+                "weight_g": 100,
+                "sell_price": Decimal("72000"),
+                "stock_qty": 40,
+            },
+            {
+                "sku": "RICH-200",
+                "display_name": "200 ກຣາມ",
+                "display_name_th": "200 กรัม",
+                "display_name_en": "200 g",
+                "weight_g": 200,
+                "sell_price": Decimal("128000"),
+                "stock_qty": 25,
+            },
+        ],
+    },
 ]
 
 
@@ -304,6 +422,7 @@ def _upsert_product(data, category):
 
 def _upsert_variant(product, data):
     price = data["sell_price"]
+    image_url = data.get("image_url", "")
     variant, created = ProductVariant.objects.get_or_create(
         sku=data["sku"],
         defaults={
@@ -315,6 +434,7 @@ def _upsert_variant(product, data):
             "price": price,
             "sell_price": price,
             "stock_qty": data["stock_qty"],
+            "image_url": image_url,
             "is_active": True,
         },
     )
@@ -327,6 +447,7 @@ def _upsert_variant(product, data):
         variant.price = price
         variant.sell_price = price
         variant.stock_qty = data["stock_qty"]
+        variant.image_url = image_url
         variant.is_active = True
         variant.save()
     return variant

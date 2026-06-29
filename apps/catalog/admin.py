@@ -12,6 +12,7 @@ class VariantInline(admin.TabularInline):
         "display_name",
         "display_name_th",
         "display_name_en",
+        "image_url",
         "sell_price",
         "stock_qty",
         "is_active",

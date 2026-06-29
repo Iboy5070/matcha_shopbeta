@@ -60,13 +60,9 @@
     </div>
     <div class="row g-4 justify-content-center">
       {% for product in featured_products %}
-      {% with v=product.variants.first %}
-      {% if v %}
       <div class="col-sm-6 col-lg-5 col-xl-4">
-        {% include "store/_product_card.html" with variant=v home_style=True show_variant_name=False %}
+        {% include "store/_product_card.html" with product=product home_style=True %}
       </div>
-      {% endif %}
-      {% endwith %}
       {% endfor %}
     </div>
   </section>

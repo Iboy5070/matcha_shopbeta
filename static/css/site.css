@@ -668,6 +668,17 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   line-height: 1.7;
 }
 
+.mz-variant-opt {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.mz-variant-opt-active {
+  background: var(--mz-green) !important;
+  border-color: var(--mz-green) !important;
+  color: #fff !important;
+}
+
 .mz-footer {
   background: var(--mz-green);
   color: rgba(255, 255, 255, 0.9);

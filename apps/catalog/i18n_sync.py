@@ -85,6 +85,13 @@ VARIANT_BY_SKU = {
     "HOJICHA-50": ("50 กรัม", "50 g"),
     "TOOL-CHASEN": ("1 ชิ้น", "1 pc"),
     "TOOL-CHAWAN": ("1 ชิ้น", "1 pc"),
+    "CAP-EX-10": ("Excellent Rich ×10", "Excellent Rich ×10"),
+    "CAP-MD-10": ("Medium Rich ×10", "Medium Rich ×10"),
+    "CAP-CL-10": ("Classic Rich ×10", "Classic Rich ×10"),
+    "GENMAICHA-80": ("80 กรัม", "80 g"),
+    "SET-STARTER": ("1 ชุด", "1 set"),
+    "RICH-100": ("100 กรัม", "100 g"),
+    "RICH-200": ("200 กรัม", "200 g"),
 }
 
 

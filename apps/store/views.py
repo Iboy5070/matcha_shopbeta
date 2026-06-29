@@ -198,25 +198,28 @@ def shop(request):
     q = (request.GET.get("q") or "").strip()
     category_slug = (request.GET.get("category") or "").strip()
 
-    qs = ProductVariant.objects.select_related(
-        "product", "product__category",
-    ).filter(is_active=True, product__is_active=True)
+    qs = Product.objects.filter(
+        is_active=True,
+        variants__is_active=True,
+    ).select_related("category").prefetch_related("variants").distinct()
     if q:
         qs = qs.filter(
-            Q(sku__icontains=q)
-            | Q(display_name__icontains=q)
-            | Q(product__name__icontains=q)
-        )
+            Q(name__icontains=q)
+            | Q(name_en__icontains=q)
+            | Q(name_th__icontains=q)
+            | Q(variants__sku__icontains=q)
+            | Q(variants__display_name__icontains=q)
+        ).distinct()
     if category_slug:
-        qs = qs.filter(product__category__slug=category_slug)
-    qs = qs.order_by("product__name", "sku")
+        qs = qs.filter(category__slug=category_slug)
+    qs = qs.order_by("name")
 
     categories = Category.objects.filter(
         products__is_active=True,
         products__variants__is_active=True,
     ).distinct().order_by("name")
     return render(request, "store/shop.html", {
-        "variants": qs,
+        "products": qs,
         "q": q,
         "categories": categories,
         "active_category": category_slug,
@@ -227,13 +230,13 @@ def product_detail(request, variant_id: int):
     v = get_object_or_404(
         ProductVariant.objects.select_related("product", "product__category"),
         id=variant_id,
+        is_active=True,
+        product__is_active=True,
     )
-    siblings = ProductVariant.objects.filter(
-        product=v.product, is_active=True,
-    ).exclude(id=v.id)
+    variants = v.product.active_variants()
     return render(request, "store/product_detail.html", {
         "v": v,
-        "siblings": siblings,
+        "variants": variants,
     })
 
 
