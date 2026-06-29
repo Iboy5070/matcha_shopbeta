@@ -49,7 +49,7 @@ class WebOrderAdmin(admin.ModelAdmin):
             {
                 "fields": ("order_no", "status", "payment_method", "created_at"),
                 "description": (
-                    "ສະຖານະ: NEW → WAITING_PAYMENT → PAID → SHIPPING → DONE. "
+                    "ສະຖານະ: NEW → WAITING_PAYMENT → PAYMENT_REVIEW → PAID → SHIPPING → DONE. "
                     "ປ່ຽນເປັນ PAID ເມື່ອກວດສลິບແລ້ວ."
                 ),
             },
@@ -67,6 +67,13 @@ class WebOrderAdmin(admin.ModelAdmin):
     @admin.display(description="ຍອດ (ກີບ)")
     def grand_total_display(self, obj):
         return f"{int(obj.grand_total):,}"
+
+    @admin.action(description="ຢືນຢັນຊຳລະ → PAID")
+    def mark_paid(self, request, queryset):
+        updated = queryset.update(status="PAID")
+        self.message_user(request, f"ປ່ຽນ {updated} ອໍເດີເປັນ PAID")
+
+    actions = [mark_paid]
 
 
 @admin.register(PaymentConfirmation)
@@ -99,3 +106,11 @@ class PaymentConfirmationAdmin(admin.ModelAdmin):
                 obj.slip_image.url,
             )
         return "—"
+
+    @admin.action(description="ຢືນຢັນຊຳລະອໍເດີ → PAID")
+    def mark_orders_paid(self, request, queryset):
+        order_ids = queryset.values_list("order_id", flat=True).distinct()
+        updated = WebOrder.objects.filter(id__in=order_ids).update(status="PAID")
+        self.message_user(request, f"ປ່ຽນ {updated} ອໍເດີເປັນ PAID")
+
+    actions = [mark_orders_paid]

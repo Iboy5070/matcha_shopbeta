@@ -1,40 +1,46 @@
 {% extends "store/base.html" %}
-{% load i18n %}
+{% load static i18n %}
 {% block title %}{% trans "Contact" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero mb-4">
-  <h1 class="mz-section-title">{% trans "Contact us" %}</h1>
-  <p class="text-muted mb-0">{% trans "Tell us what you need — our team will get back to you." %}</p>
-  <div class="mt-2 mb-0">
-    {% include "store/_contact_channels.html" %}
+<div class="row g-4 align-items-start">
+  <div class="col-lg-5">
+    <div class="mz-about-media mb-3">
+      <img src="{% static 'f3.jpg' %}" alt="{{ shop_brand }}">
+    </div>
+    <div class="mz-page-hero border-0 shadow-none p-0 bg-transparent mb-0">
+      <h1 class="mz-section-title">{% trans "Contact us" %}</h1>
+      <p class="text-muted mb-2">{% trans "Tell us what you need — our team will get back to you." %}</p>
+      {% include "store/_contact_channels.html" %}
+    </div>
   </div>
-</div>
+  <div class="col-lg-7">
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+    {% if success %}<div class="alert alert-success">{% trans "Thank you — we received your message." %}</div>{% endif %}
 
-{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-{% if success %}<div class="alert alert-success">{% trans "Thank you — we received your message." %}</div>{% endif %}
-
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">{% trans "Name" %} *</label>
-        <input class="form-control" name="name" required>
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">{% trans "Name" %} *</label>
+            <input class="form-control" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{% trans "Email" %}</label>
+            <input class="form-control" name="email" type="email">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{% trans "Phone" %}</label>
+            <input class="form-control" name="phone">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{% trans "Message" %} *</label>
+            <textarea class="form-control" name="message" rows="4" required></textarea>
+          </div>
+          <button class="btn mz-btn-primary w-100">{% trans "Send message" %}</button>
+        </form>
       </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Email" %}</label>
-        <input class="form-control" name="email" type="email">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Phone" %}</label>
-        <input class="form-control" name="phone">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Message" %} *</label>
-        <textarea class="form-control" name="message" rows="4" required></textarea>
-      </div>
-      <button class="btn mz-btn-primary w-100">{% trans "Send message" %}</button>
-    </form>
+    </div>
   </div>
 </div>
 {% endblock %}

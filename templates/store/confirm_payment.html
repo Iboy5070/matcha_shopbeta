@@ -32,8 +32,9 @@
         <input class="form-control" name="bank_name">
       </div>
       <div class="mb-3">
-        <label class="form-label">{% trans "Slip image" %}</label>
-        <input class="form-control" name="slip_image" type="file" accept="image/*">
+        <label class="form-label">{% trans "Slip image" %} *</label>
+        <input class="form-control" name="slip_image" type="file" accept="image/*" required>
+        <div class="form-text">{% trans "Screenshot or photo of your bank transfer slip." %}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">{% trans "Note" %}</label>

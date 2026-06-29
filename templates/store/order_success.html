@@ -14,7 +14,7 @@
 
   {% if order.payment_method == "transfer" %}
   <div class="text-start mt-4">{% include "store/_bank_transfer.html" %}</div>
-  <p class="alert alert-info mt-3 mb-0 text-start">{% trans "Please transfer payment and submit your slip on the payment notice page." %}</p>
+  <p class="alert alert-info mt-3 mb-0 text-start">{% trans "Please transfer payment and upload your slip. We will verify within 24 hours before shipping." %}</p>
   <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
     <a class="btn mz-btn-primary btn-lg" href="{% url 'store_confirm_payment' %}?order_no={{ order.order_no }}&paid_amount={{ order.grand_total }}">{% trans "Upload slip" %}</a>
     <a class="btn mz-btn-outline" href="{% url 'store_shop' %}">{% trans "Continue shopping" %}</a>

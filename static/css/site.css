@@ -733,6 +733,18 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   box-shadow: var(--mz-shadow);
 }
 
+.mz-legal-sections section {
+  background: #fff;
+  border-radius: var(--mz-radius);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(45, 90, 61, 0.08);
+}
+
+.mz-legal-sections h2 {
+  color: var(--mz-green);
+  font-weight: 600;
+}
+
 .mz-checkout-total {
   display: flex;
   flex-wrap: wrap;

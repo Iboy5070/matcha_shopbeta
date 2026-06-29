@@ -2,10 +2,22 @@
 {% load i18n %}
 {% block title %}{% trans "Privacy policy" %}{% endblock %}
 {% block content %}
-<div class="mz-page-hero">
+<div class="mz-page-hero mb-4">
   <h1 class="mz-section-title">{% trans "Privacy policy for customers" %}</h1>
-  <p>{% trans "We collect only information needed to process orders and respond to inquiries (name, contact details, order history)." %}</p>
-  <p>{% trans "Payment slips and messages are stored securely and used only for order verification and customer support." %}</p>
-  <p class="mb-0">{% trans "You may contact us to request correction or deletion of your personal data where applicable by law." %}</p>
+</div>
+
+<div class="mz-legal-sections">
+  <section class="mb-4">
+    <h2 class="h5">{% trans "Information we collect" %}</h2>
+    <p class="text-muted mb-0">{% trans "We collect only information needed to process orders and respond to inquiries (name, contact details, order history)." %}</p>
+  </section>
+  <section class="mb-4">
+    <h2 class="h5">{% trans "Payment slips and messages" %}</h2>
+    <p class="text-muted mb-0">{% trans "Payment slips and messages are stored securely and used only for order verification and customer support." %}</p>
+  </section>
+  <section>
+    <h2 class="h5">{% trans "Your rights" %}</h2>
+    <p class="text-muted mb-0">{% trans "You may contact us to request correction or deletion of your personal data where applicable by law." %}</p>
+  </section>
 </div>
 {% endblock %}

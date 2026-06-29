@@ -362,33 +362,67 @@ def confirm_payment(request):
         note = (request.POST.get("note") or "").strip()
         slip = request.FILES.get("slip_image")
 
+        ctx = {
+            "prefill_order_no": order_no,
+            "prefill_paid_amount": (request.POST.get("paid_amount") or "").strip(),
+        }
+
+        if not slip:
+            return render(request, "store/confirm_payment.html", {
+                **ctx,
+                "error": "ກະລຸນາແນບຮູບສลິບໂອນເງິນ",
+            })
+
         order = WebOrder.objects.filter(order_no=order_no).first()
         if not order:
             return render(request, "store/confirm_payment.html", {
+                **ctx,
                 "error": "ບໍ່ພົບເລກອໍເດີ",
-                "prefill_order_no": order_no,
-                "prefill_paid_amount": (request.POST.get("paid_amount") or "").strip(),
             })
+
+        if order.status in ("PAID", "SHIPPING", "DONE"):
+            return render(request, "store/confirm_payment.html", {
+                **ctx,
+                "error": "ອໍເດີນີ້ຊຳລະແລ້ວ",
+            })
+
+        if order.payment_confirmations.exists():
+            return render(request, "store/confirm_payment.html", {
+                **ctx,
+                "error": "ແຈ້ງຊຳລະອໍເດີນີ້ແລ້ວ — ລໍກວດຈາກຮ້ານ",
+            })
+
+        amount_note = ""
+        if paid_amount and paid_amount != order.grand_total:
+            amount_note = f" (ລູກຄ້າແຈ້ງ {paid_amount}, ຍອດອໍເດີ {order.grand_total})"
 
         PaymentConfirmation.objects.create(
             order=order,
-            paid_amount=paid_amount,
+            paid_amount=paid_amount or order.grand_total,
             bank_name=bank_name,
             note=note,
             slip_image=slip,
         )
 
-        # ปรับสถานะ (แบบง่าย)
-        order.status = "PAID"
+        order.status = "PAYMENT_REVIEW"
         order.save(update_fields=["status"])
 
         notify_shop(
             f"[{settings.SHOP_BRAND}] ແຈ້ງໂອນ {order.order_no}",
-            f"ຈຳນວນ: {paid_amount} ກີບ\nທະນາຄານ: {bank_name}\nໝາຍເຫດ: {note}",
+            (
+                f"ຊື່: {order.customer_name}\n"
+                f"ໂທ: {order.phone}\n"
+                f"ຈຳນວນ: {paid_amount} ກີບ{amount_note}\n"
+                f"ທະນາຄານ: {bank_name}\n"
+                f"ໝາຍເຫດ: {note}\n"
+                f"Admin → Payment confirmations / Web orders → ປ່ຽນເປັນ PAID"
+            ),
         )
 
         return render(request, "store/confirm_payment.html", {
-            "success": f"ຢືນຢັນຊຳລະເງິນແລ້ວ: {order.order_no}",
+            "success": (
+                f"ຮັບສลິບແລ້ວ ({order.order_no}) — ຮ້ານຈະກວດແລະຢືນຢັນພາຍໃນ 24 ຊມ."
+            ),
         })
 
     return render(request, "store/confirm_payment.html", {

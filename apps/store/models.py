@@ -26,6 +26,7 @@ class WebOrder(models.Model):
     STATUS_CHOICES = [
         ("NEW", "NEW"),
         ("WAITING_PAYMENT", "WAITING_PAYMENT"),
+        ("PAYMENT_REVIEW", "PAYMENT_REVIEW"),
         ("PAID", "PAID"),
         ("SHIPPING", "SHIPPING"),
         ("DONE", "DONE"),
