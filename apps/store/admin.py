@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.utils.html import format_html
 
@@ -99,23 +100,29 @@ class PaymentConfirmationAdmin(admin.ModelAdmin):
 
     @admin.display(description="ສลິບ")
     def slip_thumb(self, obj):
-        if obj.slip_image:
-            return format_html(
-                '<a href="{}" target="_blank"><img src="{}" width="40" height="40" style="object-fit:cover;border-radius:4px"></a>',
-                obj.slip_image.url,
-                obj.slip_image.url,
-            )
-        return "—"
+        url = obj.display_slip_url
+        if not url:
+            return "—"
+        if not url.startswith("http"):
+            url = settings.SITE_URL.rstrip("/") + url
+        return format_html(
+            '<a href="{}" target="_blank"><img src="{}" width="40" height="40" style="object-fit:cover;border-radius:4px"></a>',
+            url,
+            url,
+        )
 
     @admin.display(description="ສลິບ (ໃຫຍ່)")
     def slip_preview(self, obj):
-        if obj.slip_image:
-            return format_html(
-                '<a href="{}" target="_blank"><img src="{}" style="max-width:320px;max-height:400px;border-radius:8px;border:1px solid #ddd"></a>',
-                obj.slip_image.url,
-                obj.slip_image.url,
-            )
-        return "—"
+        url = obj.display_slip_url
+        if not url:
+            return "—"
+        if not url.startswith("http"):
+            url = settings.SITE_URL.rstrip("/") + url
+        return format_html(
+            '<a href="{}" target="_blank"><img src="{}" style="max-width:320px;max-height:400px;border-radius:8px;border:1px solid #ddd"></a>',
+            url,
+            url,
+        )
 
     @admin.action(description="ຢືນຢັນຊຳລະອໍເດີ → PAID")
     def mark_orders_paid(self, request, queryset):

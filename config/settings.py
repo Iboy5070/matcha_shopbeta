@@ -151,6 +151,12 @@ NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
 
+# Supabase Storage for payment slips (persists across Render redeploys)
+DATABASE_URL = os.getenv("DATABASE_URL", "")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+SUPABASE_SLIP_BUCKET = os.getenv("SUPABASE_SLIP_BUCKET", "slips")
+
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@196haus-matcha.local")
 EMAIL_HOST = os.getenv("EMAIL_HOST", "")
 if EMAIL_HOST:

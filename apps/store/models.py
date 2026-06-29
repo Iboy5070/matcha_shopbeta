@@ -76,7 +76,26 @@ class PaymentConfirmation(models.Model):
     note = models.CharField(max_length=255, blank=True)
 
     slip_image = models.ImageField(upload_to="slips/", null=True, blank=True)
+    slip_url = models.URLField("Slip URL (cloud)", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Confirm {self.order.order_no}"
+
+    @property
+    def display_slip_url(self) -> str:
+        if self.slip_url:
+            return self.slip_url
+        if self.slip_image:
+            return self.slip_image.url
+        return ""
+
+    def has_visible_slip(self) -> bool:
+        if self.slip_url:
+            return True
+        if not self.slip_image:
+            return False
+        try:
+            return self.slip_image.storage.exists(self.slip_image.name)
+        except Exception:
+            return False

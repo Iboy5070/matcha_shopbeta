@@ -6,6 +6,11 @@
 {% include "store/_checkout_steps.html" with step=3 %}
 
 {% if slip_error %}<div class="alert alert-danger">{{ slip_error }}</div>{% endif %}
+{% if slip_success and slip_file_ok %}
+<div class="alert alert-success text-center">{% trans "Slip uploaded successfully. We will review it within 24 hours." %}</div>
+{% elif slip_success and not slip_file_ok %}
+<div class="alert alert-warning text-center">{% trans "Slip received, but preview is unavailable. Our team can still review it in admin." %}</div>
+{% endif %}
 
 <div class="mz-pay-page">
   <div class="text-center mb-3">
@@ -26,12 +31,12 @@
     </div>
     {% endif %}
     <div class="row justify-content-center g-4">
-      {% if slip_confirmation and slip_confirmation.slip_image and slip_file_ok %}
+      {% if slip_file_ok and slip_preview_url %}
       <div class="col-md-5">
         <div class="mz-pay-step-card h-100 text-center">
           <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Your slip" %}</h2>
-          <a href="{{ slip_confirmation.slip_image.url }}" target="_blank" rel="noopener">
-            <img class="mz-slip-preview img-fluid rounded" src="{{ slip_confirmation.slip_image.url }}" alt="{% trans 'Transfer slip' %}">
+          <a href="{{ slip_preview_url }}" target="_blank" rel="noopener">
+            <img class="mz-slip-preview img-fluid rounded" src="{{ slip_preview_url }}" alt="{% trans 'Transfer slip' %}">
           </a>
           <p class="small text-muted mt-2 mb-0">{% trans "Tap to open full size" %}</p>
         </div>

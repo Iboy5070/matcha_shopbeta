@@ -16,6 +16,7 @@ from apps.cms.models import ContactMessage, FAQItem
 from .forms import CustomerLoginForm, CustomerRegistrationForm
 from .models import CustomerProfile, WebOrder, WebOrderItem, PaymentConfirmation
 from .notifications import notify_shop
+from .slip_storage import upload_slip_to_supabase
 
 User = get_user_model()
 
@@ -28,12 +29,27 @@ def _to_decimal(x) -> Decimal:
 
 
 def _slip_file_exists(confirmation: Optional[PaymentConfirmation]) -> bool:
-    if not confirmation or not confirmation.slip_image:
+    if not confirmation:
         return False
-    try:
-        return confirmation.slip_image.storage.exists(confirmation.slip_image.name)
-    except Exception:
-        return False
+    return confirmation.has_visible_slip()
+
+
+def _absolute_slip_url(request, url: str) -> str:
+    if not url:
+        return ""
+    if url.startswith("http://") or url.startswith("https://"):
+        return url
+    return request.build_absolute_uri(url)
+
+
+def _save_slip_on_confirmation(confirmation: PaymentConfirmation, slip, order_no: str):
+    slip.seek(0)
+    cloud_url = upload_slip_to_supabase(slip, order_no)
+    slip.seek(0)
+    confirmation.slip_image = slip
+    if cloud_url:
+        confirmation.slip_url = cloud_url
+    confirmation.save(update_fields=["slip_image", "slip_url"])
 
 
 def _unit_price(variant: ProductVariant) -> Decimal:
@@ -371,7 +387,10 @@ def checkout(request):
 def order_success(request, order_no: str):
     order = get_object_or_404(WebOrder, order_no=order_no)
     slip_confirmation = order.payment_confirmations.order_by("-created_at").first()
-    slip_file_ok = _slip_file_exists(slip_confirmation)
+    slip_preview_url = ""
+    if slip_confirmation:
+        slip_preview_url = _absolute_slip_url(request, slip_confirmation.display_slip_url)
+    slip_file_ok = bool(slip_preview_url)
     slip_success = request.GET.get("slip") == "ok"
     slip_error = request.session.pop("slip_error", None)
     slip_already = order.payment_confirmations.exists()
@@ -384,6 +403,7 @@ def order_success(request, order_no: str):
     return render(request, "store/order_success.html", {
         "order": order,
         "slip_confirmation": slip_confirmation,
+        "slip_preview_url": slip_preview_url,
         "slip_file_ok": slip_file_ok,
         "slip_success": slip_success,
         "slip_error": slip_error,
@@ -437,12 +457,11 @@ def confirm_payment(request):
         if order.payment_confirmations.exists():
             existing = order.payment_confirmations.order_by("-created_at").first()
             if order.status == "PAYMENT_REVIEW" and existing:
-                existing.slip_image = slip
                 existing.paid_amount = paid_amount or order.grand_total
                 existing.bank_name = bank_name
                 if note:
                     existing.note = note
-                existing.save()
+                _save_slip_on_confirmation(existing, slip, order.order_no)
                 notify_shop(
                     f"[{settings.SHOP_BRAND}] ອັບສลິບໃໝ່ {order.order_no}",
                     f"ລູກຄ້າອັບສลິບຊ້ຳ — ກະລຸນາກວດໃນ Admin",
@@ -459,13 +478,13 @@ def confirm_payment(request):
         if paid_amount and paid_amount != order.grand_total:
             amount_note = f" (ລູກຄ້າແຈ້ງ {paid_amount}, ຍອດອໍເດີ {order.grand_total})"
 
-        PaymentConfirmation.objects.create(
+        confirmation = PaymentConfirmation.objects.create(
             order=order,
             paid_amount=paid_amount or order.grand_total,
             bank_name=bank_name,
             note=note,
-            slip_image=slip,
         )
+        _save_slip_on_confirmation(confirmation, slip, order.order_no)
 
         order.status = "PAYMENT_REVIEW"
         order.save(update_fields=["status"])
