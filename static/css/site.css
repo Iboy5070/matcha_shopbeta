@@ -889,6 +889,48 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   padding: 0.65rem 0.75rem;
 }
 
+.mz-order-status-card {
+  padding: 0.25rem 0;
+}
+
+.mz-order-total {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--mz-green);
+}
+
+.mz-status-pill {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.mz-status-wait {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.mz-status-review {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.mz-status-paid,
+.mz-status-ship,
+.mz-status-done {
+  background: rgba(45, 90, 61, 0.15);
+  color: var(--mz-green);
+}
+
+.mz-slip-preview {
+  max-height: 280px;
+  object-fit: contain;
+  border: 1px solid rgba(45, 90, 61, 0.12);
+  background: #faf9f6;
+}
+
 .mz-bank-transfer-head {
   display: flex;
   align-items: center;
@@ -925,31 +967,37 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 }
 
 .mz-bank-transfer-body {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1.25rem;
-  align-items: start;
+}
+
+.mz-bank-transfer-compact .mz-bank-qr-panel {
+  align-self: center;
 }
 
 .mz-bank-details {
-  min-width: 0;
+  width: 100%;
 }
 
 .mz-bank-detail {
-  display: grid;
-  grid-template-columns: 7.5rem 1fr;
-  gap: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
   align-items: baseline;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.65rem;
 }
 
 .mz-bank-detail-label {
+  flex: 0 0 6.5rem;
   color: var(--mz-muted);
   font-size: 0.85rem;
 }
 
 .mz-bank-detail-value {
+  flex: 1 1 12rem;
   font-weight: 600;
+  min-width: 0;
   word-break: break-word;
 }
 

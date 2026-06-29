@@ -81,13 +81,13 @@ class PaymentConfirmationAdmin(admin.ModelAdmin):
     list_display = ("order", "paid_amount_display", "bank_name", "slip_thumb", "created_at")
     list_filter = ("created_at",)
     search_fields = ("order__order_no",)
-    readonly_fields = ("created_at",)
+    readonly_fields = ("created_at", "slip_preview")
     ordering = ("-created_at",)
     fieldsets = (
         (
             "ຢືນຢັນການໂອນ",
             {
-                "fields": ("order", "paid_amount", "bank_name", "slip_image", "note", "created_at"),
+                "fields": ("order", "paid_amount", "bank_name", "slip_image", "slip_preview", "note", "created_at"),
                 "description": "ລູກຄ້າອັບໂຫຼດສลິບຈາກໜ້າເວັບ — ກວດແລ້ວປ່ຽນສະຖານະອໍເດີເປັນ PAID.",
             },
         ),
@@ -102,6 +102,16 @@ class PaymentConfirmationAdmin(admin.ModelAdmin):
         if obj.slip_image:
             return format_html(
                 '<a href="{}" target="_blank"><img src="{}" width="40" height="40" style="object-fit:cover;border-radius:4px"></a>',
+                obj.slip_image.url,
+                obj.slip_image.url,
+            )
+        return "—"
+
+    @admin.display(description="ສลິບ (ໃຫຍ່)")
+    def slip_preview(self, obj):
+        if obj.slip_image:
+            return format_html(
+                '<a href="{}" target="_blank"><img src="{}" style="max-width:320px;max-height:400px;border-radius:8px;border:1px solid #ddd"></a>',
                 obj.slip_image.url,
                 obj.slip_image.url,
             )

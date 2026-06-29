@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="mz-order-status-card mb-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+      <div class="text-muted small mb-1">{% trans "Order number" %}</div>
+      <div class="mz-order-no">{{ order.order_no }}</div>
+    </div>
+    <div class="text-end">
+      <div class="text-muted small mb-1">{% trans "Total" %}</div>
+      <div class="mz-order-total">{{ order.grand_total|kip }} <small>ກີບ</small></div>
+    </div>
+  </div>
+
+  {% if order.status == "WAITING_PAYMENT" %}
+  <div class="mz-status-pill mz-status-wait">{% trans "Waiting for payment" %}</div>
+  <p class="small text-muted mb-0 mt-2">{% trans "Please transfer and upload your slip below." %}</p>
+  {% elif order.status == "PAYMENT_REVIEW" %}
+  <div class="mz-status-pill mz-status-review">{% trans "Payment under review" %}</div>
+  <p class="small text-muted mb-0 mt-2">{% trans "We received your slip and will confirm within 24 hours." %}</p>
+  {% elif order.status == "PAID" %}
+  <div class="mz-status-pill mz-status-paid">{% trans "Payment confirmed" %}</div>
+  <p class="small text-muted mb-0 mt-2">{% trans "Your order is confirmed. We will prepare shipment soon." %}</p>
+  {% elif order.status == "SHIPPING" %}
+  <div class="mz-status-pill mz-status-ship">{% trans "Shipping" %}</div>
+  <p class="small text-muted mb-0 mt-2">{% trans "Your order is on the way." %}</p>
+  {% elif order.status == "DONE" %}
+  <div class="mz-status-pill mz-status-done">{% trans "Completed" %}</div>
+  {% else %}
+  <div class="mz-status-pill mz-status-wait">{{ order.status }}</div>
+  {% endif %}
+</div>

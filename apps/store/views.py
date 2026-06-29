@@ -360,11 +360,13 @@ def checkout(request):
 
 def order_success(request, order_no: str):
     order = get_object_or_404(WebOrder, order_no=order_no)
+    slip_confirmation = order.payment_confirmations.order_by("-created_at").first()
     slip_success = request.GET.get("slip") == "ok"
     slip_error = request.session.pop("slip_error", None)
     slip_already = order.payment_confirmations.exists()
     return render(request, "store/order_success.html", {
         "order": order,
+        "slip_confirmation": slip_confirmation,
         "slip_success": slip_success,
         "slip_error": slip_error,
         "slip_already": slip_already,
