@@ -1,25 +1,27 @@
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from apps.catalog.i18n_sync import sync_catalog_i18n
 from apps.catalog.models import Category, Product, ProductVariant
 
+
+def _static_image(path: str) -> str:
+    base = (getattr(settings, "SITE_URL", "") or "https://matcha-shopbeta.onrender.com").rstrip("/")
+    return f"{base}/static/{path.lstrip('/')}"
+
+
 CEREMONIAL_IMAGE = (
     "https://getcrafti.co/cdn/shop/files/Ceremonialmatcha30gnobg.png?v=1737512532"
 )
-CULINARY_IMAGE = (
-    "https://images.unsplash.com/photo-1515823064-d6e0f004068a?w=600&auto=format&fit=crop"
+CRAFTI_CUP_IMAGE = (
+    "https://getcrafti.co/cdn/shop/files/Crafti_Cup_among_leaves-3_web_res.jpg"
 )
-LATTE_IMAGE = (
-    "https://images.unsplash.com/photo-1536256263959-c018b7865185?w=600&auto=format&fit=crop"
-)
-ICED_IMAGE = (
-    "https://images.unsplash.com/photo-1535352440904-5ebdca83af73?w=600&auto=format&fit=crop"
-)
-HOJICHA_IMAGE = (
-    "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&auto=format&fit=crop"
-)
+CULINARY_IMAGE = _static_image("p.jpg")
+LATTE_IMAGE = CRAFTI_CUP_IMAGE
+ICED_IMAGE = _static_image("f1.jpg")
+HOJICHA_IMAGE = _static_image("f2.png")
 CHASEN_IMAGE = (
     "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop"
 )
