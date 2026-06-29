@@ -78,6 +78,13 @@ CATEGORY_BY_SLUG = {
 
 VARIANT_BY_SKU = {
     "MATCHA-CER-30": ("30 กรัม", "30 g"),
+    "MATCHA-CER-50": ("50 กรัม", "50 g"),
+    "MATCHA-CUL-100": ("100 กรัม", "100 g"),
+    "MATCHA-LAT-30": ("30 กรัม", "30 g"),
+    "MATCHA-ICE-30": ("30 กรัม", "30 g"),
+    "HOJICHA-50": ("50 กรัม", "50 g"),
+    "TOOL-CHASEN": ("1 ชิ้น", "1 pc"),
+    "TOOL-CHAWAN": ("1 ชิ้น", "1 pc"),
 }
 
 
