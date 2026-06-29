@@ -79,7 +79,7 @@
       {% blocktrans %}Voices from partners who work with {{ shop_brand }}{% endblocktrans %}
     </p>
     <div class="mz-testimonials-grid">
-      {% for t in active_testimonials %}
+      {% for t in active_testimonials|slice:":4" %}
       <blockquote class="mz-testimonial">
         <p>“{% testimonial_quote t LANGUAGE_CODE %}”</p>
         <footer class="mz-testimonial-author">{{ t.company_name }}</footer>

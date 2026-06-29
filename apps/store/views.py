@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.catalog.models import Category, Product, ProductVariant
@@ -231,8 +232,16 @@ def cart(request):
 def add_to_cart(request, variant_id: int):
     cart = request.session.get(_cart_key(), {})
     k = str(variant_id)
-    cart[k] = int(cart.get(k, 0)) + 1
+    try:
+        add_qty = int(request.POST.get("qty") or request.GET.get("qty") or 1)
+    except (TypeError, ValueError):
+        add_qty = 1
+    add_qty = max(1, min(add_qty, 99))
+    cart[k] = int(cart.get(k, 0)) + add_qty
     request.session[_cart_key()] = cart
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if next_url == "detail":
+        return redirect("store_product_detail", variant_id=variant_id)
     return redirect("store_cart")
 
 
@@ -351,23 +360,39 @@ def checkout(request):
 
 def order_success(request, order_no: str):
     order = get_object_or_404(WebOrder, order_no=order_no)
-    return render(request, "store/order_success.html", {"order": order})
+    slip_success = request.GET.get("slip") == "ok"
+    slip_error = request.session.pop("slip_error", None)
+    slip_already = order.payment_confirmations.exists()
+    return render(request, "store/order_success.html", {
+        "order": order,
+        "slip_success": slip_success,
+        "slip_error": slip_error,
+        "slip_already": slip_already,
+    })
+
+
+def _redirect_slip_error(request, order_no: str, message: str):
+    request.session["slip_error"] = message
+    return redirect(reverse("store_order_success", kwargs={"order_no": order_no}))
 
 
 def confirm_payment(request):
     if request.method == "POST":
         order_no = (request.POST.get("order_no") or "").strip()
         paid_amount = _to_decimal(request.POST.get("paid_amount"))
-        bank_name = (request.POST.get("bank_name") or "").strip()
+        bank_name = (request.POST.get("bank_name") or settings.BANK_NAME or "").strip()
         note = (request.POST.get("note") or "").strip()
         slip = request.FILES.get("slip_image")
 
         ctx = {
             "prefill_order_no": order_no,
             "prefill_paid_amount": (request.POST.get("paid_amount") or "").strip(),
+            "prefill_bank_name": bank_name,
         }
 
         if not slip:
+            if order_no:
+                return _redirect_slip_error(request, order_no, "ກະລຸນາແນບຮູບສลິບໂອນເງິນ")
             return render(request, "store/confirm_payment.html", {
                 **ctx,
                 "error": "ກະລຸນາແນບຮູບສลິບໂອນເງິນ",
@@ -381,12 +406,16 @@ def confirm_payment(request):
             })
 
         if order.status in ("PAID", "SHIPPING", "DONE"):
+            if order_no:
+                return _redirect_slip_error(request, order_no, "ອໍເດີນີ້ຊຳລະແລ້ວ")
             return render(request, "store/confirm_payment.html", {
                 **ctx,
                 "error": "ອໍເດີນີ້ຊຳລະແລ້ວ",
             })
 
         if order.payment_confirmations.exists():
+            if order_no:
+                return redirect(reverse("store_order_success", kwargs={"order_no": order_no}) + "?slip=ok")
             return render(request, "store/confirm_payment.html", {
                 **ctx,
                 "error": "ແຈ້ງຊຳລະອໍເດີນີ້ແລ້ວ — ລໍກວດຈາກຮ້ານ",
@@ -419,15 +448,12 @@ def confirm_payment(request):
             ),
         )
 
-        return render(request, "store/confirm_payment.html", {
-            "success": (
-                f"ຮັບສลິບແລ້ວ ({order.order_no}) — ຮ້ານຈະກວດແລະຢືນຢັນພາຍໃນ 24 ຊມ."
-            ),
-        })
+        return redirect(reverse("store_order_success", kwargs={"order_no": order.order_no}) + "?slip=ok")
 
     return render(request, "store/confirm_payment.html", {
         "prefill_order_no": (request.GET.get("order_no") or "").strip(),
         "prefill_paid_amount": (request.GET.get("paid_amount") or "").strip(),
+        "prefill_bank_name": settings.BANK_NAME,
     })
 
 

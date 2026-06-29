@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="mz-pay-hint">
+  <div class="mz-pay-hint-icon" aria-hidden="true">₭</div>
+  <div>
+    <div class="fw-bold mb-1">{% trans "Bank transfer (LAO QR)" %}</div>
+    <p class="small text-muted mb-2">{% trans "After you place the order, you will see the QR code and upload your transfer slip on the next screen." %}</p>
+    <ol class="mz-pay-hint-steps small mb-0">
+      <li>{% trans "Place order" %}</li>
+      <li>{% trans "Scan QR & transfer" %}</li>
+      <li>{% trans "Upload slip" %}</li>
+    </ol>
+  </div>
+</div>

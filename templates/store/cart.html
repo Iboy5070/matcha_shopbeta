@@ -33,6 +33,14 @@
   {% endfor %}
 
   <div class="mz-cart-summary">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span>{% trans "Subtotal" %}</span>
+      <span>{{ total|kip }} <small>ກີບ</small></span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
+      <span>{% trans "Shipping" %}</span>
+      <span>{% trans "Confirm after order" %}</span>
+    </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <span class="fw-bold">{% trans "Total" %}</span>
       <span class="mz-cart-grand">{{ total|kip }} <small>ກີບ</small></span>

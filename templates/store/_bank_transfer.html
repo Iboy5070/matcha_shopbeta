@@ -1,22 +1,29 @@
-{% load i18n static %}
+{% load i18n static mz_extras %}
 {% if bank_account_number or bank_qr_image_url %}
-<div class="mz-bank-transfer mb-4">
-  <div class="mz-bank-transfer-head">
-    <div class="mz-bank-transfer-icon" aria-hidden="true">₭</div>
-    <div>
-      <div class="mz-bank-transfer-title">{% trans "Transfer to" %}</div>
-      <div class="mz-bank-transfer-sub">{% trans "Bank transfer · LAO QR" %}</div>
-    </div>
+<div class="mz-bank-transfer">
+  {% if transfer_amount %}
+  <div class="mz-bank-amount-banner">
+    <span class="mz-bank-amount-label">{% trans "Amount to transfer" %}</span>
+    <span class="mz-bank-amount-value">{{ transfer_amount|kip }} <small>ກີບ</small></span>
   </div>
+  {% endif %}
 
   <div class="mz-bank-transfer-body">
+    <div class="mz-bank-qr-panel">
+      <div class="mz-bank-qr-label">LAO QR</div>
+      <div class="mz-bank-qr-frame">
+        <img class="mz-bank-qr"
+             src="{% if bank_qr_image_url %}{{ bank_qr_image_url }}{% else %}{% static 'img/bcel-qr.jpg' %}{% endif %}"
+             alt="{% trans 'Scan to pay' %}">
+      </div>
+      <div class="mz-bank-qr-caption">{% trans "Scan with BCEL / bank app" %}</div>
+    </div>
+
     <div class="mz-bank-details">
       {% if bank_name %}
       <div class="mz-bank-detail">
         <span class="mz-bank-detail-label">{% trans "Bank" %}</span>
-        <span class="mz-bank-detail-value">
-          <span class="mz-bank-badge">{{ bank_name }}</span>
-        </span>
+        <span class="mz-bank-detail-value"><span class="mz-bank-badge">{{ bank_name }}</span></span>
       </div>
       {% endif %}
       {% if bank_account_number %}
@@ -31,22 +38,13 @@
         <span class="mz-bank-detail-value">{{ bank_account_name }}</span>
       </div>
       {% endif %}
-      <div class="mz-bank-steps">
-        <span>1. {% trans "Scan QR" %}</span>
-        <span>2. {% trans "Transfer" %}</span>
-        <span>3. {% trans "Notify payment" %}</span>
+      {% if order_no %}
+      <div class="mz-bank-detail">
+        <span class="mz-bank-detail-label">{% trans "Order no." %}</span>
+        <span class="mz-bank-detail-value mz-bank-account">{{ order_no }}</span>
       </div>
-      <p class="mz-bank-note">{% trans "Please include your order number in the transfer note." %}</p>
-    </div>
-
-    <div class="mz-bank-qr-panel">
-      <div class="mz-bank-qr-label">LAO QR</div>
-      <div class="mz-bank-qr-frame">
-        <img class="mz-bank-qr"
-             src="{% if bank_qr_image_url %}{{ bank_qr_image_url }}{% else %}{% static 'img/bcel-qr.jpg' %}{% endif %}"
-             alt="{% trans 'Scan to pay' %}">
-      </div>
-      <div class="mz-bank-qr-caption">{% trans "Scan with BCEL / bank app" %}</div>
+      {% endif %}
+      <p class="mz-bank-note mb-0">{% trans "Transfer the exact amount above. Include your order number in the transfer note if possible." %}</p>
     </div>
   </div>
 </div>

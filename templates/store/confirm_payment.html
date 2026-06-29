@@ -1,47 +1,30 @@
 {% extends "store/base.html" %}
 {% load i18n static %}
-{% block title %}{% trans "Payment notice" %}{% endblock %}
+{% block title %}{% trans "Upload payment slip" %}{% endblock %}
 {% block content %}
 
-{% include "store/_checkout_steps.html" with step=4 %}
+{% include "store/_checkout_steps.html" with step=3 %}
 
-<div class="mz-page-hero mb-4">
-  <h1 class="mz-section-title h3">{% trans "Payment notice" %}</h1>
-  <p class="text-muted mb-0">{% trans "Upload your transfer slip after placing an order." %}</p>
-</div>
+<div class="mz-pay-page mx-auto" style="max-width: 32rem;">
+  <div class="text-center mb-4">
+    <h1 class="mz-section-title h3 mb-2">{% trans "Upload payment slip" %}</h1>
+    <p class="text-muted mb-0">{% trans "Already ordered? Enter your order number and upload your slip." %}</p>
+  </div>
 
-{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-{% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+  {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
 
-{% include "store/_bank_transfer.html" %}
+  <div class="mz-pay-step-card">
+    {% include "store/_slip_upload_form.html" %}
+  </div>
 
-<div class="card shadow-sm border-0">
-  <div class="card-body">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">{% trans "Order no." %}</label>
-        <input class="form-control" name="order_no" value="{{ prefill_order_no|default:'' }}" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Paid amount" %}</label>
-        <input class="form-control" name="paid_amount" type="number" step="0.01" value="{{ prefill_paid_amount|default:'' }}" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Bank" %}</label>
-        <input class="form-control" name="bank_name">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Slip image" %} *</label>
-        <input class="form-control" name="slip_image" type="file" accept="image/*" required>
-        <div class="form-text">{% trans "Screenshot or photo of your bank transfer slip." %}</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">{% trans "Note" %}</label>
-        <input class="form-control" name="note">
-      </div>
-      <button class="btn mz-btn-primary w-100">{% trans "Submit" %}</button>
-    </form>
+  <p class="text-center small text-muted mt-3 mb-0">
+    {% trans "Need bank details?" %}
+    <a href="{% url 'store_confirm_payment' %}#bank">{% trans "View transfer info" %}</a>
+  </p>
+
+  <div id="bank" class="mt-4">
+    {% include "store/_bank_transfer.html" %}
   </div>
 </div>
 {% endblock %}
