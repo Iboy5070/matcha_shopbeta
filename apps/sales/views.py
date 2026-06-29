@@ -12,10 +12,6 @@ from django.db.models import Q
 from django.db.models import Sum, Count
 from django.utils.dateparse import parse_date
 
-def home(request):
-    return redirect("pos")
-
-
 def _to_decimal(x) -> Decimal:
     if x is None:
         return Decimal("0")
