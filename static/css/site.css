@@ -1315,14 +1315,31 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 
 .mz-qty-btn {
   display: inline-flex;
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   color: var(--mz-green-mid);
   font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1;
   background: #fff;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mz-cart-qty-detail {
+  min-width: 7.5rem;
+}
+
+.mz-cart-qty-detail .mz-qty-val {
+  flex: 1;
+  min-width: 2.5rem;
+  padding: 0 0.25rem;
+  font-size: 1rem;
 }
 
 .mz-qty-btn:hover {

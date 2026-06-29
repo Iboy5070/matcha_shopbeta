@@ -49,11 +49,12 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="cart">
         <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-          <label class="fw-bold small text-muted mb-0">{% trans "Quantity" %}</label>
-          <div class="mz-cart-qty">
-            <button type="button" class="mz-qty-btn" data-qty-minus aria-label="-1">−</button>
-            <input class="mz-qty-input form-control" name="qty" type="number" min="1" max="99" value="1" aria-label="{% trans 'Quantity' %}">
-            <button type="button" class="mz-qty-btn" data-qty-plus aria-label="+1">+</button>
+          <label class="fw-bold small text-muted mb-0" for="mz-qty-display">{% trans "Quantity" %}</label>
+          <div class="mz-cart-qty mz-cart-qty-detail">
+            <button type="button" class="mz-qty-btn" data-qty-minus aria-label="{% trans 'Decrease quantity' %}">−</button>
+            <span class="mz-qty-val" id="mz-qty-display" aria-live="polite">1</span>
+            <input type="hidden" name="qty" id="mz-qty-input" value="1">
+            <button type="button" class="mz-qty-btn" data-qty-plus aria-label="{% trans 'Increase quantity' %}">+</button>
           </div>
         </div>
         <div class="d-flex flex-wrap gap-2">
@@ -102,12 +103,18 @@
   });
 
   if (!form) return;
-  var input = form.querySelector(".mz-qty-input");
+  var qtyDisplay = document.getElementById("mz-qty-display");
+  var qtyInput = document.getElementById("mz-qty-input");
+  function setQty(n) {
+    var val = Math.max(1, Math.min(99, n));
+    if (qtyInput) qtyInput.value = String(val);
+    if (qtyDisplay) qtyDisplay.textContent = String(val);
+  }
   form.querySelector("[data-qty-minus]")?.addEventListener("click", function () {
-    input.value = Math.max(1, parseInt(input.value, 10) - 1 || 1);
+    setQty(parseInt(qtyInput?.value || "1", 10) - 1);
   });
   form.querySelector("[data-qty-plus]")?.addEventListener("click", function () {
-    input.value = Math.min(99, parseInt(input.value, 10) + 1 || 1);
+    setQty(parseInt(qtyInput?.value || "1", 10) + 1);
   });
 
   var initial = document.querySelector("#mz-variant-options .mz-variant-opt-active");
