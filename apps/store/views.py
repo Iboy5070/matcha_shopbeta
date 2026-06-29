@@ -1,4 +1,5 @@
 from decimal import Decimal, InvalidOperation
+from typing import Optional
 
 from django.conf import settings
 from django.contrib import messages
@@ -24,6 +25,15 @@ def _to_decimal(x) -> Decimal:
         return Decimal(str(x))
     except (InvalidOperation, ValueError, TypeError):
         return Decimal("0")
+
+
+def _slip_file_exists(confirmation: Optional[PaymentConfirmation]) -> bool:
+    if not confirmation or not confirmation.slip_image:
+        return False
+    try:
+        return confirmation.slip_image.storage.exists(confirmation.slip_image.name)
+    except Exception:
+        return False
 
 
 def _unit_price(variant: ProductVariant) -> Decimal:
@@ -361,15 +371,24 @@ def checkout(request):
 def order_success(request, order_no: str):
     order = get_object_or_404(WebOrder, order_no=order_no)
     slip_confirmation = order.payment_confirmations.order_by("-created_at").first()
+    slip_file_ok = _slip_file_exists(slip_confirmation)
     slip_success = request.GET.get("slip") == "ok"
     slip_error = request.session.pop("slip_error", None)
     slip_already = order.payment_confirmations.exists()
+    can_reupload_slip = (
+        order.payment_method == "transfer"
+        and order.status == "PAYMENT_REVIEW"
+        and slip_already
+        and not slip_file_ok
+    )
     return render(request, "store/order_success.html", {
         "order": order,
         "slip_confirmation": slip_confirmation,
+        "slip_file_ok": slip_file_ok,
         "slip_success": slip_success,
         "slip_error": slip_error,
         "slip_already": slip_already,
+        "can_reupload_slip": can_reupload_slip,
     })
 
 
@@ -416,6 +435,19 @@ def confirm_payment(request):
             })
 
         if order.payment_confirmations.exists():
+            existing = order.payment_confirmations.order_by("-created_at").first()
+            if order.status == "PAYMENT_REVIEW" and existing:
+                existing.slip_image = slip
+                existing.paid_amount = paid_amount or order.grand_total
+                existing.bank_name = bank_name
+                if note:
+                    existing.note = note
+                existing.save()
+                notify_shop(
+                    f"[{settings.SHOP_BRAND}] ອັບສลິບໃໝ່ {order.order_no}",
+                    f"ລູກຄ້າອັບສลິບຊ້ຳ — ກະລຸນາກວດໃນ Admin",
+                )
+                return redirect(reverse("store_order_success", kwargs={"order_no": order.order_no}) + "?slip=ok")
             if order_no:
                 return redirect(reverse("store_order_success", kwargs={"order_no": order_no}) + "?slip=ok")
             return render(request, "store/confirm_payment.html", {

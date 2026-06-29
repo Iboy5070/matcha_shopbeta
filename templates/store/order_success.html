@@ -19,8 +19,14 @@
 
   {% if order.payment_method == "transfer" %}
     {% if slip_already or order.status == "PAYMENT_REVIEW" or order.status == "PAID" or order.status == "SHIPPING" or order.status == "DONE" %}
+    {% if can_reupload_slip %}
+    <div class="mz-pay-step-card mx-auto mb-4" style="max-width: 28rem;">
+      <div class="alert alert-warning small mb-3">{% trans "Slip file not found — please upload your slip again." %}</div>
+      {% include "store/_slip_upload_form.html" with prefill_order_no=order.order_no prefill_paid_amount=order.grand_total prefill_bank_name=bank_name %}
+    </div>
+    {% endif %}
     <div class="row justify-content-center g-4">
-      {% if slip_confirmation and slip_confirmation.slip_image %}
+      {% if slip_confirmation and slip_confirmation.slip_image and slip_file_ok %}
       <div class="col-md-5">
         <div class="mz-pay-step-card h-100 text-center">
           <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Your slip" %}</h2>
