@@ -226,13 +226,30 @@ CANONICAL_PRODUCT_SLUGS = {item["slug"] for item in PRODUCTS}
 CANONICAL_CATEGORY_SLUGS = {item["slug"] for item in CATEGORIES}
 
 
-def _deactivate_legacy_catalog():
-    """Hide pre-seed duplicate products (e.g. extra Ceremonial 30g)."""
+def _remove_legacy_catalog():
+    """Remove duplicate pre-seed products; keep hidden if tied to past orders."""
+    from apps.sales.models import OrderItem
+    from apps.store.models import WebOrderItem
+
     legacy = Product.objects.exclude(slug__in=CANONICAL_PRODUCT_SLUGS)
-    legacy_ids = list(legacy.values_list("id", flat=True))
-    if legacy_ids:
-        ProductVariant.objects.filter(product_id__in=legacy_ids).update(is_active=False)
-    return legacy.update(is_active=False, is_featured=False)
+    deleted = 0
+    hidden = 0
+    for product in legacy:
+        variant_ids = list(product.variants.values_list("id", flat=True))
+        has_orders = (
+            WebOrderItem.objects.filter(variant_id__in=variant_ids).exists()
+            or OrderItem.objects.filter(variant_id__in=variant_ids).exists()
+        )
+        if has_orders:
+            product.is_active = False
+            product.is_featured = False
+            product.save(update_fields=["is_active", "is_featured"])
+            product.variants.update(is_active=False)
+            hidden += 1
+        else:
+            product.delete()
+            deleted += 1
+    return deleted, hidden
 
 
 def _upsert_category(data):
@@ -334,12 +351,17 @@ class Command(BaseCommand):
                 variant_count += 1
 
         sync_catalog_i18n()
-        legacy_count = _deactivate_legacy_catalog()
+        deleted, hidden = _remove_legacy_catalog()
+        extra = []
+        if deleted:
+            extra.append(f"{deleted} legacy deleted")
+        if hidden:
+            extra.append(f"{hidden} legacy hidden")
+        suffix = f", {', '.join(extra)}" if extra else ""
 
         self.stdout.write(
             self.style.SUCCESS(
                 f"Catalog ready — {len(CATEGORIES)} categories, "
-                f"{product_count} products, {variant_count} variants"
-                f"{f', {legacy_count} legacy hidden' if legacy_count else ''}."
+                f"{product_count} products, {variant_count} variants{suffix}."
             )
         )
