@@ -211,7 +211,10 @@ def shop(request):
         qs = qs.filter(product__category__slug=category_slug)
     qs = qs.order_by("product__name", "sku")
 
-    categories = Category.objects.all()
+    categories = Category.objects.filter(
+        products__is_active=True,
+        products__variants__is_active=True,
+    ).distinct().order_by("name")
     return render(request, "store/shop.html", {
         "variants": qs,
         "q": q,
