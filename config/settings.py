@@ -23,6 +23,12 @@ _render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
 if _render_host and _render_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_render_host)
 
+# Production Render hosts (avoid DisallowedHost if env is misconfigured)
+if not DEBUG:
+    for _host in ("matcha-shopbeta.onrender.com", ".onrender.com"):
+        if _host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_host)
+
 # CSRF — ຕ້ອງລິດ domain production ໄວ້ດ້ວຍ
 CSRF_TRUSTED_ORIGINS = [
     f"https://{h}" for h in ALLOWED_HOSTS if "." in h

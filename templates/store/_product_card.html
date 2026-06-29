@@ -16,7 +16,7 @@
   <div class="mz-product-card-body">
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
     <div class="mz-product-name">{% product_name p LANGUAGE_CODE %}</div>
-    {% with option_count=p.active_variants.count %}
+    {% with option_count=p.active_variant_list|length %}
     {% if show_variant_name and option_count == 1 %}
     <p class="mz-product-variant mb-0">{% variant_name dv LANGUAGE_CODE %}</p>
     {% elif option_count > 1 %}

@@ -81,16 +81,23 @@ class Product(models.Model):
         return ""
 
     def default_variant(self):
+        variants = getattr(self, "_prefetched_objects_cache", {}).get("variants")
+        if variants is not None:
+            active = [v for v in variants if v.is_active]
+            if active:
+                return sorted(active, key=lambda v: (v.sell_price, v.id))[0]
         return self.variants.filter(is_active=True).order_by("sell_price", "id").first()
 
-    def active_variants(self):
-        return self.variants.filter(is_active=True).order_by("sell_price", "id")
+    @property
+    def active_variant_list(self):
+        variants = getattr(self, "_prefetched_objects_cache", {}).get("variants")
+        if variants is not None:
+            active = [v for v in variants if v.is_active]
+            return sorted(active, key=lambda v: (v.sell_price, v.id))
+        return list(self.variants.filter(is_active=True).order_by("sell_price", "id"))
 
     def price_label(self) -> str:
-        prices = [
-            v.sell_price or v.price
-            for v in self.active_variants()
-        ]
+        prices = [v.sell_price or v.price for v in self.active_variant_list]
         if not prices:
             return ""
         lo, hi = min(prices), max(prices)

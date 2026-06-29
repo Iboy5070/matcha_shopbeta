@@ -233,7 +233,7 @@ def product_detail(request, variant_id: int):
         is_active=True,
         product__is_active=True,
     )
-    variants = v.product.active_variants()
+    variants = v.product.active_variant_list
     return render(request, "store/product_detail.html", {
         "v": v,
         "variants": variants,
