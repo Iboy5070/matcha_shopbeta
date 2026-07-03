@@ -33,7 +33,7 @@ def _make_order_no() -> str:
     # ຕົວຢ່າງ: ORD20260209183045
     return timezone.now().strftime("ORD%Y%m%d%H%M%S")
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def pos(request):
     q = (request.GET.get("q") or "").strip()
 
@@ -75,7 +75,7 @@ def pos(request):
     return render(request, "pos.html", context)
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def add_to_cart(request, variant_id):
     cart = request.session.get("cart", {})
     key = str(variant_id)
@@ -84,7 +84,7 @@ def add_to_cart(request, variant_id):
     return redirect("pos")
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def remove_from_cart(request, variant_id):
     # ລົດ qty ທີລະ 1 (ຖ້າ 0 ຄ່ອຍລົບ)
     cart = request.session.get("cart", {})
@@ -102,13 +102,13 @@ def remove_from_cart(request, variant_id):
     return redirect("pos")
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def clear_cart(request):
     request.session["cart"] = {}
     return redirect("pos")
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 @transaction.atomic
 def pos_checkout(request):
     cart = request.session.get("cart", {})
@@ -237,13 +237,13 @@ def pos_checkout(request):
     })
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def pos_receipt(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     items = order.items.select_related("variant", "variant__product").all()
     return render(request, "pos_receipt.html", {"order": order, "items": items})
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def orders_list(request):
     """
     ໜ້າລາຍການບິນ (Order History)
@@ -276,13 +276,13 @@ def orders_list(request):
     })
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 def order_detail(request, order_id):
     """
     ເບິ່ງລາຍລະອຽດບິນທີ່ເລືອກ (reuse receipt template)
     """
     return redirect("pos_receipt", order_id=order_id)
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/staff/login/")
 @transaction.atomic
 def refund_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)

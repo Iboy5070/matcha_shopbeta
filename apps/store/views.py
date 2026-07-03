@@ -3,7 +3,7 @@ from typing import Optional
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Q
@@ -13,7 +13,7 @@ from django.utils import timezone
 
 from apps.catalog.models import Category, Product, ProductVariant
 from apps.cms.models import ContactMessage, FAQItem
-from .forms import CustomerLoginForm, CustomerRegistrationForm
+from .forms import CustomerLoginForm, CustomerProfileEditForm, CustomerRegistrationForm
 from .models import CustomerProfile, WebOrder, WebOrderItem, PaymentConfirmation
 from .notifications import notify_shop
 from .slip_storage import upload_slip_to_supabase
@@ -145,6 +145,59 @@ def account(request):
         "profile": profile,
         "orders": orders,
     })
+
+
+@login_required(login_url="store_login")
+def account_edit(request):
+    user = request.user
+    profile = getattr(user, "customer_profile", None)
+
+    if request.method == "POST":
+        form = CustomerProfileEditForm(request.POST, user=user)
+        if form.is_valid():
+            user.first_name = form.cleaned_data["full_name"]
+            email = form.cleaned_data["email"]
+            user.email = email
+            user.username = email
+            if form.cleaned_data.get("password1"):
+                user.set_password(form.cleaned_data["password1"])
+            user.save()
+
+            if profile is None:
+                profile = CustomerProfile.objects.create(
+                    user=user,
+                    phone=form.cleaned_data["phone"],
+                    address=form.cleaned_data.get("address", ""),
+                )
+            else:
+                profile.phone = form.cleaned_data["phone"]
+                profile.address = form.cleaned_data.get("address", "")
+                profile.save()
+
+            if form.cleaned_data.get("password1"):
+                update_session_auth_hash(request, user)
+
+            messages.success(request, "ບັນທຶກຂໍ້ມູນສຳເລັດ")
+            return redirect("store_account")
+    else:
+        form = CustomerProfileEditForm(
+            user=user,
+            initial={
+                "full_name": user.first_name or "",
+                "email": user.email or user.username,
+                "phone": profile.phone if profile else "",
+                "address": profile.address if profile else "",
+            },
+        )
+
+    return render(request, "store/account_edit.html", {"form": form})
+
+
+@login_required(login_url="store_login")
+def account_orders(request):
+    profile = getattr(request.user, "customer_profile", None)
+    orders = WebOrder.objects.filter(phone=profile.phone).order_by("-created_at") if profile else []
+    return render(request, "store/account_orders.html", {"orders": orders})
 
 
 def home(request):

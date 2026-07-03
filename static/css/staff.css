@@ -1,0 +1,167 @@
+:root {
+  --mz-staff-green: #2d5a3d;
+  --mz-staff-green-dark: #1e3d2a;
+  --mz-staff-green-light: #4a7c59;
+  --mz-staff-cream: #f7f4ed;
+  --mz-staff-muted: #6b7280;
+  --mz-staff-shadow: 0 18px 48px rgba(30, 61, 42, 0.12);
+}
+
+.mz-staff-body {
+  font-family: "Noto Sans Lao", "Sarabun", sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(74, 124, 89, 0.12), transparent 42%),
+    linear-gradient(180deg, #faf8f2 0%, var(--mz-staff-cream) 100%);
+  min-height: 100vh;
+  color: #1f2937;
+}
+
+.mz-staff-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.mz-staff-login-card {
+  width: 100%;
+  max-width: 26rem;
+  background: #fff;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(45, 90, 61, 0.1);
+  box-shadow: var(--mz-staff-shadow);
+  padding: 2rem 1.75rem;
+}
+
+.mz-staff-logo {
+  margin-bottom: 0.75rem;
+}
+
+.mz-staff-title {
+  font-family: "Noto Serif Lao", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--mz-staff-green-dark);
+  margin-bottom: 0.35rem;
+}
+
+.mz-staff-btn-primary {
+  background: var(--mz-staff-green);
+  border-color: var(--mz-staff-green);
+  color: #fff;
+  font-weight: 600;
+}
+
+.mz-staff-btn-primary:hover {
+  background: var(--mz-staff-green-dark);
+  border-color: var(--mz-staff-green-dark);
+  color: #fff;
+}
+
+.mz-staff-link {
+  color: var(--mz-staff-green-light);
+  text-decoration: none;
+}
+
+.mz-staff-link:hover {
+  color: var(--mz-staff-green-dark);
+  text-decoration: underline;
+}
+
+.mz-staff-shell {
+  min-height: 100vh;
+}
+
+.mz-staff-header {
+  background: #fff;
+  border-bottom: 1px solid rgba(45, 90, 61, 0.1);
+  padding: 0.85rem 0;
+}
+
+.mz-staff-tile {
+  display: block;
+  height: 100%;
+  background: #fff;
+  border: 1px solid rgba(45, 90, 61, 0.12);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 8px 24px rgba(30, 61, 42, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.mz-staff-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(45, 90, 61, 0.25);
+  box-shadow: 0 14px 32px rgba(30, 61, 42, 0.1);
+  color: inherit;
+}
+
+.mz-staff-tile-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.mz-staff-side-card,
+.mz-staff-table-card {
+  background: #fff;
+  border: 1px solid rgba(45, 90, 61, 0.12);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(30, 61, 42, 0.06);
+  padding: 1rem;
+}
+
+.mz-staff-nav .nav-link {
+  color: #1f2937;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  font-weight: 500;
+}
+
+.mz-staff-nav .nav-link.active,
+.mz-staff-nav .nav-link:hover {
+  background: rgba(45, 90, 61, 0.08);
+  color: var(--mz-staff-green);
+}
+
+.mz-staff-nav .nav-link.active {
+  font-weight: 700;
+}
+
+.mz-staff-body .form-control:focus {
+  border-color: var(--mz-staff-green-light);
+  box-shadow: 0 0 0 0.2rem rgba(45, 90, 61, 0.12);
+}
+
+.mz-staff-body .mz-password-wrap {
+  position: relative;
+}
+
+.mz-staff-body .mz-password-wrap .form-control {
+  padding-right: 2.85rem;
+}
+
+.mz-staff-body .mz-password-toggle-btn {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mz-staff-muted);
+  cursor: pointer;
+}
+
+.mz-staff-body .mz-password-toggle-btn:hover {
+  color: var(--mz-staff-green-light);
+  background: rgba(45, 90, 61, 0.06);
+}

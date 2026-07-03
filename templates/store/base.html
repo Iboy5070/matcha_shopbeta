@@ -55,6 +55,8 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="{% url 'store_account' %}">{% trans "My account" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'store_account_orders' %}">{% trans "My orders" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'store_account_edit' %}">{% trans "Edit profile" %}</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'store_logout' %}">{% trans "Log out" %}</a></li>
           </ul>
@@ -146,5 +148,6 @@
   gtag('config', '{{ ga_measurement_id }}');
 </script>
 {% endif %}
+{% block extra_js %}{% endblock %}
 </body>
 </html>

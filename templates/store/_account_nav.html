@@ -1,0 +1,7 @@
+{% load i18n %}
+<nav class="nav flex-column gap-1">
+  <a class="nav-link{% if account_section == 'overview' %} active{% endif %}" href="{% url 'store_account' %}">{% trans "My account" %}</a>
+  <a class="nav-link{% if account_section == 'orders' %} active{% endif %}" href="{% url 'store_account_orders' %}">{% trans "My orders" %}</a>
+  <a class="nav-link{% if account_section == 'edit' %} active{% endif %}" href="{% url 'store_account_edit' %}">{% trans "Edit profile" %}</a>
+  <a class="nav-link" href="{% url 'store_logout' %}">{% trans "Log out" %}</a>
+</nav>

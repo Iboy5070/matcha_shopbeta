@@ -1,0 +1,52 @@
+{% extends "store/base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Edit profile" %}{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-3">
+    <div class="mz-auth-card mz-account-nav">
+      {% include "store/_account_nav.html" with account_section="edit" %}
+    </div>
+  </div>
+
+  <div class="col-lg-9">
+    <div class="mz-page-hero mb-4">
+      <h1 class="mz-section-title mb-2">{% trans "Edit profile" %}</h1>
+      <p class="text-muted mb-0">{% trans "Update your personal details and password." %}</p>
+    </div>
+
+    <div class="mz-auth-card">
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Personal details" %}</h2>
+        {% include "store/_form_field.html" with field=form.full_name %}
+        {% include "store/_form_field.html" with field=form.email %}
+        {% include "store/_form_field.html" with field=form.phone %}
+        {% include "store/_form_field.html" with field=form.address %}
+
+        <hr class="my-4">
+
+        <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Change password" %}</h2>
+        {% include "store/_form_field.html" with field=form.current_password %}
+        {% include "store/_form_field.html" with field=form.password1 %}
+        {% include "store/_form_field.html" with field=form.password2 %}
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button type="submit" class="btn mz-btn-primary btn-lg">{% trans "Save changes" %}</button>
+          <a class="btn btn-outline-secondary btn-lg" href="{% url 'store_account' %}">{% trans "Cancel" %}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/password-toggle.js' %}"></script>
+{% endblock %}

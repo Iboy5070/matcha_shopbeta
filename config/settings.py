@@ -145,8 +145,8 @@ SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip(
 SHOP_NAME = os.getenv("SHOP_NAME", "The 196 Haus")
 SHOP_TAGLINE = os.getenv("SHOP_TAGLINE", "MATCHA")
 SHOP_BRAND = os.getenv("SHOP_BRAND", f"{SHOP_NAME} {SHOP_TAGLINE}")
-LOGIN_URL = "/admin/login/"
-LOGIN_REDIRECT_URL = "/pos/"
+LOGIN_URL = "/staff/login/"
+LOGIN_REDIRECT_URL = "/staff/"
 CUSTOMER_LOGIN_URL = "store_login"
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")

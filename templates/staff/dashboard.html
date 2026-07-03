@@ -1,0 +1,75 @@
+{% extends "staff/base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Staff portal" %}{% endblock %}
+{% block body %}
+<div class="mz-staff-shell">
+  {% include "staff/_header.html" %}
+  {% if messages %}
+  <div class="container pt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} mb-0">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <main class="container py-4 py-lg-5">
+    <div class="row g-4">
+      <div class="col-lg-3">
+        <div class="mz-staff-side-card">
+          {% include "staff/_nav.html" with staff_section="home" %}
+        </div>
+      </div>
+      <div class="col-lg-9">
+        <div class="mb-4">
+          <h1 class="h3 mb-1">{% trans "Welcome" %}, {{ user.first_name|default:user.username }}</h1>
+          <p class="text-muted mb-0">{% trans "Manage the shop — edit orders, slips, products, and POS." %}</p>
+        </div>
+
+        <div class="row g-3 g-lg-4">
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'staff_web_orders' %}">
+              <div class="mz-staff-tile-icon">🌐</div>
+              <h2 class="h5 mb-1">{% trans "Web orders" %}</h2>
+              <p class="small text-muted mb-0">{% trans "Online orders, status, customer info" %}</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'staff_slips' %}">
+              <div class="mz-staff-tile-icon">🧾</div>
+              <h2 class="h5 mb-1">{% trans "Payment slips" %}</h2>
+              <p class="small text-muted mb-0">{% trans "Review slips and confirm PAID" %}</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'staff_products' %}">
+              <div class="mz-staff-tile-icon">📦</div>
+              <h2 class="h5 mb-1">{% trans "Products & stock" %}</h2>
+              <p class="small text-muted mb-0">{% trans "Edit price, stock, active" %}</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'pos' %}">
+              <div class="mz-staff-tile-icon">🛒</div>
+              <h2 class="h5 mb-1">POS</h2>
+              <p class="small text-muted mb-0">{% trans "In-store sales and receipts" %}</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'orders_list' %}">
+              <div class="mz-staff-tile-icon">📋</div>
+              <h2 class="h5 mb-1">{% trans "POS reports" %}</h2>
+              <p class="small text-muted mb-0">{% trans "POS order history and refunds" %}</p>
+            </a>
+          </div>
+          <div class="col-md-6 col-xl-4">
+            <a class="mz-staff-tile" href="{% url 'admin:index' %}">
+              <div class="mz-staff-tile-icon">⚙️</div>
+              <h2 class="h5 mb-1">{% trans "Admin (advanced)" %}</h2>
+              <p class="small text-muted mb-0">{% trans "FAQ, CMS, full database" %}</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

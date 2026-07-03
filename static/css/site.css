@@ -1182,6 +1182,54 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   margin-bottom: 0;
 }
 
+.mz-password-wrap {
+  position: relative;
+}
+
+.mz-password-wrap .form-control {
+  padding-right: 2.85rem;
+}
+
+.mz-password-toggle-btn {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mz-muted);
+  cursor: pointer;
+}
+
+.mz-password-toggle-btn:hover {
+  color: var(--mz-green-mid);
+  background: rgba(45, 90, 61, 0.06);
+}
+
+.mz-account-nav .nav-link {
+  color: var(--mz-text);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  font-weight: 500;
+}
+
+.mz-account-nav .nav-link.active,
+.mz-account-nav .nav-link:hover {
+  background: rgba(45, 90, 61, 0.08);
+  color: var(--mz-green-mid);
+}
+
+.mz-account-nav .nav-link.active {
+  font-weight: 700;
+}
+
 /* Login modal (matchazuki-style) */
 .mz-auth-modal-content {
   border: none;

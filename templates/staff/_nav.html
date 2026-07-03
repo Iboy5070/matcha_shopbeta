@@ -1,0 +1,10 @@
+{% load i18n %}
+<nav class="mz-staff-nav nav flex-column gap-1">
+  <a class="nav-link{% if staff_section == 'home' %} active{% endif %}" href="{% url 'staff_dashboard' %}">{% trans "Dashboard" %}</a>
+  <a class="nav-link{% if staff_section == 'web_orders' %} active{% endif %}" href="{% url 'staff_web_orders' %}">{% trans "Web orders" %}</a>
+  <a class="nav-link{% if staff_section == 'slips' %} active{% endif %}" href="{% url 'staff_slips' %}">{% trans "Payment slips" %}</a>
+  <a class="nav-link{% if staff_section == 'products' %} active{% endif %}" href="{% url 'staff_products' %}">{% trans "Products & stock" %}</a>
+  <a class="nav-link{% if staff_section == 'pos' %} active{% endif %}" href="{% url 'pos' %}">POS</a>
+  <a class="nav-link{% if staff_section == 'pos_orders' %} active{% endif %}" href="{% url 'orders_list' %}">{% trans "POS reports" %}</a>
+  <a class="nav-link" href="{% url 'admin:index' %}">{% trans "Admin (advanced)" %}</a>
+</nav>

@@ -3,59 +3,75 @@
 {% block title %}{% trans "My account" %}{% endblock %}
 {% block content %}
 
-<div class="mz-page-hero mb-4">
-  <h1 class="mz-section-title mb-2">{% trans "My account" %}</h1>
-  <p class="text-muted mb-0">{% trans "Your profile and recent orders." %}</p>
-</div>
-
 <div class="row g-4">
-  <div class="col-lg-5">
-    <div class="mz-auth-card">
-      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Profile" %}</h2>
-      <dl class="mb-0 mz-account-dl">
-        <dt>{% trans "Name" %}</dt>
-        <dd>{{ user.get_full_name|default:user.username }}</dd>
-        <dt>{% trans "Email" %}</dt>
-        <dd>{{ user.email }}</dd>
-        {% if profile %}
-        <dt>{% trans "Phone" %}</dt>
-        <dd>{{ profile.phone }}</dd>
-        {% if profile.address %}
-        <dt>{% trans "Address" %}</dt>
-        <dd>{{ profile.address|linebreaksbr }}</dd>
-        {% endif %}
-        {% endif %}
-      </dl>
+  <div class="col-lg-3">
+    <div class="mz-auth-card mz-account-nav">
+      {% include "store/_account_nav.html" with account_section="overview" %}
     </div>
   </div>
-  <div class="col-lg-7">
-    <div class="mz-auth-card">
-      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Recent orders" %}</h2>
-      {% if orders %}
-      <div class="table-responsive">
-        <table class="table table-sm align-middle mb-0">
-          <thead>
-            <tr>
-              <th>{% trans "Order number" %}</th>
-              <th>{% trans "Total" %}</th>
-              <th>{% trans "Status" %}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for order in orders %}
-            <tr>
-              <td class="font-monospace">{{ order.order_no }}</td>
-              <td>{{ order.grand_total|kip }} ກີບ</td>
-              <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+
+  <div class="col-lg-9">
+    <div class="mz-page-hero mb-4">
+      <h1 class="mz-section-title mb-2">{% trans "My account" %}</h1>
+      <p class="text-muted mb-0">{% trans "Your profile and recent orders." %}</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="mz-auth-card">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h2 class="h6 fw-bold text-muted text-uppercase mb-0">{% trans "Profile" %}</h2>
+            <a class="btn btn-sm mz-btn-outline" href="{% url 'store_account_edit' %}">{% trans "Edit profile" %}</a>
+          </div>
+          <dl class="mb-0 mz-account-dl">
+            <dt>{% trans "Name" %}</dt>
+            <dd>{{ user.get_full_name|default:user.username }}</dd>
+            <dt>{% trans "Email" %}</dt>
+            <dd>{{ user.email }}</dd>
+            {% if profile %}
+            <dt>{% trans "Phone" %}</dt>
+            <dd>{{ profile.phone }}</dd>
+            {% if profile.address %}
+            <dt>{% trans "Address" %}</dt>
+            <dd>{{ profile.address|linebreaksbr }}</dd>
+            {% endif %}
+            {% endif %}
+          </dl>
+        </div>
       </div>
-      {% else %}
-      <p class="text-muted mb-3">{% trans "No orders yet." %}</p>
-      <a class="btn mz-btn-primary btn-sm" href="{% url 'store_shop' %}">{% trans "Browse products" %}</a>
-      {% endif %}
+      <div class="col-lg-7">
+        <div class="mz-auth-card">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <h2 class="h6 fw-bold text-muted text-uppercase mb-0">{% trans "Recent orders" %}</h2>
+            <a class="btn btn-sm mz-btn-outline" href="{% url 'store_account_orders' %}">{% trans "View all" %}</a>
+          </div>
+          {% if orders %}
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>{% trans "Order number" %}</th>
+                  <th>{% trans "Total" %}</th>
+                  <th>{% trans "Status" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td><a class="font-monospace text-decoration-none" href="{% url 'store_order_success' order.order_no %}">{{ order.order_no }}</a></td>
+                  <td>{{ order.grand_total|kip }} ກີບ</td>
+                  <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted mb-3">{% trans "No orders yet." %}</p>
+          <a class="btn mz-btn-primary btn-sm" href="{% url 'store_shop' %}">{% trans "Browse products" %}</a>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>

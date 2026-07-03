@@ -28,11 +28,17 @@ class CustomerRegistrationForm(forms.Form):
     )
     password1 = forms.CharField(
         label="ລະຫັດຜ່ານ",
-        widget=forms.PasswordInput(attrs={"class": "form-control form-control-lg"}),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "autocomplete": "new-password",
+        }),
     )
     password2 = forms.CharField(
         label="ຢືນຢັນລະຫັດຜ່ານ",
-        widget=forms.PasswordInput(attrs={"class": "form-control form-control-lg"}),
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "autocomplete": "new-password",
+        }),
     )
 
     def clean_email(self):
@@ -60,3 +66,81 @@ class CustomerLoginForm(forms.Form):
         label="ລະຫັດຜ່ານ",
         widget=forms.PasswordInput(attrs={"class": "form-control form-control-lg"}),
     )
+
+
+class CustomerProfileEditForm(forms.Form):
+    full_name = forms.CharField(
+        max_length=120,
+        label="ຊື່-ນາມສກຸນ",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "placeholder": "ຊື່ເຕັມ"}),
+    )
+    email = forms.EmailField(
+        label="ອີເມວ",
+        widget=forms.EmailInput(attrs={"class": "form-control form-control-lg", "placeholder": "you@email.com"}),
+    )
+    phone = forms.CharField(
+        max_length=30,
+        label="ເບີໂທ",
+        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "placeholder": "020 XXXXXXXX"}),
+    )
+    address = forms.CharField(
+        required=False,
+        label="ທີ່ຢູ່",
+        widget=forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "ທີ່ຢູ່ຈັດສົ່ງ"}),
+    )
+    current_password = forms.CharField(
+        required=False,
+        label="ລະຫັດຜ່ານປັດຈຸບັນ",
+        help_text="ປ່ອຍວ່າງຖ້າບໍ່ປ່ຽນລະຫັດຜ່ານ",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "autocomplete": "current-password",
+        }),
+    )
+    password1 = forms.CharField(
+        required=False,
+        label="ລະຫັດຜ່ານໃໝ່",
+        help_text="ປ່ອຍວ່າງຖ້າບໍ່ປ່ຽນລະຫັດຜ່ານ",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "autocomplete": "new-password",
+        }),
+    )
+    password2 = forms.CharField(
+        required=False,
+        label="ຢືນຢັນລະຫັດຜ່ານໃໝ່",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control form-control-lg",
+            "autocomplete": "new-password",
+        }),
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        if self.user and User.objects.filter(username=email).exclude(pk=self.user.pk).exists():
+            raise ValidationError("ອີເມວນີ້ຖືກໃຊ້ແລ້ວ")
+        return email
+
+    def clean(self):
+        cleaned = super().clean()
+        current = cleaned.get("current_password") or ""
+        password1 = cleaned.get("password1") or ""
+        password2 = cleaned.get("password2") or ""
+
+        if password1 or password2:
+            if not current:
+                self.add_error("current_password", "ກະລຸນາໃສ່ລະຫັດຜ່ານປັດຈຸບັນ")
+            elif self.user and not self.user.check_password(current):
+                self.add_error("current_password", "ລະຫັດຜ່ານປັດຈຸບັນບໍ່ຖືກຕ້ອງ")
+            if password1 != password2:
+                self.add_error("password2", "ລະຫັດຜ່ານບໍ່ກົງກັນ")
+            elif password1:
+                validate_password(password1, user=self.user)
+        elif password2 and not password1:
+            self.add_error("password1", "ກະລຸນາໃສ່ລະຫັດຜ່ານໃໝ່")
+
+        return cleaned

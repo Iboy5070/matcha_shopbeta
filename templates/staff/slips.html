@@ -1,0 +1,44 @@
+{% extends "staff/_manage_layout.html" %}
+{% load i18n %}
+{% block title %}{% trans "Payment slips" %}{% endblock %}
+{% block staff_content %}
+<div class="mb-4">
+  <h1 class="h3 mb-1">{% trans "Payment slips" %}</h1>
+  <p class="text-muted mb-0">{% trans "Review transfer slips and confirm payment." %}</p>
+</div>
+
+<div class="row g-3">
+  {% for row in slips %}
+  <div class="col-md-6 col-xl-4">
+    <div class="mz-staff-table-card p-3 h-100">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <div class="font-monospace fw-bold">{{ row.obj.order.order_no }}</div>
+          <div class="small text-muted">{{ row.obj.order.customer_name }}</div>
+        </div>
+        <span class="badge text-bg-secondary">{{ row.obj.order.get_status_display }}</span>
+      </div>
+      {% if row.url %}
+      <a href="{{ row.url }}" target="_blank" rel="noopener">
+        <img class="img-fluid rounded border mb-2" src="{{ row.url }}" alt="slip" style="max-height:180px;object-fit:contain;width:100%">
+      </a>
+      {% else %}
+      <div class="text-muted small mb-2">{% trans "No image" %}</div>
+      {% endif %}
+      <div class="small mb-3">{{ row.obj.paid_amount|floatformat:0 }} ກີບ · {{ row.obj.created_at|date:"d/m/Y H:i" }}</div>
+      {% if row.obj.order.status != "PAID" %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="slip_id" value="{{ row.obj.id }}">
+        <button class="btn btn-sm btn-success w-100" type="submit">{% trans "Confirm → PAID" %}</button>
+      </form>
+      {% else %}
+      <div class="small text-success">✓ {% trans "Paid" %}</div>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12"><p class="text-muted">{% trans "No slips yet." %}</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "staff/base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Staff login" %}{% endblock %}
+{% block body %}
+<div class="mz-staff-login-page">
+  <div class="mz-staff-login-card">
+    <div class="text-center mb-4">
+      <img class="mz-staff-logo" src="{% static 'img/icons/logo-cup.png' %}" alt="" width="56" height="56">
+      <h1 class="mz-staff-title">{{ shop_brand }}</h1>
+      <p class="text-muted mb-0">{% trans "Staff & admin sign in" %}</p>
+    </div>
+
+    {% if form.errors or error %}
+    <div class="alert alert-danger small">{% trans "Invalid username or password, or you do not have staff access." %}</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'staff_login' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next|default:'' }}">
+      <div class="mb-3">
+        <label class="form-label" for="id_username">{% trans "Username or email" %}</label>
+        <input class="form-control form-control-lg" id="id_username" type="text" name="username" required autofocus autocomplete="username">
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="id_password">{% trans "Password" %}</label>
+        <div class="mz-password-wrap">
+          <input class="form-control form-control-lg" id="id_password" type="password" name="password" required autocomplete="current-password">
+          <button type="button" class="mz-password-toggle-btn" aria-label="{% trans 'Show password' %}" aria-pressed="false">
+            <svg class="mz-password-icon-show" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="mz-password-icon-hide d-none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn mz-staff-btn-primary btn-lg w-100">{% trans "Log in" %}</button>
+    </form>
+
+    <p class="text-center small text-muted mt-4 mb-0">
+      <a class="mz-staff-link" href="{% url 'store_home' %}">← {% trans "Back to shop" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/password-toggle.js' %}"></script>
+{% endblock %}

@@ -24,6 +24,8 @@ urlpatterns = [
     path("login/", views.customer_login, name="store_login"),
     path("logout/", views.customer_logout, name="store_logout"),
     path("account/", views.account, name="store_account"),
+    path("account/edit/", views.account_edit, name="store_account_edit"),
+    path("account/orders/", views.account_orders, name="store_account_orders"),
     path("auth/google/", google_login_start, name="store_google_login"),
     path("auth/google/callback/", google_login_callback, name="store_google_callback"),
 
