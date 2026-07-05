@@ -1,0 +1,34 @@
+{% load static i18n %}
+<!doctype html>
+<html lang="lo">
+<head>
+  <meta charset="utf-8">
+  <title>{% trans "Access denied" %} | {{ shop_brand }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'img/icons/logo-cup.png' %}" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;700&family=Noto+Serif+Lao:wght@600;700&display=swap" rel="stylesheet">
+  <link href="{% static 'css/errors.css' %}" rel="stylesheet">
+</head>
+<body class="mz-error-page">
+  <div class="mz-error-card">
+    <img src="{% static 'img/icons/logo-cup.png' %}" alt="" width="56" height="56" class="mz-error-logo">
+    <p class="mz-error-code">403</p>
+    <h1>{% trans "Access denied" %}</h1>
+    {% if staff_limited %}
+    <p class="mz-error-lead">
+      {% trans "Your staff account cannot open the Admin panel. Use the Staff portal for daily work (orders, slips, products, POS)." %}
+    </p>
+    <div class="mz-error-actions">
+      <a class="mz-error-btn mz-error-btn--primary" href="{% url 'staff_dashboard' %}">{% trans "Open Staff portal" %}</a>
+      <a class="mz-error-btn" href="{% url 'store_home' %}">{% trans "Back to shop" %}</a>
+    </div>
+    {% else %}
+    <p class="mz-error-lead">{% trans "You do not have permission to view this page." %}</p>
+    <div class="mz-error-actions">
+      <a class="mz-error-btn mz-error-btn--primary" href="{% url 'store_home' %}">{% trans "Back to shop" %}</a>
+      <a class="mz-error-btn mz-error-btn--primary" href="{% url 'store_login' %}">{% trans "Log in" %}</a>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

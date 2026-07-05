@@ -1,152 +1,150 @@
 <!doctype html>
-<html>
+<html lang="lo">
 <head>
   <meta charset="utf-8">
   <title>POS - Matcha Shop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
 
-<body class="bg-light">
-  <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="m-0">POS</h2>
-      <form class="mt-3" method="get" action="{% url 'pos' %}">
-  <div class="input-group">
-    <input
-      type="text"
-      class="form-control"
-      name="q"
-      placeholder="Search SKU / Name..."
-      value="{{ q|default:'' }}"
-    >
-    <button class="btn btn-outline-primary" type="submit">Search</button>
-    <a class="btn btn-outline-secondary" href="{% url 'pos' %}">Reset</a>
-        </div>
-        </form>
-
-      <div class="d-flex gap-2 align-items-center">
-        <a class="btn btn-outline-secondary btn-sm" href="{% url 'staff_dashboard' %}">Staff</a>
-        <a class="btn btn-outline-secondary btn-sm" href="/admin/" target="_blank">Admin</a>
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'orders_list' %}">Orders</a>
-
-      </div>
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden">
+  
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0 shadow-sm z-10">
+    <div class="flex items-center gap-6">
+      <h1 class="text-2xl font-bold text-green-700 tracking-tight">The 196 Haus <span class="text-slate-400 font-medium">POS</span></h1>
+      
+      <form class="relative w-80" method="get" action="{% url 'pos' %}">
+        <input type="text" name="q" value="{{ q|default:'' }}" placeholder="ຄົ້ນຫາ SKU / ຊື່ສິນຄ້າ..." 
+          class="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none text-sm">
+        <svg class="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        {% if q %}
+          <a href="{% url 'pos' %}" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </a>
+        {% endif %}
+      </form>
     </div>
 
-    {% if messages %}
-      {% for m in messages %}
-        <div class="alert alert-{{ m.tags }} mb-2">{{ m }}</div>
-      {% endfor %}
-    {% endif %}
+    <div class="flex items-center gap-3">
+      <a href="{% url 'staff_dashboard' %}" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">Dashboard</a>
+      <a href="{% url 'orders_list' %}" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm">ລາຍການອໍເດີ</a>
+      <a href="/admin/" target="_blank" class="px-4 py-2 text-sm font-medium text-white bg-slate-800 rounded-lg hover:bg-slate-900 transition-colors shadow-sm">Admin</a>
+    </div>
+  </header>
 
-    <div class="row g-3">
-      <!-- Products -->
-      <div class="col-lg-8">
-        <div class="card shadow-sm">
-          <div class="card-header bg-white">
-            <strong>Products / Variants</strong>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-sm align-middle">
-                <thead>
-                  <tr>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th class="text-end">Price</th>
-                    <th class="text-end">Stock</th>
-                    <th class="text-end">Add</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for v in variants %}
-                  <tr>
-                    <td>{{ v.sku }}</td>
-                    <td>{{ v.display_name }}</td>
-                    <td class="text-end">
-                      {% if v.sell_price and v.sell_price > 0 %}
-                        {{ v.sell_price }}
-                      {% else %}
-                        {{ v.price }}
-                      {% endif %}
-                    </td>
-                    <td class="text-end">{{ v.stock_qty }}</td>
-                    <td class="text-end">
-                      <a class="btn btn-primary btn-sm" href="{% url 'add_to_cart' v.id %}">Add</a>
-                    </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                    <td colspan="5" class="text-muted text-center py-3">No products</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+  <!-- Main Content -->
+  <main class="flex-1 flex overflow-hidden">
+    
+    <!-- Left: Products -->
+    <div class="flex-1 flex flex-col p-6 overflow-y-auto bg-slate-50">
+      {% if messages %}
+        <div class="mb-6">
+          {% for m in messages %}
+            <div class="p-4 rounded-xl {% if m.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %} border border-opacity-50 flex items-center justify-between shadow-sm">
+              <span class="font-medium text-sm">{{ m }}</span>
             </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {% for p in products %}
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col h-full relative overflow-hidden">
+          
+          <div class="flex-1 mt-2">
+            <div class="text-xs text-slate-400 font-mono mb-1">{{ p.category.name }}</div>
+            <h3 class="font-semibold text-slate-800 leading-tight line-clamp-2">{{ p.name }}</h3>
+          </div>
+          
+          <div class="mt-4 flex items-end justify-between">
+            <div>
+              <div class="text-lg font-bold text-green-600">
+                {{ p.price|floatformat:0 }}₭
+              </div>
+            </div>
+            <a href="{% url 'add_to_cart' p.id %}" class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-500 hover:text-white transition-colors group-hover:scale-110">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            </a>
           </div>
         </div>
-      </div>
-
-      <!-- Cart -->
-      <div class="col-lg-4">
-        <div class="card shadow-sm">
-          <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <strong>Cart</strong>
-            <a class="btn btn-outline-danger btn-sm" href="{% url 'clear_cart' %}">Clear</a>
-          </div>
-
-          <div class="card-body">
-            {% if cart_items %}
-              <ul class="list-group list-group-flush">
-                {% for item in cart_items %}
-                  <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-start">
-                      <div class="me-2">
-                        <div class="fw-semibold">{{ item.variant.display_name }}</div>
-                        <div class="text-muted small">
-                          Qty: {{ item.qty }} × {{ item.unit_price }}
-                        </div>
-
-                        <div class="mt-2 d-flex gap-2">
-                          <!-- ลด qty ทีละ 1 -->
-                          <a class="btn btn-sm btn-outline-danger"
-                             href="{% url 'remove_from_cart' item.variant.id %}">
-                            -1
-                          </a>
-                          <!-- เพิ่ม qty ทีละ 1 -->
-                          <a class="btn btn-sm btn-outline-primary"
-                             href="{% url 'add_to_cart' item.variant.id %}">
-                            +1
-                          </a>
-                        </div>
-                      </div>
-
-                      <div class="text-end fw-semibold">{{ item.line_total }}</div>
-                    </div>
-                  </li>
-                {% endfor %}
-              </ul>
-
-              <div class="d-flex justify-content-between mt-3">
-                <div class="fw-bold">Total</div>
-                <div class="fw-bold">{{ total }}</div>
-              </div>
-
-              <!-- ✅ Checkout -->
-              <div class="d-grid mt-3">
-                <a class="btn btn-success" href="{% url 'pos_checkout' %}">Checkout</a>
-              </div>
-
-            {% else %}
-              <div class="text-muted">Cart is empty</div>
-            {% endif %}
-          </div>
+        {% empty %}
+        <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
+          <svg class="w-16 h-16 mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+          <p class="text-lg font-medium">ບໍ່ພົບສິນຄ້າ</p>
         </div>
+        {% endfor %}
       </div>
     </div>
 
-  </div>
+    <!-- Right: Cart -->
+    <div class="w-96 bg-white border-l border-slate-200 flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.02)] z-10">
+      
+      <!-- Cart Header -->
+      <div class="p-5 flex items-center justify-between border-b border-slate-100">
+        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+          ກະຕ່າ
+        </h2>
+        {% if cart_items %}
+          <a href="{% url 'clear_cart' %}" class="text-xs font-medium text-red-500 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-lg transition-colors">ລຶບທັງໝົດ</a>
+        {% endif %}
+      </div>
+
+      <!-- Cart Items -->
+      <div class="flex-1 overflow-y-auto p-3 scrollbar-hide">
+        {% if cart_items %}
+          <div class="space-y-3">
+            {% for item in cart_items %}
+              <div class="bg-white border border-slate-100 rounded-xl p-3 shadow-sm flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                  <div class="font-semibold text-slate-800 text-sm leading-tight pr-2">{{ item.product.name }}</div>
+                  <div class="font-bold text-slate-700 text-sm whitespace-nowrap">{{ item.line_total|floatformat:0 }}₭</div>
+                </div>
+                
+                <div class="flex items-center justify-between mt-auto">
+                  <div class="text-xs text-slate-500">{{ item.unit_price|floatformat:0 }}₭ / ຊິ້ນ</div>
+                  <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-1 border border-slate-200">
+                    <a href="{% url 'remove_from_cart' item.product.id %}" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-600 shadow-sm hover:bg-slate-100 hover:text-red-500 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                    </a>
+                    <span class="font-semibold text-sm w-4 text-center">{{ item.qty }}</span>
+                    <a href="{% url 'add_to_cart' item.product.id %}" class="w-7 h-7 flex items-center justify-center rounded-md bg-white text-slate-600 shadow-sm hover:bg-slate-100 hover:text-green-600 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="h-full flex flex-col items-center justify-center text-slate-400">
+            <svg class="w-20 h-20 mb-4 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <p class="font-medium">ຍັງບໍ່ມີສິນຄ້າໃນກະຕ່າ</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Checkout Panel -->
+      <div class="p-6 bg-slate-50 border-t border-slate-200 mt-auto">
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-slate-500 font-medium">ລວມຍອດເງິນ</span>
+          <span class="text-3xl font-bold text-green-600 tracking-tight">{{ total|floatformat:0|default:"0" }}₭</span>
+        </div>
+        
+        <a href="{% url 'pos_checkout' %}" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-200 flex items-center justify-center gap-2 transition-all transform active:scale-95 {% if not cart_items %}opacity-50 pointer-events-none{% endif %}">
+          <span>ຊຳລະເງິນ (Checkout)</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+      </div>
+      
+    </div>
+  </main>
 </body>
 </html>

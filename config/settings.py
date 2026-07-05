@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
+
+from config.database import configure_databases
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
@@ -35,6 +36,9 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,7 +50,6 @@ INSTALLED_APPS = [
     "apps.sales.apps.SalesConfig",
     "apps.inventory.apps.InventoryConfig",
     "apps.store.apps.StoreConfig",
-    "apps.cms.apps.CmsConfig",
 ]
 
 MIDDLEWARE = [
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "config.middleware.AdminSuperuserOnlyMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -75,7 +79,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
-                "apps.cms.context_processors.site_context",
             ],
         },
     },
@@ -83,17 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-_db_default = os.getenv(
-    "DATABASE_URL",
-    f"sqlite:///{BASE_DIR / 'db.sqlite3'}"  # fallback local dev only
-)
-DATABASES = {
-    "default": dj_database_url.config(
-        default=_db_default,
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+DATABASES = configure_databases(BASE_DIR, DEBUG)
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -141,13 +134,24 @@ BANK_ACCOUNT_NAME = os.getenv("BANK_ACCOUNT_NAME", "")
 # ຮູບ LAO QR ຈາກ BCEL One (screenshot/save ແລ້ວອັບໂຫຼດ CDN)
 BANK_QR_IMAGE_URL = os.getenv("BANK_QR_IMAGE_URL", "")
 
-SITE_URL = os.getenv("SITE_URL", "https://matcha-shopbeta.onrender.com").rstrip("/")
+_default_site_url = "http://127.0.0.1:8000" if DEBUG else "https://matcha-shopbeta.onrender.com"
+SITE_URL = os.getenv("SITE_URL", _default_site_url).rstrip("/")
 SHOP_NAME = os.getenv("SHOP_NAME", "The 196 Haus")
 SHOP_TAGLINE = os.getenv("SHOP_TAGLINE", "MATCHA")
 SHOP_BRAND = os.getenv("SHOP_BRAND", f"{SHOP_NAME} {SHOP_TAGLINE}")
-LOGIN_URL = "/staff/login/"
-LOGIN_REDIRECT_URL = "/staff/"
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/"
 CUSTOMER_LOGIN_URL = "store_login"
+
+from django.contrib.messages import constants as message_constants
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: "secondary",
+    message_constants.INFO: "info",
+    message_constants.SUCCESS: "success",
+    message_constants.WARNING: "warning",
+    message_constants.ERROR: "danger",
+}
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
@@ -200,5 +204,36 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
+    },
+}
+
+from django.templatetags.static import static
+
+UNFOLD = {
+    "SITE_TITLE": SHOP_NAME,
+    "SITE_HEADER": SHOP_NAME,
+    "SITE_URL": "/",
+    "SITE_ICON": {
+        "light": lambda request: static("img/hero.png"),
+        "dark": lambda request: static("img/hero.png"),
+    },
+    "COLORS": {
+        "primary": {
+            "50": "240 253 244",
+            "100": "220 252 231",
+            "200": "187 247 208",
+            "300": "134 239 172",
+            "400": "74 222 128",
+            "500": "34 197 94",
+            "600": "22 163 74",
+            "700": "21 128 61",
+            "800": "22 101 52",
+            "900": "20 83 45",
+            "950": "5 46 22",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
     },
 }

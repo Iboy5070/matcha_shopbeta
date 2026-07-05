@@ -1,0 +1,23 @@
+{% load static i18n %}
+<!doctype html>
+<html lang="lo">
+<head>
+  <meta charset="utf-8">
+  <title>{% trans "Server error" %} | {{ shop_brand }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'img/icons/logo-cup.png' %}" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="{% static 'css/errors.css' %}" rel="stylesheet">
+</head>
+<body class="mz-error-page">
+  <div class="mz-error-card">
+    <img src="{% static 'img/icons/logo-cup.png' %}" alt="" width="56" height="56" class="mz-error-logo">
+    <p class="mz-error-code">500</p>
+    <h1>{% trans "Something went wrong" %}</h1>
+    <p class="mz-error-lead">{% trans "Please try again in a moment." %}</p>
+    <div class="mz-error-actions">
+      <a class="mz-error-btn mz-error-btn--primary" href="{% url 'store_home' %}">{% trans "Back to shop" %}</a>
+    </div>
+  </div>
+</body>
+</html>

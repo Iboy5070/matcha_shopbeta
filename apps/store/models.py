@@ -1,101 +1,26 @@
 from django.db import models
 from django.conf import settings
-from django.utils import timezone
-from apps.catalog.models import ProductVariant
+from django.db import models
+from django.conf import settings
 
-
-class CustomerProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="customer_profile",
-    )
-    phone = models.CharField(max_length=30)
-    address = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Customer profile"
-        verbose_name_plural = "Customer profiles"
+class Employee(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="employee_profile")
+    emp_name = models.CharField(max_length=100)
+    emp_last = models.CharField(max_length=100)
+    emp_address = models.TextField()
+    emp_gender = models.CharField(max_length=10)
+    emp_tel = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username} ({self.phone})"
+        return f"{self.emp_name} {self.emp_last}"
 
-
-class WebOrder(models.Model):
-    STATUS_CHOICES = [
-        ("NEW", "NEW"),
-        ("WAITING_PAYMENT", "WAITING_PAYMENT"),
-        ("PAYMENT_REVIEW", "PAYMENT_REVIEW"),
-        ("PAID", "PAID"),
-        ("SHIPPING", "SHIPPING"),
-        ("DONE", "DONE"),
-        ("CANCEL", "CANCEL"),
-    ]
-
-    PAYMENT_CHOICES = [
-        ("transfer", "Transfer"),
-        ("cod", "Cash on Delivery"),
-    ]
-
-    order_no = models.CharField(max_length=30, unique=True)
-    customer_name = models.CharField(max_length=120)
-    phone = models.CharField(max_length=30)
-    address = models.TextField(blank=True)
-
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default="transfer")
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default="NEW")
-
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-
-    created_at = models.DateTimeField(auto_now_add=True)
+class Customer(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="customer_profile", null=True, blank=True)
+    cus_name = models.CharField(max_length=100)
+    cus_last = models.CharField(max_length=100)
+    address = models.TextField()
+    gender = models.CharField(max_length=10)
+    cus_tel = models.CharField(max_length=20)
 
     def __str__(self):
-        return self.order_no
-
-
-class WebOrderItem(models.Model):
-    order = models.ForeignKey(WebOrder, on_delete=models.CASCADE, related_name="items")
-    variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT)
-
-    qty = models.PositiveIntegerField()
-    unit_price = models.DecimalField(max_digits=12, decimal_places=2)
-    line_total = models.DecimalField(max_digits=12, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.order.order_no} - {self.variant.sku}"
-
-
-class PaymentConfirmation(models.Model):
-    order = models.ForeignKey(WebOrder, on_delete=models.CASCADE, related_name="payment_confirmations")
-    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    paid_at = models.DateTimeField(default=timezone.now)
-    bank_name = models.CharField(max_length=120, blank=True)
-    note = models.CharField(max_length=255, blank=True)
-
-    slip_image = models.ImageField(upload_to="slips/", null=True, blank=True)
-    slip_url = models.URLField("Slip URL (cloud)", blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Confirm {self.order.order_no}"
-
-    @property
-    def display_slip_url(self) -> str:
-        if self.slip_url:
-            return self.slip_url
-        if self.slip_image:
-            return self.slip_image.url
-        return ""
-
-    def has_visible_slip(self) -> bool:
-        if self.slip_url:
-            return True
-        if not self.slip_image:
-            return False
-        try:
-            return self.slip_image.storage.exists(self.slip_image.name)
-        except Exception:
-            return False
+        return f"{self.cus_name} {self.cus_last}"

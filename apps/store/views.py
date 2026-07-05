@@ -1,573 +1,266 @@
-from decimal import Decimal, InvalidOperation
-from typing import Optional
-
-from django.conf import settings
+from decimal import Decimal
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login, logout, update_session_auth_hash
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Q
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.utils import timezone
+from django.utils.timezone import now
 
-from apps.catalog.models import Category, Product, ProductVariant
-from apps.cms.models import ContactMessage, FAQItem
-from .forms import CustomerLoginForm, CustomerProfileEditForm, CustomerRegistrationForm
-from .models import CustomerProfile, WebOrder, WebOrderItem, PaymentConfirmation
-from .notifications import notify_shop
-from .slip_storage import upload_slip_to_supabase
+from apps.catalog.models import Product
+from apps.sales.models import Customer, Order, OrderItem, Bill
 
-User = get_user_model()
+def get_store_cart(request):
+    cart = request.session.get("store_cart", {})
+    cart_items = []
+    total = Decimal("0")
+    
+    product_ids = cart.keys()
+    cart_products = {str(p.id): p for p in Product.objects.filter(id__in=product_ids, is_active=True)}
+    
+    for pid, qty in cart.items():
+        if pid in cart_products:
+            p = cart_products[pid]
+            line_total = p.price * qty
+            total += line_total
+            cart_items.append({
+                "product": p,
+                "qty": qty,
+                "unit_price": p.price,
+                "line_total": line_total
+            })
+            
+    return cart_items, total
 
+def store_home(request):
+    featured_products = Product.objects.filter(is_active=True)[:4]
+    return render(request, "store/home.html", {"featured_products": featured_products})
 
-def _to_decimal(x) -> Decimal:
-    try:
-        return Decimal(str(x))
-    except (InvalidOperation, ValueError, TypeError):
-        return Decimal("0")
+from apps.catalog.models import Product, Category
 
-
-def _slip_file_exists(confirmation: Optional[PaymentConfirmation]) -> bool:
-    if not confirmation:
-        return False
-    return confirmation.has_visible_slip()
-
-
-def _absolute_slip_url(request, url: str) -> str:
-    if not url:
-        return ""
-    if url.startswith("http://") or url.startswith("https://"):
-        return url
-    return request.build_absolute_uri(url)
-
-
-def _save_slip_on_confirmation(confirmation: PaymentConfirmation, slip, order_no: str):
-    slip.seek(0)
-    cloud_url = upload_slip_to_supabase(slip, order_no)
-    slip.seek(0)
-    confirmation.slip_image = slip
-    if cloud_url:
-        confirmation.slip_url = cloud_url
-    confirmation.save(update_fields=["slip_image", "slip_url"])
-
-
-def _unit_price(variant: ProductVariant) -> Decimal:
-    sp = _to_decimal(getattr(variant, "sell_price", None))
-    if sp > 0:
-        return sp
-    return _to_decimal(getattr(variant, "price", 0))
-
-
-def _make_web_order_no() -> str:
-    return timezone.now().strftime("WEB%Y%m%d%H%M%S")
-
-
-def _customer_defaults(request):
-    """Prefill checkout from logged-in customer profile."""
-    if not request.user.is_authenticated:
-        return {}
-    profile = getattr(request.user, "customer_profile", None)
-    if not profile:
-        return {}
-    return {
-        "customer_name": request.user.get_full_name() or request.user.username,
-        "phone": profile.phone,
-        "address": profile.address,
-    }
-
-
-def register(request):
-    if request.user.is_authenticated:
-        return redirect("store_home")
-
-    form = CustomerRegistrationForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        email = form.cleaned_data["email"]
-        user = User.objects.create_user(
-            username=email,
-            email=email,
-            password=form.cleaned_data["password1"],
-            first_name=form.cleaned_data["full_name"],
-        )
-        CustomerProfile.objects.create(
-            user=user,
-            phone=form.cleaned_data["phone"],
-            address=form.cleaned_data.get("address", ""),
-        )
-        login(request, user)
-        messages.success(request, "ລົງທະບຽນສຳເລັດ — ຍິນດີຕ້ອນຮັບ!")
-        return redirect("store_home")
-
-    return render(request, "store/register.html", {"form": form})
-
-
-def customer_login(request):
-    if request.user.is_authenticated:
-        return redirect("store_home")
-
-    next_url = request.POST.get("next") or request.GET.get("next") or ""
-
-    if request.method == "POST":
-        email = (request.POST.get("email") or "").strip().lower()
-        password = request.POST.get("password") or ""
-        user = authenticate(request, username=email, password=password)
-        if user is None:
-            messages.error(request, "ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ")
-            if next_url.startswith("/"):
-                return redirect(next_url)
-            return redirect("store_home")
-        login(request, user)
-        if request.POST.get("remember"):
-            request.session.set_expiry(60 * 60 * 24 * 30)
-        else:
-            request.session.set_expiry(0)
-        messages.success(request, "ເຂົ້າສູ່ລະບົບສຳເລັດ")
-        if next_url.startswith("/"):
-            return redirect(next_url)
-        return redirect("store_home")
-
-    form = CustomerLoginForm()
-    return render(request, "store/login.html", {"form": form, "next": next_url})
-
-
-def customer_logout(request):
-    logout(request)
-    messages.info(request, "ອອກຈາກລະບົບແລ້ວ")
-    return redirect("store_home")
-
-
-@login_required(login_url="store_login")
-def account(request):
-    profile = getattr(request.user, "customer_profile", None)
-    orders = WebOrder.objects.filter(phone=profile.phone).order_by("-created_at")[:10] if profile else []
-    return render(request, "store/account.html", {
-        "profile": profile,
-        "orders": orders,
+def store_shop(request):
+    products = Product.objects.filter(is_active=True)
+    categories = Category.objects.all()
+    
+    q = request.GET.get('q')
+    if q:
+        products = products.filter(name__icontains=q)
+        
+    cat_slug = request.GET.get('category')
+    if cat_slug:
+        products = products.filter(category__slug=cat_slug)
+        
+    return render(request, "store/shop.html", {
+        "products": products,
+        "categories": categories,
+        "active_category": cat_slug,
+        "q": q or ""
     })
 
+def store_product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    return render(request, "store/product_detail.html", {"product": product})
+
+def store_cart(request):
+    cart_items, total = get_store_cart(request)
+    return render(request, "store/cart.html", {
+        "items": cart_items, 
+        "total": total
+    })
+
+def store_add_to_cart(request, product_id):
+    cart = request.session.get("store_cart", {})
+    pid = str(product_id)
+    cart[pid] = cart.get(pid, 0) + 1
+    request.session["store_cart"] = cart
+    messages.success(request, "ເພີ່ມລົງກະຕ່າສຳເລັດແລ້ວ")
+    return redirect("store_cart")
+
+def store_remove_one(request, product_id):
+    cart = request.session.get("store_cart", {})
+    pid = str(product_id)
+    if pid in cart:
+        cart[pid] -= 1
+        if cart[pid] <= 0:
+            del cart[pid]
+    request.session["store_cart"] = cart
+    return redirect("store_cart")
+
+def store_clear_cart(request):
+    request.session["store_cart"] = {}
+    return redirect("store_cart")
 
 @login_required(login_url="store_login")
-def account_edit(request):
-    user = request.user
-    profile = getattr(user, "customer_profile", None)
-
+@transaction.atomic
+def store_checkout(request):
+    cart_items, total = get_store_cart(request)
+    if not cart_items:
+        messages.error(request, "ກະຕ່າຂອງທ່ານວ່າງເປົ່າ")
+        return redirect("store_shop")
+        
     if request.method == "POST":
-        form = CustomerProfileEditForm(request.POST, user=user)
-        if form.is_valid():
-            user.first_name = form.cleaned_data["full_name"]
-            email = form.cleaned_data["email"]
-            user.email = email
-            user.username = email
-            if form.cleaned_data.get("password1"):
-                user.set_password(form.cleaned_data["password1"])
-            user.save()
+        customer = getattr(request.user, "customer_profile", None)
+        if not customer:
+            customer = Customer.objects.create(
+                user=request.user, 
+                cus_name=request.POST.get("customer_name", request.user.first_name),
+                cus_last="",
+                cus_tel=request.POST.get("phone", ""),
+                address=request.POST.get("address", ""),
+                gender="-"
+            )
+        else:
+            # Update customer details if they changed
+            customer.cus_name = request.POST.get("customer_name", customer.cus_name)
+            customer.cus_tel = request.POST.get("phone", customer.cus_tel)
+            customer.address = request.POST.get("address", customer.address)
+            customer.save()
+            
+        order = Order.objects.create(
+            customer=customer,
+            status="PENDING"
+        )
+        
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item["product"],
+                quantity=item["qty"],
+                price=item["unit_price"],
+                subtotal=item["line_total"]
+            )
+            
+        bill = Bill.objects.create(
+            order=order,
+            total_amount=total,
+            balance_due=total,
+            status="UNPAID"
+        )
+        
+        request.session["store_cart"] = {}
+        return redirect("store_confirm_payment", order_id=order.id)
+        
+    customer = getattr(request.user, "customer_profile", None)
+    customer_name = customer.cus_name if customer else request.user.first_name
+    phone = customer.cus_tel if customer else ""
+    address = customer.address if customer else ""
+    
+    return render(request, "store/checkout.html", {
+        "items": cart_items,
+        "total": total,
+        "customer_name": customer_name,
+        "phone": phone,
+        "address": address,
+    })
 
-            if profile is None:
-                profile = CustomerProfile.objects.create(
-                    user=user,
-                    phone=form.cleaned_data["phone"],
-                    address=form.cleaned_data.get("address", ""),
+import uuid
+from decimal import Decimal, InvalidOperation
+from supabase import create_client, Client
+from django.conf import settings
+from apps.sales.models import Payment
+
+@login_required(login_url="store_login")
+def store_confirm_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer__user=request.user)
+    
+    if request.method == "POST":
+        slip_image = request.FILES.get("slip_image")
+        bank_name = request.POST.get("bank_name", "Transfer")
+        paid_amount_str = request.POST.get("paid_amount", "0")
+        
+        if not slip_image:
+            messages.error(request, "ກະລຸນາເລືອກຮູບສະລິບ")
+            return redirect("store_confirm_payment", order_id=order.id)
+            
+        try:
+            paid_amount = Decimal(paid_amount_str)
+        except InvalidOperation:
+            messages.error(request, "ຈຳນວນເງິນບໍ່ຖືກຕ້ອງ")
+            return redirect("store_confirm_payment", order_id=order.id)
+            
+        # Upload to Supabase
+        if settings.SUPABASE_URL and settings.SUPABASE_SERVICE_KEY:
+            try:
+                supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_KEY)
+                
+                # Get file extension
+                ext = slip_image.name.split('.')[-1] if '.' in slip_image.name else 'jpg'
+                filename = f"order_{order.id}_{uuid.uuid4().hex[:8]}.{ext}"
+                
+                # Upload file
+                res = supabase.storage.from_(settings.SUPABASE_SLIP_BUCKET).upload(
+                    filename, 
+                    slip_image.read(), 
+                    {"content-type": slip_image.content_type}
                 )
-            else:
-                profile.phone = form.cleaned_data["phone"]
-                profile.address = form.cleaned_data.get("address", "")
-                profile.save()
+                
+                # Get public URL
+                public_url = supabase.storage.from_(settings.SUPABASE_SLIP_BUCKET).get_public_url(filename)
+                
+                # Create Payment record
+                Payment.objects.create(
+                    bill=order.bill,
+                    pay_amount=paid_amount,
+                    pay_with=bank_name,
+                    slip_url=public_url
+                )
+                
+                # Update Order Status
+                order.status = "WAITING_CONFIRMATION"
+                order.save()
+                
+                messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
+                return redirect("store_home")
+                
+            except Exception as e:
+                messages.error(request, f"ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດຮູບ: {str(e)}")
+                return redirect("store_confirm_payment", order_id=order.id)
+        else:
+            messages.error(request, "ລະບົບຍັງບໍ່ທັນຕັ້ງຄ່າບ່ອນເກັບຮູບ (Supabase)")
+            return redirect("store_confirm_payment", order_id=order.id)
+        
+    return render(request, "store/confirm_payment.html", {
+        "order": order,
+        "bill": order.bill,
+        "prefill_order_no": order.id,
+        "prefill_paid_amount": order.bill.balance_due,
+    })
 
-            if form.cleaned_data.get("password1"):
-                update_session_auth_hash(request, user)
-
-            messages.success(request, "ບັນທຶກຂໍ້ມູນສຳເລັດ")
-            return redirect("store_account")
-    else:
-        form = CustomerProfileEditForm(
-            user=user,
-            initial={
-                "full_name": user.first_name or "",
-                "email": user.email or user.username,
-                "phone": profile.phone if profile else "",
-                "address": profile.address if profile else "",
-            },
-        )
-
-    return render(request, "store/account_edit.html", {"form": form})
-
-
-@login_required(login_url="store_login")
-def account_orders(request):
-    profile = getattr(request.user, "customer_profile", None)
-    orders = WebOrder.objects.filter(phone=profile.phone).order_by("-created_at") if profile else []
-    return render(request, "store/account_orders.html", {"orders": orders})
-
-
-def home(request):
-    featured = (
-        Product.objects.filter(is_active=True, is_featured=True)
-        .select_related("category")
-        .prefetch_related("variants")[:6]
-    )
-    return render(request, "store/home.html", {"featured_products": featured})
-
-
-def about(request):
-    return render(request, "store/about.html")
-
-
-def faq(request):
-    items = FAQItem.objects.filter(is_active=True)
-    return render(request, "store/faq.html", {"faq_items": items})
-
-
-def privacy(request):
-    return render(request, "store/privacy.html")
-
-
-def returns(request):
-    return render(request, "store/returns.html")
-
-
-def contact(request):
+def store_login(request):
+    if request.user.is_authenticated:
+        return redirect("store_home")
+    
     if request.method == "POST":
-        name = (request.POST.get("name") or "").strip()
-        email = (request.POST.get("email") or "").strip()
-        phone = (request.POST.get("phone") or "").strip()
-        message = (request.POST.get("message") or "").strip()
-        if not name or not message:
-            return render(request, "store/contact.html", {
-                "error": "ກະລຸນາໃສ່ຊື່ ແລະ ຂໍ້ຄວາມ",
-            })
-        ContactMessage.objects.create(
-            name=name, email=email, phone=phone, message=message,
-        )
-        notify_shop(
-            f"[{settings.SHOP_BRAND}] ຂໍ້ຄວາມໃໝ່",
-            f"ຊື່: {name}\nໂທ: {phone}\nEmail: {email}\n\n{message}",
-        )
-        return render(request, "store/contact.html", {"success": True})
+        # Simplified for demo:
+        return redirect("store_home")
+        
+    return render(request, "store/login.html")
+
+def store_register(request):
+    if request.method == "POST":
+        return redirect("store_home")
+    return render(request, "store/register.html")
+
+def store_contact(request):
     return render(request, "store/contact.html")
 
+def store_about(request):
+    return render(request, "store/about.html")
 
-def shop(request):
-    q = (request.GET.get("q") or "").strip()
-    category_slug = (request.GET.get("category") or "").strip()
-
-    qs = Product.objects.filter(
-        is_active=True,
-        variants__is_active=True,
-    ).select_related("category").prefetch_related("variants").distinct()
-    if q:
-        qs = qs.filter(
-            Q(name__icontains=q)
-            | Q(name_en__icontains=q)
-            | Q(name_th__icontains=q)
-            | Q(variants__sku__icontains=q)
-            | Q(variants__display_name__icontains=q)
-        ).distinct()
-    if category_slug:
-        qs = qs.filter(category__slug=category_slug)
-    qs = qs.order_by("name")
-
-    categories = Category.objects.filter(
-        products__is_active=True,
-        products__variants__is_active=True,
-    ).distinct().order_by("name")
-    return render(request, "store/shop.html", {
-        "products": qs,
-        "q": q,
-        "categories": categories,
-        "active_category": category_slug,
-    })
-
-
-def product_detail(request, variant_id: int):
-    v = get_object_or_404(
-        ProductVariant.objects.select_related("product", "product__category"),
-        id=variant_id,
-        is_active=True,
-        product__is_active=True,
-    )
-    variants = v.product.active_variant_list
-    return render(request, "store/product_detail.html", {
-        "v": v,
-        "variants": variants,
-    })
-
-
-def _cart_key():
-    # แยกจาก POS cart กันชนกัน
-    return "shop_cart"
-
-
-def cart(request):
-    cart = request.session.get(_cart_key(), {})  # {"<variant_id>": qty}
-    items = []
-    total = Decimal("0")
-
-    for vid, qty in cart.items():
-        v = get_object_or_404(ProductVariant, id=int(vid))
-        qty = int(qty)
-        price = _unit_price(v)
-        line = price * qty
-        total += line
-        items.append({"variant": v, "qty": qty, "unit_price": price, "line_total": line})
-
-    return render(request, "store/cart.html", {"items": items, "total": total})
-
-
-def add_to_cart(request, variant_id: int):
-    cart = request.session.get(_cart_key(), {})
-    k = str(variant_id)
-    try:
-        add_qty = int(request.POST.get("qty") or request.GET.get("qty") or 1)
-    except (TypeError, ValueError):
-        add_qty = 1
-    add_qty = max(1, min(add_qty, 99))
-    cart[k] = int(cart.get(k, 0)) + add_qty
-    request.session[_cart_key()] = cart
-    next_url = request.POST.get("next") or request.GET.get("next")
-    if next_url == "detail":
-        return redirect("store_product_detail", variant_id=variant_id)
-    return redirect("store_cart")
-
-
-def remove_one(request, variant_id: int):
-    cart = request.session.get(_cart_key(), {})
-    k = str(variant_id)
-    if k in cart:
-        new_qty = int(cart[k]) - 1
-        if new_qty <= 0:
-            del cart[k]
-        else:
-            cart[k] = new_qty
-        request.session[_cart_key()] = cart
-    return redirect("store_cart")
-
-
-def clear_cart(request):
-    request.session[_cart_key()] = {}
-    return redirect("store_cart")
-
-
-@transaction.atomic
-def checkout(request):
-    cart = request.session.get(_cart_key(), {})
-    if not cart:
-        return redirect("store_cart")
-
-    # lock product rows กัน stock เพี้ยน
-    variant_ids = [int(k) for k in cart.keys()]
-    variants = ProductVariant.objects.select_for_update().filter(id__in=variant_ids)
-    vmap = {v.id: v for v in variants}
-
-    items = []
-    subtotal = Decimal("0")
-    for vid_str, qty in cart.items():
-        vid = int(vid_str)
-        qty = int(qty)
-        v = vmap.get(vid)
-        if not v:
-            return redirect("store_cart")
-
-        price = _unit_price(v)
-        line = price * qty
-        subtotal += line
-        items.append({"variant": v, "qty": qty, "unit_price": price, "line_total": line})
-
-    discount = Decimal("0")
-    grand_total = subtotal - discount
-
-    if request.method == "POST":
-        name = (request.POST.get("customer_name") or "").strip()
-        phone = (request.POST.get("phone") or "").strip()
-        address = (request.POST.get("address") or "").strip()
-        payment_method = request.POST.get("payment_method", "transfer")
-
-        if not name or not phone:
-            return render(request, "store/checkout.html", {
-                "items": items, "subtotal": subtotal, "discount": discount, "grand_total": grand_total,
-                "error": "ກະລຸນາໃສ່ຊື່ ແລະ ເບີໂທ",
-                "customer_name": name, "phone": phone, "address": address,
-            })
-
-        # เช็ค stock
-        for it in items:
-            v = it["variant"]
-            if int(v.stock_qty) < int(it["qty"]):
-                return render(request, "store/checkout.html", {
-                    "items": items, "subtotal": subtotal, "discount": discount, "grand_total": grand_total,
-                    "error": f"ສິນຄ້າບໍ່ພໍ: {v.display_name} (ຄົງ {v.stock_qty})",
-                })
-
-        order = WebOrder.objects.create(
-            order_no=_make_web_order_no(),
-            customer_name=name,
-            phone=phone,
-            address=address,
-            payment_method=payment_method,
-            status="WAITING_PAYMENT" if payment_method == "transfer" else "NEW",
-            subtotal=subtotal,
-            discount=discount,
-            grand_total=grand_total,
-        )
-
-        # สร้าง items + ตัด stock (เหมือน POS)
-        for it in items:
-            v = it["variant"]
-            qty = int(it["qty"])
-
-            WebOrderItem.objects.create(
-                order=order,
-                variant=v,
-                qty=qty,
-                unit_price=it["unit_price"],
-                line_total=it["line_total"],
-            )
-
-            v.stock_qty = int(v.stock_qty) - qty
-            v.save(update_fields=["stock_qty"])
-
-        notify_shop(
-            f"[{settings.SHOP_BRAND}] ອໍເດີໃໝ່ {order.order_no}",
-            f"ຊື່: {name}\nໂທ: {phone}\nລວມ: {grand_total} ກີບ\nຊຳລະ: {payment_method}\nAdmin: /admin/store/weborder/",
-        )
-
-        request.session[_cart_key()] = {}
-        return redirect("store_order_success", order_no=order.order_no)
-
-    return render(request, "store/checkout.html", {
-        "items": items,
-        "subtotal": subtotal,
-        "discount": discount,
-        "grand_total": grand_total,
-        **_customer_defaults(request),
-    })
-
-
-def order_success(request, order_no: str):
-    order = get_object_or_404(WebOrder, order_no=order_no)
-    slip_confirmation = order.payment_confirmations.order_by("-created_at").first()
-    slip_preview_url = ""
-    if slip_confirmation:
-        slip_preview_url = _absolute_slip_url(request, slip_confirmation.display_slip_url)
-    slip_file_ok = bool(slip_preview_url)
-    slip_success = request.GET.get("slip") == "ok"
-    slip_error = request.session.pop("slip_error", None)
-    slip_already = order.payment_confirmations.exists()
-    can_reupload_slip = (
-        order.payment_method == "transfer"
-        and order.status == "PAYMENT_REVIEW"
-        and slip_already
-        and not slip_file_ok
-    )
-    return render(request, "store/order_success.html", {
-        "order": order,
-        "slip_confirmation": slip_confirmation,
-        "slip_preview_url": slip_preview_url,
-        "slip_file_ok": slip_file_ok,
-        "slip_success": slip_success,
-        "slip_error": slip_error,
-        "slip_already": slip_already,
-        "can_reupload_slip": can_reupload_slip,
-    })
-
-
-def _redirect_slip_error(request, order_no: str, message: str):
-    request.session["slip_error"] = message
-    return redirect(reverse("store_order_success", kwargs={"order_no": order_no}))
-
-
-def confirm_payment(request):
-    if request.method == "POST":
-        order_no = (request.POST.get("order_no") or "").strip()
-        paid_amount = _to_decimal(request.POST.get("paid_amount"))
-        bank_name = (request.POST.get("bank_name") or settings.BANK_NAME or "").strip()
-        note = (request.POST.get("note") or "").strip()
-        slip = request.FILES.get("slip_image")
-
-        ctx = {
-            "prefill_order_no": order_no,
-            "prefill_paid_amount": (request.POST.get("paid_amount") or "").strip(),
-            "prefill_bank_name": bank_name,
-        }
-
-        if not slip:
-            if order_no:
-                return _redirect_slip_error(request, order_no, "ກະລຸນາແນບຮູບສลິບໂອນເງິນ")
-            return render(request, "store/confirm_payment.html", {
-                **ctx,
-                "error": "ກະລຸນາແນບຮູບສลິບໂອນເງິນ",
-            })
-
-        order = WebOrder.objects.filter(order_no=order_no).first()
-        if not order:
-            return render(request, "store/confirm_payment.html", {
-                **ctx,
-                "error": "ບໍ່ພົບເລກອໍເດີ",
-            })
-
-        if order.status in ("PAID", "SHIPPING", "DONE"):
-            if order_no:
-                return _redirect_slip_error(request, order_no, "ອໍເດີນີ້ຊຳລະແລ້ວ")
-            return render(request, "store/confirm_payment.html", {
-                **ctx,
-                "error": "ອໍເດີນີ້ຊຳລະແລ້ວ",
-            })
-
-        if order.payment_confirmations.exists():
-            existing = order.payment_confirmations.order_by("-created_at").first()
-            if order.status == "PAYMENT_REVIEW" and existing:
-                existing.paid_amount = paid_amount or order.grand_total
-                existing.bank_name = bank_name
-                if note:
-                    existing.note = note
-                _save_slip_on_confirmation(existing, slip, order.order_no)
-                notify_shop(
-                    f"[{settings.SHOP_BRAND}] ອັບສลິບໃໝ່ {order.order_no}",
-                    f"ລູກຄ້າອັບສลິບຊ້ຳ — ກະລຸນາກວດໃນ Admin",
-                )
-                return redirect(reverse("store_order_success", kwargs={"order_no": order.order_no}) + "?slip=ok")
-            if order_no:
-                return redirect(reverse("store_order_success", kwargs={"order_no": order_no}) + "?slip=ok")
-            return render(request, "store/confirm_payment.html", {
-                **ctx,
-                "error": "ແຈ້ງຊຳລະອໍເດີນີ້ແລ້ວ — ລໍກວດຈາກຮ້ານ",
-            })
-
-        amount_note = ""
-        if paid_amount and paid_amount != order.grand_total:
-            amount_note = f" (ລູກຄ້າແຈ້ງ {paid_amount}, ຍອດອໍເດີ {order.grand_total})"
-
-        confirmation = PaymentConfirmation.objects.create(
-            order=order,
-            paid_amount=paid_amount or order.grand_total,
-            bank_name=bank_name,
-            note=note,
-        )
-        _save_slip_on_confirmation(confirmation, slip, order.order_no)
-
-        order.status = "PAYMENT_REVIEW"
-        order.save(update_fields=["status"])
-
-        notify_shop(
-            f"[{settings.SHOP_BRAND}] ແຈ້ງໂອນ {order.order_no}",
-            (
-                f"ຊື່: {order.customer_name}\n"
-                f"ໂທ: {order.phone}\n"
-                f"ຈຳນວນ: {paid_amount} ກີບ{amount_note}\n"
-                f"ທະນາຄານ: {bank_name}\n"
-                f"ໝາຍເຫດ: {note}\n"
-                f"Admin → Payment confirmations / Web orders → ປ່ຽນເປັນ PAID"
-            ),
-        )
-
-        return redirect(reverse("store_order_success", kwargs={"order_no": order.order_no}) + "?slip=ok")
-
-    return render(request, "store/confirm_payment.html", {
-        "prefill_order_no": (request.GET.get("order_no") or "").strip(),
-        "prefill_paid_amount": (request.GET.get("paid_amount") or "").strip(),
-        "prefill_bank_name": settings.BANK_NAME,
-    })
-
-
-def blog_list(request):
+def store_blog_list(request):
     return render(request, "store/blog_list.html")
+
+def store_faq(request):
+    return render(request, "store/faq.html")
+
+def store_returns(request):
+    return render(request, "store/returns.html")
+
+def store_privacy(request):
+    return render(request, "store/privacy.html")
+
+def store_google_login(request):
+    return redirect("store_home")
+
+def store_logout(request):
+    logout(request)
+    return redirect("store_home")

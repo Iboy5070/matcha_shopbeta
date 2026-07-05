@@ -1,51 +1,62 @@
+from decimal import Decimal
 from django.db import models
-from django.contrib.auth import get_user_model
-from apps.catalog.models import ProductVariant
-from apps.sales.models import Order
+from apps.store.models import Employee
+from apps.catalog.models import Product
 
-User = get_user_model()
+class Supplier(models.Model):
+    sup_name = models.CharField(max_length=100)
+    sup_tel = models.CharField(max_length=20)
+    sup_address = models.TextField()
+    email = models.EmailField()
 
+    def __str__(self):
+        return self.sup_name
 
-class StockMovement(models.Model):
-    IN = "IN"
-    OUT = "OUT"
-    ADJUST = "ADJUST"
+class PurchaseOrder(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    po_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField(max_length=30, default="PENDING")
 
-    TYPE_CHOICES = [
-        (IN, "IN"),
-        (OUT, "OUT"),
-        (ADJUST, "ADJUST"),
-    ]
+    def __str__(self):
+        return f"PO #{self.id} from {self.supplier.sup_name}"
 
-    variant = models.ForeignKey(
-        ProductVariant,
-        on_delete=models.PROTECT,
-        related_name="stock_movements"
-    )
-    movement_type = models.CharField(
-        max_length=10,
-        choices=TYPE_CHOICES
-    )
-    qty = models.IntegerField()
+class PODetail(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name="details")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+    cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
-    reason = models.CharField(max_length=200, blank=True)
-    ref_order = models.ForeignKey(
-        Order,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="stock_movements"
-    )
+    def __str__(self):
+        return f"PO Detail #{self.id}"
 
-    actor = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="stock_movements"
-    )
+class Imports(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    imp_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
+    def __str__(self):
+        return f"Import #{self.id} for PO #{self.purchase_order_id}"
+
+class ImportDetail(models.Model):
+    imports = models.ForeignKey(Imports, on_delete=models.CASCADE, related_name="details")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+    cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+
+    def __str__(self):
+        return f"Import Detail #{self.id}"
+
+class Inventory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory")
+    quantity = models.IntegerField(default=0)
+    expiry_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.variant.sku} {self.movement_type} {self.qty}"
+        return f"Inventory for {self.product.name}"

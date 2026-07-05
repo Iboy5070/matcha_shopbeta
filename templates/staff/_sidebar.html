@@ -1,0 +1,39 @@
+{% load i18n static %}
+<aside class="sp-sidebar" id="sp-sidebar">
+  <div class="sp-sidebar-brand">
+    <a href="{% url 'staff_dashboard' %}">
+      <img src="{% static 'img/icons/logo-cup.png' %}" alt="" width="32" height="32">
+      <span class="sp-brand-text">
+        <span class="sp-brand-name">{{ shop_brand }}</span>
+        <span class="sp-brand-tag">Staff Portal</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="sp-sidebar-user">
+    <div class="sp-avatar" aria-hidden="true">{{ user.username|slice:":1"|upper }}</div>
+    <div>
+      <div class="sp-user-name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="sp-user-role">{% trans "Shop staff" %} · {% trans "limited access" %}</div>
+    </div>
+  </div>
+
+  <nav class="sp-sidebar-nav">
+    <a class="sp-nav-item{% if staff_section == 'home' %} is-active{% endif %}" href="{% url 'staff_dashboard' %}">
+      <span class="sp-nav-icon">▣</span> {% trans "Dashboard" %}
+    </a>
+    <a class="sp-nav-item{% if staff_section == 'slips' %} is-active{% endif %}" href="{% url 'staff_slips' %}">
+      <span class="sp-nav-icon">🧾</span> {% trans "Payment slips" %}
+    </a>
+    <a class="sp-nav-item{% if staff_section == 'pos' %} is-active{% endif %}" href="{% url 'pos' %}">
+      <span class="sp-nav-icon">🛒</span> POS
+    </a>
+  </nav>
+
+  <div class="sp-sidebar-footer">
+    <a class="sp-btn-add" href="{% url 'pos' %}">+ {% trans "New sale" %}</a>
+    {% if user.is_superuser %}
+    <a class="sp-btn-admin-link" href="{% url 'admin:index' %}">⚙ {% trans "Open Admin" %}</a>
+    {% endif %}
+  </div>
+</aside>

@@ -1,0 +1,46 @@
+{% load i18n static %}
+<aside class="pa-sidebar" id="pa-sidebar">
+  <div class="pa-sidebar-brand">
+    <a href="{% url 'admin:index' %}">
+      <span class="pa-brand-icon pa-brand-icon--admin" aria-hidden="true">A</span>
+      <span class="pa-brand-text">
+        <span class="pa-brand-name">{{ shop_brand|default:site_header }}</span>
+        <span class="pa-brand-tag">Admin — {% trans "Database" %}</span>
+      </span>
+    </a>
+  </div>
+
+  {% if user.is_authenticated %}
+  <div class="pa-sidebar-user">
+    <div class="pa-avatar pa-avatar--admin" aria-hidden="true">{{ user.username|slice:":1"|upper }}</div>
+    <div>
+      <div class="pa-user-name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="pa-user-role pa-user-role--admin">{% trans "Owner / superuser" %}</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <nav class="pa-sidebar-nav pa-sidebar-nav--simple" aria-label="{% translate 'Sidebar' %}">
+    <a class="pa-nav-item{% if request.path == '/admin/' %} is-active{% endif %}" href="{% url 'admin:index' %}">
+      <span class="pa-nav-icon">▣</span> {% trans "Overview" %}
+    </a>
+    <a class="pa-nav-item{% if '/catalog/product' in request.path %} is-active{% endif %}" href="{% url 'admin:catalog_product_changelist' %}">
+      <span class="pa-nav-icon">📦</span> {% trans "Products" %}
+    </a>
+    <a class="pa-nav-item{% if '/sales/' in request.path %} is-active{% endif %}" href="{% url 'admin:sales_order_changelist' %}">
+      <span class="pa-nav-icon">🛒</span> {% trans "Orders" %}
+    </a>
+    <a class="pa-nav-item{% if '/auth/user' in request.path %} is-active{% endif %}" href="{% url 'admin:auth_user_changelist' %}">
+      <span class="pa-nav-icon">👤</span> {% trans "Users" %}
+    </a>
+    <a class="pa-nav-item{% if '/inventory/' in request.path %} is-active{% endif %}" href="{% url 'admin:inventory_inventory_changelist' %}">
+      <span class="pa-nav-icon">📊</span> {% trans "Inventory" %}
+    </a>
+  </nav>
+
+  <div class="pa-sidebar-footer">
+    <a class="pa-btn-add pa-btn-product" href="{% url 'admin:catalog_product_add' %}">+ {% trans "Add product" %}</a>
+    <a class="pa-btn-add pa-btn-staff" href="{% url 'admin:auth_user_add' %}">+ {% trans "Add user" %}</a>
+    <a class="pa-sidebar-shop" href="{% url 'store_home' %}">{% trans "View shop" %}</a>
+  </div>
+</aside>

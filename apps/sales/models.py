@@ -1,53 +1,63 @@
 from decimal import Decimal
 from django.db import models
-from django.contrib.auth import get_user_model
-from apps.catalog.models import ProductVariant
-
-User = get_user_model()
-
-
-class Customer(models.Model):
-    name = models.CharField(max_length=120)
-    phone = models.CharField(max_length=30, blank=True)
-    points = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.name
+from apps.store.models import Customer, Employee
+from apps.catalog.models import Product
 
 
 class Order(models.Model):
-    PAYMENT_CHOICES = [
-        ("cash", "Cash"),
-        ("transfer", "Transfer"),
-        ("card", "Card"),
-    ]
-
-    order_no = models.CharField(max_length=30, unique=True, db_index=True)
-    cashier = models.ForeignKey(User, on_delete=models.PROTECT, related_name="orders")
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
-
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    discount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-
-    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default="cash")
-    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    change_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    order_date = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_orders")
+    status = models.CharField(max_length=30, default="PENDING")
 
     def __str__(self):
-        return self.order_no
+        return f"Order #{self.id}"
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT)
-
-    qty = models.PositiveIntegerField(default=1)
-    unit_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    line_total = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     def __str__(self):
-        return f"{self.order.order_no} - {self.variant.sku}"
+        return f"{self.order} - {self.product.name}"
+
+
+class Bill(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="bill")
+    bill_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    balance_due = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField(max_length=30, default="UNPAID")
+
+    def __str__(self):
+        return f"Bill #{self.id} for {self.order}"
+
+
+class Payment(models.Model):
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments")
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_payments")
+    pay_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    pay_with = models.CharField(max_length=50)
+    pay_date = models.DateTimeField(auto_now_add=True)
+    slip_url = models.CharField(max_length=500, null=True, blank=True)
+
+    def __str__(self):
+        return f"Payment #{self.id} for {self.bill}"
+
+
+class Reserved(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="reservations")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+    deposit_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    remain_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField(max_length=30, default="RESERVED")
+    res_date = models.DateTimeField(auto_now_add=True)
+    expire_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"Reservation #{self.id} for {self.product.name}"

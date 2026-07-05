@@ -1,11 +1,8 @@
 {% load static i18n mz_extras catalog_i18n %}
-{% with p=product dv=product.default_variant %}
-{% if dv %}
+{% with p=product %}
 <div class="mz-product-card{% if home_style %} mz-product-card-home{% endif %}">
-  <a class="mz-product-image-link" href="{% url 'store_product_detail' dv.id %}">
-    {% if dv.display_image %}
-      <img src="{{ dv.display_image }}" alt="{% product_name p LANGUAGE_CODE %}">
-    {% elif p.display_image %}
+  <a class="mz-product-image-link" href="{% url 'store_product_detail' p.id %}">
+    {% if p.display_image %}
       <img src="{{ p.display_image }}" alt="{% product_name p LANGUAGE_CODE %}">
     {% else %}
       <div class="mz-product-placeholder">
@@ -16,39 +13,24 @@
   <div class="mz-product-card-body">
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
     <div class="mz-product-name">{% product_name p LANGUAGE_CODE %}</div>
-    {% with option_count=p.active_variant_list|length %}
-    {% if show_variant_name and option_count == 1 %}
-    <p class="mz-product-variant mb-0">{% variant_name dv LANGUAGE_CODE %}</p>
-    {% elif option_count > 1 %}
-    <p class="mz-product-variant mb-0 text-muted small">{% trans "Multiple options" %}</p>
-    {% endif %}
     <div class="mz-product-price">
-      {% if option_count > 1 %}
-      <span class="text-muted small">{% trans "From" %}</span>
-      {% endif %}
-      {{ p.price_label }}
+      {{ p.price|kip }}
       <span>ກີບ</span>
     </div>
     {% if home_style %}
-    <a class="mz-product-cart-btn" href="{% if option_count > 1 %}{% url 'store_product_detail' dv.id %}{% else %}{% url 'store_add_to_cart' dv.id %}{% endif %}">
+    <a class="mz-product-cart-btn" href="{% url 'store_add_to_cart' p.id %}">
       <svg class="mz-cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
         <path d="M2 3h2l2.4 12.4a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L21 7H6"/>
       </svg>
-      <span>{% if option_count > 1 %}{% trans "View options" %}{% else %}{% trans "Add to cart" %}{% endif %}</span>
+      <span>{% trans "Add to cart" %}</span>
     </a>
     {% else %}
     <div class="mz-product-card-actions">
-      <a class="btn btn-sm mz-btn-outline flex-grow-1" href="{% url 'store_product_detail' dv.id %}">{% trans "View" %}</a>
-      {% if option_count > 1 %}
-      <a class="btn btn-sm mz-btn-primary flex-grow-1" href="{% url 'store_product_detail' dv.id %}">{% trans "Choose option" %}</a>
-      {% else %}
-      <a class="btn btn-sm mz-btn-primary flex-grow-1" href="{% url 'store_add_to_cart' dv.id %}">{% trans "Add to cart" %}</a>
-      {% endif %}
+      <a class="btn btn-sm mz-btn-outline flex-grow-1" href="{% url 'store_product_detail' p.id %}">{% trans "View" %}</a>
+      <a class="btn btn-sm mz-btn-primary flex-grow-1" href="{% url 'store_add_to_cart' p.id %}">{% trans "Add to cart" %}</a>
     </div>
     {% endif %}
-    {% endwith %}
   </div>
 </div>
-{% endif %}
 {% endwith %}

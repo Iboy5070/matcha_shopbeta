@@ -12,8 +12,8 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next|default:'' }}">
         <div class="mb-3">
-          <label class="form-label" for="loginEmail">{% trans "Email" %}</label>
-          <input class="form-control form-control-lg" id="loginEmail" type="email" name="email" required
+          <label class="form-label" for="loginEmail">{% trans "Email or username" %}</label>
+          <input class="form-control form-control-lg" id="loginEmail" type="text" name="email" required
                  placeholder="{% trans 'Email or username' %}" autocomplete="username">
         </div>
         <div class="mb-3">

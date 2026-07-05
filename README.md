@@ -7,7 +7,21 @@ Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, 
 - Python 3.11+
 - Docker (for PostgreSQL) or your own Postgres server
 
-## Setup
+## Quick start (local)
+
+```bash
+make run
+```
+
+This will:
+- create `.venv` if needed
+- start PostgreSQL via Docker (if Docker is running)
+- fall back to **SQLite** (`db.sqlite3`) if Postgres is unavailable
+- run migrations and start `runserver` at http://127.0.0.1:8000/
+
+Without Docker: add `USE_SQLITE=1` to `.env` or just run `make run` (auto-fallback when `DEBUG=1`).
+
+## Setup (manual)
 
 ```bash
 git clone <repo_url>

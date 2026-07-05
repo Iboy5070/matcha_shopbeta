@@ -1,8 +1,17 @@
+.PHONY: run db install check migrate
+
 run:
-	@if [ ! -d ".venv" ]; then \
-		python3 -m venv .venv; \
-	fi
-	@source .venv/bin/activate && \
-	pip install -r requirements.txt && \
-	python manage.py migrate && \
-	python manage.py runserver
+	@bash scripts/dev_run.sh
+
+db:
+	docker compose up -d db
+
+install:
+	@test -d .venv || python3 -m venv .venv
+	@. .venv/bin/activate && pip install -r requirements.txt
+
+migrate:
+	@. .venv/bin/activate && python manage.py migrate
+
+check:
+	@. .venv/bin/activate && python manage.py check

@@ -1,21 +1,27 @@
 from django.contrib import admin
-from .models import Customer, Order, OrderItem
+from unfold.admin import ModelAdmin, TabularInline
+from .models import Order, OrderItem, Bill, Payment, Reserved
 
-
-@admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-    list_display = ("name", "phone", "points")
-    search_fields = ("name", "phone")
-
-
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(TabularInline):
     model = OrderItem
-    extra = 0
-
+    extra = 1
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ("order_no", "cashier", "grand_total", "payment_method", "created_at")
-    list_filter = ("payment_method", "created_at")
-    search_fields = ("order_no", "cashier__username")
+class OrderAdmin(ModelAdmin):
+    list_display = ("id", "order_date", "customer", "employee", "status")
+    search_fields = ("customer__cus_name", "employee__emp_name")
+    list_filter = ("status",)
     inlines = [OrderItemInline]
+
+@admin.register(Bill)
+class BillAdmin(ModelAdmin):
+    list_display = ("id", "order", "bill_date", "total_amount", "paid_amount", "balance_due", "status")
+
+@admin.register(Payment)
+class PaymentAdmin(ModelAdmin):
+    list_display = ("id", "bill", "employee", "pay_amount", "pay_with", "pay_date")
+
+@admin.register(Reserved)
+class ReservedAdmin(ModelAdmin):
+    list_display = ("id", "order", "product", "quantity", "deposit_amount", "status")
+

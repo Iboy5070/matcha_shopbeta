@@ -1,44 +1,88 @@
-{% extends "staff/_manage_layout.html" %}
-{% load i18n %}
-{% block title %}{% trans "Payment slips" %}{% endblock %}
-{% block staff_content %}
-<div class="mb-4">
-  <h1 class="h3 mb-1">{% trans "Payment slips" %}</h1>
-  <p class="text-muted mb-0">{% trans "Review transfer slips and confirm payment." %}</p>
+{% extends "staff/app.html" %}
+{% load i18n static mz_extras %}
+{% block title %}ກວດສອບສະລິບ (Verify Slips){% endblock %}
+
+{% block staff_page %}
+<div class="sp-page-head">
+  <p class="sp-page-lead">ກວດສອບສະລິບໂອນເງິນຈາກລູກຄ້າໜ້າເວັບ</p>
 </div>
 
-<div class="row g-3">
-  {% for row in slips %}
-  <div class="col-md-6 col-xl-4">
-    <div class="mz-staff-table-card p-3 h-100">
-      <div class="d-flex justify-content-between align-items-start mb-2">
-        <div>
-          <div class="font-monospace fw-bold">{{ row.obj.order.order_no }}</div>
-          <div class="small text-muted">{{ row.obj.order.customer_name }}</div>
-        </div>
-        <span class="badge text-bg-secondary">{{ row.obj.order.get_status_display }}</span>
+<div class="row g-3 g-lg-4 mb-4">
+  <div class="col-lg-12">
+    <div class="sp-panel">
+      <div class="sp-panel-head">
+        <h2>ລາຍການລໍຖ້າກວດສອບ (Pending Verifications)</h2>
       </div>
-      {% if row.url %}
-      <a href="{{ row.url }}" target="_blank" rel="noopener">
-        <img class="img-fluid rounded border mb-2" src="{{ row.url }}" alt="slip" style="max-height:180px;object-fit:contain;width:100%">
-      </a>
-      {% else %}
-      <div class="text-muted small mb-2">{% trans "No image" %}</div>
-      {% endif %}
-      <div class="small mb-3">{{ row.obj.paid_amount|floatformat:0 }} ກີບ · {{ row.obj.created_at|date:"d/m/Y H:i" }}</div>
-      {% if row.obj.order.status != "PAID" %}
-      <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="slip_id" value="{{ row.obj.id }}">
-        <button class="btn btn-sm btn-success w-100" type="submit">{% trans "Confirm → PAID" %}</button>
-      </form>
-      {% else %}
-      <div class="small text-success">✓ {% trans "Paid" %}</div>
-      {% endif %}
+      <div class="sp-panel-body">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mb-4">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>ວັນທີສັ່ງຊື້</th>
+                <th>ລູກຄ້າ</th>
+                <th>ຍອດໂອນ</th>
+                <th>ສະລິບ (Slip)</th>
+                <th>ການຈັດການ (Actions)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in pending_orders %}
+              <tr>
+                <td><strong>#{{ order.id }}</strong></td>
+                <td>{{ order.order_date|date:"d/m/Y H:i" }}</td>
+                <td>
+                  {% if order.customer %}
+                    {{ order.customer.cus_name }} {{ order.customer.cus_last }}
+                    <br><small class="text-muted">{{ order.customer.cus_tel }}</small>
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td><strong class="text-success">{{ order.bill.total_amount|floatformat:0|kip }} ₭</strong></td>
+                <td>
+                  {% with payment=order.bill.payments.first %}
+                    {% if payment and payment.slip_url %}
+                      <a href="{{ payment.slip_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        🖼️ ເບິ່ງຮູບສະລິບ
+                      </a>
+                    {% else %}
+                      <span class="text-muted">ບໍ່ມີຮູບ</span>
+                    {% endif %}
+                  {% endwith %}
+                </td>
+                <td>
+                  <form method="POST" action="{% url 'verify_slip' order.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="approve" class="btn btn-sm btn-success" onclick="return confirm('ຢືນຢັນວ່າໄດ້ຮັບເງິນແລ້ວ?');">
+                      ✅ ອະນຸມັດ (Approve)
+                    </button>
+                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger ms-1" onclick="return confirm('ປະຕິເສດສະລິບນີ້?');">
+                      ❌ ປະຕິເສດ (Reject)
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" class="text-center py-5 text-muted">
+                  <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+                  <h4>ບໍ່ມີລາຍການລໍຖ້າກວດສອບ</h4>
+                  <p>ອໍເດີທັງໝົດຖືກກວດສອບແລ້ວ</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
-  {% empty %}
-  <div class="col-12"><p class="text-muted">{% trans "No slips yet." %}</p></div>
-  {% endfor %}
 </div>
 {% endblock %}

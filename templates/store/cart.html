@@ -12,20 +12,20 @@
   {% for it in items %}
   <div class="mz-cart-item">
     <div class="mz-cart-item-media">
-      {% if it.variant.product.display_image %}
-        <img src="{{ it.variant.product.display_image }}" alt="{% variant_name it.variant LANGUAGE_CODE %}">
+      {% if it.product.display_image %}
+        <img src="{{ it.product.display_image }}" alt="{% product_name it.product LANGUAGE_CODE %}">
       {% else %}
         <div class="mz-product-placeholder">MATCHA</div>
       {% endif %}
     </div>
     <div class="mz-cart-item-body">
-      <div class="mz-product-cat">{% cat_name it.variant.product.category LANGUAGE_CODE %}</div>
-      <div class="mz-cart-item-name">{% variant_name it.variant LANGUAGE_CODE %}</div>
+      <div class="mz-product-cat">{% cat_name it.product.category LANGUAGE_CODE %}</div>
+      <div class="mz-cart-item-name">{% product_name it.product LANGUAGE_CODE %}</div>
       <div class="mz-cart-item-price">{{ it.unit_price|kip }} <span>ກີບ</span></div>
       <div class="mz-cart-qty">
-        <a class="mz-qty-btn" href="{% url 'store_remove_one' it.variant.id %}" aria-label="-1">−</a>
+        <a class="mz-qty-btn" href="{% url 'store_remove_one' it.product.id %}" aria-label="-1">−</a>
         <span class="mz-qty-val">{{ it.qty }}</span>
-        <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.variant.id %}" aria-label="+1">+</a>
+        <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.product.id %}" aria-label="+1">+</a>
       </div>
     </div>
     <div class="mz-cart-item-total">{{ it.line_total|kip }} <small>ກີບ</small></div>

@@ -1,61 +1,42 @@
 {% extends "store/base.html" %}
 {% load i18n static mz_extras catalog_i18n %}
-{% block title %}{% product_name v.product LANGUAGE_CODE %}{% endblock %}
+{% block title %}{% product_name product LANGUAGE_CODE %}{% endblock %}
 {% block content %}
 <div class="row g-4 align-items-start">
   <div class="col-md-6">
     <div class="mz-product-detail-media">
-      <img id="mz-detail-img"
-           src="{{ v.display_image }}"
-           alt="{% product_name v.product LANGUAGE_CODE %}">
+      {% if product.display_image %}
+      <img id="mz-detail-img" src="{{ product.display_image }}" alt="{% product_name product LANGUAGE_CODE %}">
+      {% else %}
+      <div class="mz-product-placeholder" style="height: 400px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 1rem;">
+        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="80" height="80">
+      </div>
+      {% endif %}
     </div>
   </div>
   <div class="col-md-6">
     <div class="mz-product-detail-info">
-      <div class="mz-product-cat">{% cat_name v.product.category LANGUAGE_CODE %}</div>
-      <h1 class="mz-product-detail-title">{% product_name v.product LANGUAGE_CODE %}</h1>
-      <p class="text-muted mb-3" id="mz-detail-variant-label">{% variant_name v LANGUAGE_CODE %}</p>
-      {% product_description v.product LANGUAGE_CODE as product_desc %}
+      <div class="mz-product-cat">{% cat_name product.category LANGUAGE_CODE %}</div>
+      <h1 class="mz-product-detail-title">{% product_name product LANGUAGE_CODE %}</h1>
+      
+      {% product_description product LANGUAGE_CODE as product_desc %}
       {% if product_desc %}
       <p class="mz-product-desc">{{ product_desc }}</p>
       {% endif %}
+      
       <div class="mz-product-price mb-3" id="mz-detail-price">
-        {% if v.sell_price and v.sell_price > 0 %}{{ v.sell_price|kip }}{% else %}{{ v.price|kip }}{% endif %}
+        {{ product.price|kip }}
         <span>ກີບ</span>
       </div>
 
-      {% if variants|length > 1 %}
-      <div class="mb-3">
-        <div class="fw-bold small text-muted mb-2">{% trans "Options" %}</div>
-        <div class="d-flex flex-wrap gap-2" id="mz-variant-options">
-          {% for opt in variants %}
-          <button type="button"
-                  class="btn btn-sm mz-variant-opt {% if opt.id == v.id %}mz-variant-opt-active{% else %}btn-outline-secondary{% endif %}"
-                  data-variant-id="{{ opt.id }}"
-                  data-image="{{ opt.display_image }}"
-                  data-price="{% if opt.sell_price and opt.sell_price > 0 %}{{ opt.sell_price|kip }}{% else %}{{ opt.price|kip }}{% endif %}"
-                  data-label="{% variant_name opt LANGUAGE_CODE %}"
-                  data-stock="{{ opt.stock_qty }}">
-            {% variant_name opt LANGUAGE_CODE %}
-          </button>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
+      <p class="text-danger small mb-3{% if product.stock_qty > 0 %} d-none{% endif %}" id="mz-detail-oos">{% trans "Out of stock" %}</p>
 
-      <p class="text-danger small mb-3{% if v.stock_qty > 0 %} d-none{% endif %}" id="mz-detail-oos">{% trans "Out of stock" %}</p>
-
-      <form method="post" action="{% url 'store_add_to_cart' v.id %}" class="mz-product-buy{% if v.stock_qty <= 0 %} d-none{% endif %}" id="mz-product-buy">
+      <form method="post" action="{% url 'store_add_to_cart' product.id %}" class="mz-product-buy{% if product.stock_qty <= 0 %} d-none{% endif %}" id="mz-product-buy">
         {% csrf_token %}
         <input type="hidden" name="next" value="cart">
-        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-          <label class="fw-bold small text-muted mb-0" for="mz-qty-display">{% trans "Quantity" %}</label>
-          <div class="mz-cart-qty mz-cart-qty-detail">
-            <button type="button" class="mz-qty-btn" data-qty-minus aria-label="{% trans 'Decrease quantity' %}">−</button>
-            <span class="mz-qty-val" id="mz-qty-display" aria-live="polite">1</span>
-            <input type="hidden" name="qty" id="mz-qty-input" value="1">
-            <button type="button" class="mz-qty-btn" data-qty-plus aria-label="{% trans 'Increase quantity' %}">+</button>
-          </div>
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-3 d-none">
+          <!-- Hidden quantity inputs as cart view currently adds 1 at a time -->
+          <input type="hidden" name="qty" id="mz-qty-input" value="1">
         </div>
         <div class="d-flex flex-wrap gap-2">
           <button class="btn mz-btn-primary btn-lg" type="submit" id="mz-detail-add-btn">{% trans "Add to cart" %}</button>
@@ -65,63 +46,4 @@
     </div>
   </div>
 </div>
-<script>
-(function () {
-  var form = document.getElementById("mz-product-buy");
-  var img = document.getElementById("mz-detail-img");
-  var priceEl = document.getElementById("mz-detail-price");
-  var labelEl = document.getElementById("mz-detail-variant-label");
-  var oosEl = document.getElementById("mz-detail-oos");
-  var addBtn = document.getElementById("mz-detail-add-btn");
-  var options = document.querySelectorAll("#mz-variant-options .mz-variant-opt");
-  var addCartUrlTemplate = "{% url 'store_add_to_cart' 999999999 %}";
-
-  function addCartUrl(variantId) {
-    return addCartUrlTemplate.replace("999999999", variantId);
-  }
-
-  function setActive(btn) {
-    options.forEach(function (b) {
-      b.classList.remove("mz-variant-opt-active", "mz-btn-primary");
-      b.classList.add("btn-outline-secondary");
-    });
-    btn.classList.add("mz-variant-opt-active");
-    btn.classList.remove("btn-outline-secondary");
-  }
-
-  options.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      setActive(btn);
-      if (img && btn.dataset.image) img.src = btn.dataset.image;
-      if (priceEl) priceEl.innerHTML = btn.dataset.price + ' <span>ກີບ</span>';
-      if (labelEl) labelEl.textContent = btn.dataset.label || "";
-      if (form) form.action = addCartUrl(btn.dataset.variantId);
-      var inStock = parseInt(btn.dataset.stock || "0", 10) > 0;
-      if (oosEl) oosEl.classList.toggle("d-none", inStock);
-      if (form) form.classList.toggle("d-none", !inStock);
-    });
-  });
-
-  if (!form) return;
-  var qtyDisplay = document.getElementById("mz-qty-display");
-  var qtyInput = document.getElementById("mz-qty-input");
-  function setQty(n) {
-    var val = Math.max(1, Math.min(99, n));
-    if (qtyInput) qtyInput.value = String(val);
-    if (qtyDisplay) qtyDisplay.textContent = String(val);
-  }
-  form.querySelector("[data-qty-minus]")?.addEventListener("click", function () {
-    setQty(parseInt(qtyInput?.value || "1", 10) - 1);
-  });
-  form.querySelector("[data-qty-plus]")?.addEventListener("click", function () {
-    setQty(parseInt(qtyInput?.value || "1", 10) + 1);
-  });
-
-  var initial = document.querySelector("#mz-variant-options .mz-variant-opt-active");
-  if (initial && parseInt(initial.dataset.stock || "0", 10) <= 0) {
-    if (oosEl) oosEl.classList.remove("d-none");
-    form.classList.add("d-none");
-  }
-})();
-</script>
 {% endblock %}

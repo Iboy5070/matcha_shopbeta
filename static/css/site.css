@@ -7,9 +7,9 @@
   --mz-gold: #c4a35a;
   --mz-text: #1a1a1a;
   --mz-muted: #5c5c5c;
-  --mz-serif: "Noto Serif Lao", "Sarabun", Georgia, serif;
-  --mz-sans: "Sarabun", "Segoe UI", system-ui, sans-serif;
-  --mz-lao: "Noto Sans Lao", "Noto Serif Lao", "Sarabun", sans-serif;
+  --mz-serif: "Outfit", "Noto Serif Lao", Georgia, serif;
+  --mz-sans: "Inter", "Sarabun", "Segoe UI", system-ui, sans-serif;
+  --mz-lao: "Inter", "Noto Sans Lao", sans-serif;
   --mz-radius: 1rem;
   --mz-shadow: 0 8px 32px rgba(30, 61, 42, 0.08);
 }
@@ -70,11 +70,13 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 }
 
 .mz-navbar {
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(45, 90, 61, 0.1);
-  padding-top: 0.65rem;
-  padding-bottom: 0.65rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(45, 90, 61, 0.08);
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  transition: all 0.3s ease;
 }
 
 .mz-brand {
@@ -470,26 +472,26 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
 }
 
 .mz-product-cart-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.7rem 1rem;
+  padding: 0.5rem 1rem;
   background: var(--mz-green-mid);
   border-radius: 999px;
   color: #fff;
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 14px rgba(45, 90, 61, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .mz-product-cart-btn:hover {
   background: var(--mz-green);
   color: #fff;
-  transform: translateY(-1px);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(45, 90, 61, 0.35);
 }
 
 .mz-cart-icon-svg {
@@ -502,13 +504,27 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   color: #fff;
   border-radius: 999px;
   font-weight: 600;
-  padding: 0.45rem 1.25rem;
+  padding: 0.55rem 1.4rem;
+  box-shadow: 0 4px 14px rgba(45, 90, 61, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .mz-btn-primary:hover {
   background: var(--mz-green);
   border-color: var(--mz-green);
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(45, 90, 61, 0.35);
+}
+
+.dropdown-item.mz-team-link {
+  color: var(--mz-green);
+  font-weight: 600;
+}
+
+.dropdown-item.mz-team-link:hover {
+  background: rgba(45, 90, 61, 0.08);
+  color: var(--mz-green);
 }
 
 .mz-btn-outline {
@@ -563,16 +579,18 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   background: #fff;
   border-radius: var(--mz-radius);
   overflow: hidden;
-  border: 1px solid rgba(45, 90, 61, 0.08);
-  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid rgba(45, 90, 61, 0.05);
+  box-shadow: 0 4px 15px rgba(30, 61, 42, 0.03);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .mz-product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(45, 90, 61, 0.14);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(45, 90, 61, 0.12);
+  border-color: rgba(45, 90, 61, 0.1);
 }
 
 .mz-product-image-link {

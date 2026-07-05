@@ -20,7 +20,7 @@
 
   <p class="text-center small text-muted mt-3 mb-0">
     {% trans "Need bank details?" %}
-    <a href="{% url 'store_confirm_payment' %}#bank">{% trans "View transfer info" %}</a>
+    <a href="{% url 'store_confirm_payment' order.id %}#bank">{% trans "View transfer info" %}</a>
   </p>
 
   <div id="bank" class="mt-4">

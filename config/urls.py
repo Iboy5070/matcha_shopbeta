@@ -30,3 +30,6 @@ else:
             {"document_root": settings.MEDIA_ROOT},
         ),
     ]
+handler403 = "config.views_errors.permission_denied"
+handler404 = "config.views_errors.page_not_found"
+handler500 = "config.views_errors.server_error"

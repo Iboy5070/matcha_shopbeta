@@ -1,11 +1,9 @@
 {% extends "staff/_manage_layout.html" %}
 {% load i18n %}
 {% block title %}{% trans "Products & stock" %}{% endblock %}
+{% block page_title %}{% trans "Products & stock" %}{% endblock %}
 {% block staff_content %}
-<div class="mb-4">
-  <h1 class="h3 mb-1">{% trans "Products & stock" %}</h1>
-  <p class="text-muted mb-0">{% trans "Edit price, stock, and active status." %}</p>
-</div>
+<p class="sp-page-lead">{% trans "Edit price, stock, and active status." %}</p>
 
 <form class="row g-2 mb-3" method="get">
   <div class="col-md-8">

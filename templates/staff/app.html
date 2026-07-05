@@ -1,0 +1,31 @@
+{% extends "staff/base.html" %}
+{% load i18n static %}
+{% block body %}
+<div class="sp-layout">
+  {% include "staff/_sidebar.html" %}
+  <div class="sp-main">
+    <header class="sp-topbar">
+      <div class="sp-topbar-title">
+        <span class="sp-zone-badge">STAFF</span>
+        <h1>{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h1>
+        <span class="sp-topbar-sub">{% trans "Daily shop work" %}</span>
+      </div>
+      <div class="sp-topbar-actions">
+        <a class="sp-topbar-link" href="{% url 'store_home' %}">{% trans "Shop" %}</a>
+        <span class="sp-topbar-user">{{ user.get_username }}</span>
+        <a class="sp-topbar-icon" href="{% url 'staff_logout' %}" title="{% trans 'Log out' %}">⏻</a>
+      </div>
+    </header>
+    {% if messages %}
+    <div class="sp-messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} mb-2">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <main class="sp-content">
+      {% block staff_page %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

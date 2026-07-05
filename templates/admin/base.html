@@ -1,0 +1,146 @@
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}">
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
+{% block dark-mode-vars %}
+  <link rel="stylesheet" href="{% static "admin/css/dark_mode.css" %}">
+  <script src="{% static "admin/js/theme.js" %}" defer></script>
+{% endblock %}
+{% block extrastyle %}{% endblock %}
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}">{% endif %}
+{% block extrahead %}{% endblock %}
+{% block responsive %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "admin/css/responsive.css" %}">
+    {% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% static "admin/css/responsive_rtl.css" %}">{% endif %}
+{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+</head>
+
+<body class="pa-admin {% if is_popup %}pa-popup {% endif %}{% block bodyclass %}{% endblock %}"
+  data-admin-utc-offset="{% now "Z" %}">
+<a href="#content-start" class="skip-to-content-link">{% translate 'Skip to main content' %}</a>
+
+{% if is_popup %}
+<div id="container">
+  <div class="pa-popup-inner" id="content-start">
+{% else %}
+<div class="pa-layout" id="container">
+  {% block nav-sidebar %}
+    {% include "admin/_sidebar.html" %}
+  {% endblock %}
+  <div class="pa-main">
+    {% block header %}
+    <header class="pa-topbar" id="header">
+      <div class="pa-topbar-left">
+        <button type="button" class="pa-menu-toggle" id="pa-menu-toggle" aria-label="{% translate 'Toggle menu' %}">☰</button>
+        <div class="pa-topbar-title">
+          {% block content_title_wrap %}
+          <span class="pa-zone-badge pa-zone-badge--admin">ADMIN</span>
+          <h1>{% if title %}{{ title }}{% else %}{% trans "Admin dashboard" %}{% endif %}</h1>
+          <span class="pa-topbar-sub">{% trans "Database & settings" %}</span>
+          {% endblock %}
+        </div>
+      </div>
+      <div class="pa-topbar-right">
+        <form class="pa-topbar-search" action="{% url 'admin:index' %}" method="get" role="search">
+          <input type="search" name="q" placeholder="{% translate 'Search admin…' %}" aria-label="{% translate 'Search' %}">
+        </form>
+        {% block usertools %}
+        {% if has_permission %}
+        <div id="user-tools" class="pa-user-tools">
+          {% block welcome-msg %}
+          <span class="pa-welcome">{% firstof user.get_short_name user.get_username %}</span>
+          {% endblock %}
+          {% block userlinks %}
+            {% if site_url %}<a href="{{ site_url }}">{% translate 'View site' %}</a>{% endif %}
+            {% if user.has_usable_password %}
+            <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a>
+            {% endif %}
+            <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+              {% csrf_token %}
+              <button type="submit" title="{% translate 'Log out' %}">⏻</button>
+            </form>
+            {% include "admin/color_theme_toggle.html" %}
+          {% endblock %}
+        </div>
+        {% endif %}
+        {% endblock %}
+      </div>
+      {% block nav-global %}{% endblock %}
+    </header>
+    {% endblock %}
+    {% block nav-breadcrumbs %}
+    <nav class="pa-breadcrumbs" aria-label="{% translate 'Breadcrumbs' %}">
+      {% block breadcrumbs %}
+      <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+        {% if title %} &rsaquo; {{ title }}{% endif %}
+      </div>
+      {% endblock %}
+    </nav>
+    {% endblock %}
+    <div class="pa-content" id="content-start" tabindex="-1">
+{% endif %}
+
+    {% block messages %}
+      {% if messages %}
+        <ul class="messagelist">{% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+        {% endfor %}</ul>
+      {% endif %}
+    {% endblock %}
+
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+      {% block pretitle %}{% endblock %}
+      {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+      {% block content_subtitle %}{% if subtitle %}<h2>{{ subtitle }}</h2>{% endif %}{% endblock %}
+      {% block content %}
+        {% block object-tools %}{% endblock %}
+        {{ content }}
+      {% endblock %}
+      {% block sidebar %}{% endblock %}
+      <br class="clear">
+    </div>
+
+    {% block footer %}<div id="footer"></div>{% endblock %}
+
+{% if is_popup %}
+  </div>
+</div>
+{% else %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<script>
+(function () {
+  const filter = document.getElementById("pa-nav-filter");
+  const sidebar = document.getElementById("pa-sidebar");
+  const toggle = document.getElementById("pa-menu-toggle");
+  if (filter) {
+    filter.addEventListener("input", function () {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll(".pa-nav-group").forEach(function (group) {
+        let any = false;
+        group.querySelectorAll(".pa-nav-item").forEach(function (item) {
+          const show = !q || item.textContent.toLowerCase().includes(q);
+          item.style.display = show ? "" : "none";
+          if (show) any = true;
+        });
+        group.style.display = any || group.classList.contains("pa-nav-extra") ? "" : "none";
+      });
+    });
+  }
+  if (toggle && sidebar) {
+    toggle.addEventListener("click", function () {
+      sidebar.classList.toggle("is-open");
+    });
+  }
+})();
+</script>
+</body>
+</html>

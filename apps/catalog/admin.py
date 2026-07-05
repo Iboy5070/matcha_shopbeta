@@ -1,155 +1,18 @@
 from django.contrib import admin
-from django.utils.html import format_html
-
-from .models import Category, Product, ProductVariant
-
-
-class VariantInline(admin.TabularInline):
-    model = ProductVariant
-    extra = 1
-    fields = (
-        "sku",
-        "display_name",
-        "display_name_th",
-        "display_name_en",
-        "image_url",
-        "sell_price",
-        "stock_qty",
-        "is_active",
-    )
-    verbose_name = "ຕົວເລືອກສິນຄ້າ (Variant)"
-    verbose_name_plural = "ຕົວເລືອກສິນຄ້າ — ລາຄາ, SKU, ສຕັອກ"
-
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ("thumb", "name", "category", "price_range", "is_featured", "is_active")
-    list_filter = ("category", "is_featured", "is_active")
-    search_fields = ("name", "slug", "variants__sku")
-    list_editable = ("is_featured", "is_active")
-    prepopulated_fields = {"slug": ("name",)}
-    inlines = [VariantInline]
-    fieldsets = (
-        (
-            "ຂໍ້ມູນຫຼັກ (ລາວ)",
-            {
-                "fields": ("category", "name", "slug", "description"),
-                "description": (
-                    "ຊື່ສິນຄ້າ + ຄຳອະທິບາຍ — ສະແດງໃນໜ້າຮ້ານ. "
-                    "Slug ສ້າງອັດຕະໂນມັດຈາກຊື່."
-                ),
-            },
-        ),
-        (
-            "ພາສາໄທ / English",
-            {
-                "fields": ("name_th", "name_en", "description_th", "description_en"),
-                "description": (
-                    "ຖ້າບໍ່ກອກ TH/EN — ໜ້າຮ້ານຈະສະແດງຊື່ລາວອັດຕະໂນມັດ. "
-                    "ກອກແປພາສາໄທ/ອັງກິດເພື່ອໃຫ້ປ່ຽນຕາມພາສາທີ່ເລືອກ."
-                ),
-            },
-        ),
-        (
-            "ຮູບສິນຄ້າ",
-            {
-                "fields": ("image_url", "image"),
-                "description": (
-                    "① Image URL = ລິ້ງ CDN (ແນະນຳ production). "
-                    "② Image = ອັບໂຫຼດໄຟລ໌ (dev). "
-                    "ຢ່າງໃດຢ່າງໜຶ່ງຕ້ອງມີ."
-                ),
-            },
-        ),
-        (
-            "ການສະແດງ",
-            {
-                "fields": ("is_featured", "is_active"),
-                "description": (
-                    "Featured = ໜ້າຫຼັກ. Active = ເປີດຂາຍ."
-                ),
-            },
-        ),
-    )
-
-    @admin.display(description="ຮູບ")
-    def thumb(self, obj):
-        url = obj.display_image
-        if url:
-            return format_html(
-                '<img src="{}" width="48" height="48" style="object-fit:cover;border-radius:6px">',
-                url,
-            )
-        return "—"
-
-    @admin.display(description="ລາຄາ (ກີບ)")
-    def price_range(self, obj):
-        prices = [
-            v.sell_price or v.price
-            for v in obj.variants.filter(is_active=True)
-        ]
-        if not prices:
-            return "—"
-        lo, hi = min(prices), max(prices)
-        if lo == hi:
-            return f"{int(lo):,}"
-        return f"{int(lo):,} – {int(hi):,}"
-
+from unfold.admin import ModelAdmin
+from .models import Category, Product
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "product_count")
+class CategoryAdmin(ModelAdmin):
+    list_display = ("name", "slug")
     search_fields = ("name",)
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": ("name", "name_th", "name_en", "slug"),
-                "description": "ຫມວດສິນຄ້າ — ລາວ / ไทย / English (ວ່າງ TH/EN = ສະແດງລາວອັດຕະໂນມັດ)",
-            },
-        ),
-    )
 
-    @admin.display(description="ຈຳນວນສິນຄ້າ")
-    def product_count(self, obj):
-        return obj.products.count()
+@admin.register(Product)
+class ProductAdmin(ModelAdmin):
+    list_display = ("name", "category", "price", "active_status")
+    search_fields = ("name", "slug")
+    list_filter = ("category", "is_active")
 
-    def save_model(self, request, obj, form, change):
-        if not obj.slug:
-            from django.utils.text import slugify
-            base = slugify(obj.name) or f"cat-{abs(hash(obj.name)) % 99999}"
-            slug, n = base, 1
-            while Category.objects.filter(slug=slug).exclude(pk=obj.pk).exists():
-                slug, n = f"{base}-{n}", n + 1
-            obj.slug = slug
-        super().save_model(request, obj, form, change)
-
-
-@admin.register(ProductVariant)
-class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ("display_name", "product", "sku", "sell_price", "stock_qty", "is_active")
-    list_filter = ("is_active", "product__category")
-    search_fields = ("sku", "display_name", "product__name")
-    list_editable = ("sell_price", "stock_qty", "is_active")
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "product",
-                    "sku",
-                    "display_name",
-                    "display_name_th",
-                    "display_name_en",
-                    "sell_price",
-                    "price",
-                    "stock_qty",
-                    "is_active",
-                ),
-                "description": (
-                    "Variant = ສິນຄ້າທີ່ຂາຍຈິງ (ເຊັ່ນ 30g, 50g). "
-                    "ວ່າງ display_name_th/en = ສະແດງຊື່ລາວອັດຕະໂນມັດ."
-                ),
-            },
-        ),
-    )
+    @admin.display(description="Active")
+    def active_status(self, obj):
+        return "✅" if obj.is_active else "❌"

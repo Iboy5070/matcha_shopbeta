@@ -47,6 +47,8 @@ class Product(models.Model):
     description = models.TextField("ຄຳອະທິບາຍ (ລາວ)", blank=True)
     description_th = models.TextField("คำอธิบาย (ไทย)", blank=True)
     description_en = models.TextField("Description (EN)", blank=True)
+    
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     image = models.ImageField(upload_to="products/", blank=True)
     image_url = models.URLField(
         blank=True,
@@ -54,6 +56,7 @@ class Product(models.Model):
     )
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def name_for(self, lang):
         return _pick_lang(lang, self.name, self.name_th, self.name_en)
@@ -80,78 +83,5 @@ class Product(models.Model):
             return self.image.url
         return ""
 
-    def default_variant(self):
-        variants = getattr(self, "_prefetched_objects_cache", {}).get("variants")
-        if variants is not None:
-            active = [v for v in variants if v.is_active]
-            if active:
-                return sorted(active, key=lambda v: (v.sell_price, v.id))[0]
-        return self.variants.filter(is_active=True).order_by("sell_price", "id").first()
-
-    @property
-    def active_variant_list(self):
-        variants = getattr(self, "_prefetched_objects_cache", {}).get("variants")
-        if variants is not None:
-            active = [v for v in variants if v.is_active]
-            return sorted(active, key=lambda v: (v.sell_price, v.id))
-        return list(self.variants.filter(is_active=True).order_by("sell_price", "id"))
-
-    def price_label(self) -> str:
-        prices = [v.sell_price or v.price for v in self.active_variant_list]
-        if not prices:
-            return ""
-        lo, hi = min(prices), max(prices)
-        if lo == hi:
-            return f"{int(lo):,}"
-        return f"{int(lo):,} – {int(hi):,}"
-
     def __str__(self):
         return self.name
-
-
-class ProductVariant(models.Model):
-    class Temperature(models.TextChoices):
-        HOT = "HOT", "Hot"
-        ICE = "ICE", "Ice"
-
-    class Size(models.TextChoices):
-        S = "S", "S"
-        M = "M", "M"
-        L = "L", "L"
-
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variants")
-    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    sku = models.CharField(max_length=50, unique=True)
-    display_name = models.CharField("ຊື່ສະແດງ (ລາວ)", max_length=120)
-    display_name_th = models.CharField("ชื่อ (ไทย)", max_length=120, blank=True)
-    display_name_en = models.CharField("Name (EN)", max_length=120, blank=True)
-    weight_g = models.PositiveIntegerField(null=True, blank=True)
-    temperature = models.CharField(max_length=3, choices=Temperature.choices, null=True, blank=True)
-    size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
-    unit = models.CharField(max_length=20, default="pcs")
-    sell_price = models.DecimalField(max_digits=12, decimal_places=2)
-    cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    stock_qty = models.IntegerField(default=0)
-    reorder_level = models.IntegerField(default=0)
-    image_url = models.URLField(
-        "Variant image URL",
-        blank=True,
-        help_text="Optional — overrides product image for this option (e.g. size/grade).",
-    )
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def display_image(self) -> str:
-        if self.image_url:
-            return self.image_url
-        return self.product.display_image if self.product_id else ""
-
-    def display_name_for(self, lang):
-        return _pick_lang(lang, self.display_name, self.display_name_th, self.display_name_en)
-
-    def clean(self):
-        super().clean()
-
-    def __str__(self):
-        return f"{self.product.name} - {self.display_name}"
