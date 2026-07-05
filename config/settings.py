@@ -236,4 +236,7 @@ UNFOLD = {
         "show_search": True,
         "show_all_applications": True,
     },
+    "STYLES": [
+        lambda request: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0",
+    ],
 }

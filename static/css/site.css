@@ -649,6 +649,14 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
   font-weight: 600;
 }
 
+.mz-product-card .mz-product-placeholder img {
+  width: 48px;
+  height: 48px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  opacity: 0.2;
+}
+
 .mz-product-detail-media {
   background: #fff;
   border-radius: var(--mz-radius);
