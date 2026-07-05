@@ -106,7 +106,7 @@ TIME_ZONE = "Asia/Vientiane"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
@@ -237,6 +237,6 @@ UNFOLD = {
         "show_all_applications": True,
     },
     "STYLES": [
-        lambda request: "css/unfold_custom.css",
+        "/static/css/unfold_custom.css",
     ],
 }

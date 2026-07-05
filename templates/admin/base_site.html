@@ -3,12 +3,7 @@
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
-{% block extrastyle %}
-{{ block.super }}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Noto+Sans+Lao:wght@400;500;600;700&family=Noto+Serif+Lao:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/admin_purple.css' %}">
-{% endblock %}
+
 
 {% block branding %}{% endblock %}
 {% block nav-global %}{% endblock %}
