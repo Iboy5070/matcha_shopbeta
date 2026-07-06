@@ -1,0 +1,89 @@
+{% extends "staff/app.html" %}
+{% load i18n static mz_extras %}
+{% block title %}ຈອງສິນຄ້າ (Reserved){% endblock %}
+
+{% block staff_page %}
+<div class="sp-page-head">
+  <p class="sp-page-lead">ຈັດການສິນຄ້າທີ່ລູກຄ້າຈອງໄວ້ ແລະ ຈ່າຍມັດຈຳ</p>
+</div>
+
+<div class="row g-3 g-lg-4 mb-4">
+  <div class="col-lg-12">
+    <div class="sp-panel">
+      <div class="sp-panel-head">
+        <h2>ລາຍການຈອງທັງໝົດ (Reservations)</h2>
+      </div>
+      <div class="sp-panel-body">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>ວັນທີຈອງ</th>
+                <th>ສິນຄ້າ</th>
+                <th>ຈຳນວນ</th>
+                <th>ມັດຈຳ</th>
+                <th>ຄ້າງຈ່າຍ</th>
+                <th>ໝົດອາຍຸ</th>
+                <th>ສະຖານະ</th>
+                <th>ການຈັດການ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in reservations %}
+              <tr>
+                <td class="font-monospace">#{{ r.id }}</td>
+                <td class="small text-muted">{{ r.res_date|date:"d/m/Y H:i" }}</td>
+                <td>
+                  {{ r.product.name }}
+                  <br>
+                  <small class="text-muted">
+                    {% if r.order.customer %}{{ r.order.customer.cus_name }}{% elif r.order.employee %}{{ r.order.employee.emp_name }} (POS){% else %}-{% endif %}
+                  </small>
+                </td>
+                <td>{{ r.quantity }}</td>
+                <td class="text-success fw-semibold">{{ r.deposit_amount|floatformat:0|kip }} ₭</td>
+                <td>{{ r.remain_amount|floatformat:0|kip }} ₭</td>
+                <td class="small {% if r.expire_at < now and r.status == 'RESERVED' %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                  {{ r.expire_at|date:"d/m/Y" }}
+                </td>
+                <td><span class="badge text-bg-{{ r.status|status_badge }}">{{ r.get_status_display }}</span></td>
+                <td>
+                  {% if r.status == "RESERVED" %}
+                  <form method="POST" action="{% url 'staff_reserved_action' r.id %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="complete" class="btn btn-sm btn-success" onclick="return confirm('ລູກຄ້າມາຮັບເຄື່ອງ ແລະ ຊຳລະຄົບແລ້ວ?');">
+                      ✅ ສຳເລັດ
+                    </button>
+                    <button type="submit" name="action" value="cancel" class="btn btn-sm btn-danger ms-1" onclick="return confirm('ຍົກເລີກການຈອງນີ້?');">
+                      ❌ ຍົກເລີກ
+                    </button>
+                  </form>
+                  {% else %}
+                  <span class="text-muted small">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="9" class="text-center py-5 text-muted">
+                  <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+                  <h4>ຍັງບໍ່ມີການຈອງສິນຄ້າ</h4>
+                  <p>ໄປທີ່ POS → ໃສ່ສິນຄ້າໃນກະຕ່າ → ກົດ "ຈອງສິນຄ້າ (ມັດຈຳ)"</p>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -30,7 +30,7 @@
             <dd>{{ user.email }}</dd>
             {% if profile %}
             <dt>{% trans "Phone" %}</dt>
-            <dd>{{ profile.phone }}</dd>
+            <dd>{{ profile.cus_tel }}</dd>
             {% if profile.address %}
             <dt>{% trans "Address" %}</dt>
             <dd>{{ profile.address|linebreaksbr }}</dd>
@@ -50,7 +50,7 @@
             <table class="table table-sm align-middle mb-0">
               <thead>
                 <tr>
-                  <th>{% trans "Order number" %}</th>
+                  <th>{% trans "Order" %}</th>
                   <th>{% trans "Total" %}</th>
                   <th>{% trans "Status" %}</th>
                 </tr>
@@ -58,9 +58,9 @@
               <tbody>
                 {% for order in orders %}
                 <tr>
-                  <td><a class="font-monospace text-decoration-none" href="{% url 'store_order_success' order.order_no %}">{{ order.order_no }}</a></td>
-                  <td>{{ order.grand_total|kip }} ກີບ</td>
-                  <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+                  <td class="font-monospace">#{{ order.id }}</td>
+                  <td>{{ order.bill.total_amount|default:0|kip }} ກີບ</td>
+                  <td><span class="badge text-bg-{{ order.status|status_badge }}">{{ order.get_status_display }}</span></td>
                 </tr>
                 {% endfor %}
               </tbody>

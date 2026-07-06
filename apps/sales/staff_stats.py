@@ -17,7 +17,7 @@ def get_staff_dashboard_stats():
     active_products = Product.objects.filter(is_active=True).count()
     
     # 4. Recent orders
-    recent_orders = Order.objects.select_related("employee").order_by("-order_date")[:5]
+    recent_orders = Order.objects.select_related("employee", "customer").order_by("-order_date")[:5]
 
     return {
         "stat_today_sales": int(total_sales),

@@ -25,6 +25,9 @@
     <a class="sp-nav-item{% if staff_section == 'slips' %} is-active{% endif %}" href="{% url 'staff_slips' %}">
       <span class="sp-nav-icon">🧾</span> {% trans "Payment slips" %}
     </a>
+    <a class="sp-nav-item{% if staff_section == 'reserved' %} is-active{% endif %}" href="{% url 'staff_reserved' %}">
+      <span class="sp-nav-icon">📦</span> ຈອງສິນຄ້າ
+    </a>
     <a class="sp-nav-item{% if staff_section == 'pos' %} is-active{% endif %}" href="{% url 'pos' %}">
       <span class="sp-nav-icon">🛒</span> POS
     </a>

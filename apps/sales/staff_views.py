@@ -52,7 +52,8 @@ def staff_slips(request):
 
 @login_required(login_url="/admin/login/")
 def verify_slip(request, order_id):
-    from .models import Order
+    from decimal import Decimal
+    from .models import Order, Bill
     from django.contrib import messages
     
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
@@ -63,16 +64,80 @@ def verify_slip(request, order_id):
         action = request.POST.get("action")
         
         if action == "approve":
-            order.status = "PAID"
+            order.status = Order.Status.COMPLETED
             order.save()
             if hasattr(order, "bill"):
-                order.bill.status = "PAID"
-                order.bill.save()
+                bill = order.bill
+                bill.status = Bill.Status.PAID
+                bill.paid_amount = bill.total_amount
+                bill.balance_due = Decimal("0")
+                bill.save()
             messages.success(request, f"Order #{order.id} approved successfully!")
         elif action == "reject":
-            # For reject, we might keep it PENDING but maybe clear the slip or mark as rejected
-            order.status = "REJECTED"
+            order.status = Order.Status.CANCELLED
             order.save()
             messages.warning(request, f"Order #{order.id} payment rejected.")
             
     return redirect("staff_slips")
+
+
+@login_required(login_url="/admin/login/")
+def staff_reserved(request):
+    from django.utils import timezone
+    from .models import Reserved
+
+    if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
+        return redirect("/admin/login/")
+
+    reservations = (
+        Reserved.objects.select_related("order", "product", "order__customer", "order__employee")
+        .order_by("-res_date")
+    )
+    return render(request, "staff/reserved.html", {
+        "staff_section": "reserved",
+        "reservations": reservations,
+        "now": timezone.now(),
+    })
+
+
+@login_required(login_url="/admin/login/")
+def staff_reserved_action(request, reserved_id):
+    from decimal import Decimal
+    from django.shortcuts import get_object_or_404
+    from django.contrib import messages
+    from .models import Reserved, Order, Bill
+
+    if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
+        return redirect("/admin/login/")
+
+    reserved = get_object_or_404(Reserved, id=reserved_id)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        order = reserved.order
+
+        if action == "complete":
+            reserved.status = Reserved.Status.COMPLETED
+            reserved.remain_amount = Decimal("0")
+            reserved.save()
+
+            if not order.reservations.exclude(status=Reserved.Status.COMPLETED).exists():
+                order.status = Order.Status.COMPLETED
+                order.save()
+                if hasattr(order, "bill"):
+                    bill = order.bill
+                    bill.paid_amount = bill.total_amount
+                    bill.balance_due = Decimal("0")
+                    bill.status = Bill.Status.PAID
+                    bill.save()
+            messages.success(request, f"ຈອງ #{reserved.id} ສຳເລັດແລ້ວ — ລູກຄ້າຮັບເຄື່ອງ ແລະ ຊຳລະຄົບ")
+
+        elif action == "cancel":
+            reserved.status = Reserved.Status.CANCELLED
+            reserved.save()
+            if not order.reservations.exclude(status=Reserved.Status.CANCELLED).exists():
+                order.status = Order.Status.CANCELLED
+                order.save()
+            messages.warning(request, f"ຍົກເລີກການຈອງ #{reserved.id}")
+
+    return redirect("staff_reserved")

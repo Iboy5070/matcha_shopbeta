@@ -133,7 +133,7 @@ def store_checkout(request):
             order=order,
             total_amount=total,
             balance_due=total,
-            status="UNPAID"
+            status=Bill.Status.PENDING
         )
         
         request.session["store_cart"] = {}
@@ -196,18 +196,27 @@ def store_confirm_payment(request, order_id):
                 # Get public URL
                 public_url = supabase.storage.from_(settings.SUPABASE_SLIP_BUCKET).get_public_url(filename)
                 
-                # Create Payment record
+                # Create Payment record (slip uploaded by customer via transfer)
                 Payment.objects.create(
                     bill=order.bill,
                     pay_amount=paid_amount,
-                    pay_with=bank_name,
+                    pay_with=Payment.PayWith.TRANSFER,
                     slip_url=public_url
                 )
-                
-                # Update Order Status
-                order.status = "WAITING_CONFIRMATION"
+
+                # Record payment on the bill; order stays PENDING until staff verifies
+                bill = order.bill
+                bill.paid_amount = (bill.paid_amount or Decimal("0")) + paid_amount
+                bill.balance_due = max(bill.total_amount - bill.paid_amount, Decimal("0"))
+                if bill.paid_amount >= bill.total_amount:
+                    bill.status = Bill.Status.PAID
+                elif bill.paid_amount > 0:
+                    bill.status = Bill.Status.PARTIAL
+                bill.save()
+
+                order.status = Order.Status.PENDING
                 order.save()
-                
+
                 messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
                 return redirect("store_home")
                 
@@ -223,22 +232,72 @@ def store_confirm_payment(request, order_id):
         "bill": order.bill,
         "prefill_order_no": order.id,
         "prefill_paid_amount": order.bill.balance_due,
+        "order_no": order.id,
+        "transfer_amount": order.bill.balance_due,
     })
 
 def store_login(request):
+    next_url = request.POST.get("next") or request.GET.get("next") or ""
+
     if request.user.is_authenticated:
+        if next_url.startswith("/"):
+            return redirect(next_url)
         return redirect("store_home")
-    
+
     if request.method == "POST":
-        # Simplified for demo:
+        from config.auth_helpers import authenticate_by_identifier
+
+        identifier = (request.POST.get("email") or request.POST.get("username") or "").strip()
+        password = request.POST.get("password") or ""
+        user = authenticate_by_identifier(request, identifier, password)
+        if user is None or not user.is_active:
+            messages.error(request, "ອີເມວ/ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ")
+            return redirect("store_login")
+
+        login(request, user)
+        if request.POST.get("remember"):
+            request.session.set_expiry(60 * 60 * 24 * 30)
+        else:
+            request.session.set_expiry(0)
+
+        messages.success(request, "ເຂົ້າສູ່ລະບົບສຳເລັດ")
+        if next_url.startswith("/"):
+            return redirect(next_url)
         return redirect("store_home")
-        
-    return render(request, "store/login.html")
+
+    return render(request, "store/login.html", {"next": next_url})
+
 
 def store_register(request):
-    if request.method == "POST":
+    from django.contrib.auth import get_user_model
+    from .forms import CustomerRegistrationForm
+
+    if request.user.is_authenticated:
         return redirect("store_home")
-    return render(request, "store/register.html")
+
+    User = get_user_model()
+    form = CustomerRegistrationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data["email"]
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=form.cleaned_data["password1"],
+            first_name=form.cleaned_data["full_name"],
+        )
+        Customer.objects.create(
+            user=user,
+            cus_name=form.cleaned_data["full_name"],
+            cus_last="",
+            cus_tel=form.cleaned_data["phone"],
+            address=form.cleaned_data.get("address", ""),
+            gender="-",
+        )
+        login(request, user)
+        messages.success(request, "ລົງທະບຽນສຳເລັດ — ຍິນດີຕ້ອນຮັບ!")
+        return redirect("store_home")
+
+    return render(request, "store/register.html", {"form": form})
 
 def store_contact(request):
     return render(request, "store/contact.html")
@@ -264,3 +323,76 @@ def store_google_login(request):
 def store_logout(request):
     logout(request)
     return redirect("store_home")
+
+
+@login_required(login_url="store_login")
+def store_account(request):
+    profile = getattr(request.user, "customer_profile", None)
+    orders = Order.objects.filter(customer=profile).order_by("-order_date")[:5] if profile else []
+    return render(request, "store/account.html", {
+        "profile": profile,
+        "orders": orders,
+    })
+
+
+@login_required(login_url="store_login")
+def store_account_orders(request):
+    profile = getattr(request.user, "customer_profile", None)
+    orders = (
+        Order.objects.filter(customer=profile)
+        .select_related("bill")
+        .order_by("-order_date")
+        if profile else []
+    )
+    return render(request, "store/account_orders.html", {"orders": orders})
+
+
+@login_required(login_url="store_login")
+def store_account_edit(request):
+    from .forms import CustomerProfileEditForm
+    from django.contrib.auth import update_session_auth_hash
+
+    user = request.user
+    profile = getattr(user, "customer_profile", None)
+
+    if request.method == "POST":
+        form = CustomerProfileEditForm(request.POST, user=user)
+        if form.is_valid():
+            user.first_name = form.cleaned_data["full_name"]
+            user.email = form.cleaned_data["email"]
+            if form.cleaned_data.get("password1"):
+                user.set_password(form.cleaned_data["password1"])
+            user.save()
+
+            if profile is None:
+                profile = Customer.objects.create(
+                    user=user,
+                    cus_name=form.cleaned_data["full_name"],
+                    cus_last="",
+                    cus_tel=form.cleaned_data["phone"],
+                    address=form.cleaned_data.get("address", ""),
+                    gender="-",
+                )
+            else:
+                profile.cus_name = form.cleaned_data["full_name"]
+                profile.cus_tel = form.cleaned_data["phone"]
+                profile.address = form.cleaned_data.get("address", "")
+                profile.save()
+
+            if form.cleaned_data.get("password1"):
+                update_session_auth_hash(request, user)
+
+            messages.success(request, "ບັນທຶກຂໍ້ມູນສຳເລັດ")
+            return redirect("store_account")
+    else:
+        form = CustomerProfileEditForm(
+            user=user,
+            initial={
+                "full_name": user.first_name or user.get_full_name() or user.username,
+                "email": user.email or user.username,
+                "phone": profile.cus_tel if profile else "",
+                "address": profile.address if profile else "",
+            },
+        )
+
+    return render(request, "store/account_edit.html", {"form": form})

@@ -1,5 +1,4 @@
 {% load i18n static mz_extras %}
-{% if bank_account_number or bank_qr_image_url %}
 <div class="mz-bank-transfer">
   {% if transfer_amount %}
   <div class="mz-bank-amount-banner">
@@ -44,8 +43,13 @@
         <span class="mz-bank-detail-value mz-bank-account">{{ order_no }}</span>
       </div>
       {% endif %}
+      {% if not bank_account_number and not bank_qr_image_url %}
+      <p class="mz-bank-note mb-0 text-danger">
+        ⚠ {% trans "Shop has not set up real bank details yet — this is a placeholder QR. Set BANK_ACCOUNT_NUMBER / BANK_QR_IMAGE_URL in .env." %}
+      </p>
+      {% else %}
       <p class="mz-bank-note mb-0">{% trans "Transfer the exact amount above. Include your order number in the transfer note if possible." %}</p>
+      {% endif %}
     </div>
   </div>
 </div>
-{% endif %}

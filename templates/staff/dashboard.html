@@ -1,5 +1,5 @@
 {% extends "staff/app.html" %}
-{% load i18n static %}
+{% load i18n static mz_extras %}
 {% block title %}{% trans "Dashboard" %}{% endblock %}
 {% block staff_page %}
 <div class="sp-page-head">
@@ -11,7 +11,7 @@
     <div class="sp-stat-card sp-stat-card--a">
       <div class="sp-stat-body">
         <p class="sp-stat-label">ຍອດຂາຍມື້ນີ້ (Today Sales)</p>
-        <p class="sp-stat-value">{{ stat_today_sales|floatformat:0 }} ₭</p>
+        <p class="sp-stat-value">{{ stat_today_sales|kip }} ₭</p>
         <p class="sp-stat-hint">ຈາກບິນທີ່ຊຳລະແລ້ວໃນມື້ນີ້</p>
       </div>
       <div class="sp-stat-icon" aria-hidden="true">₭</div>
@@ -44,32 +44,39 @@
     <div class="sp-panel">
       <div class="sp-panel-head">
         <h2>ອໍເດີຫຼ້າສຸດ (Recent Orders)</h2>
+        <a class="sp-panel-meta text-decoration-none" href="{% url 'staff_slips' %}">ເບິ່ງທັງໝົດ →</a>
       </div>
       <div class="sp-panel-body">
-        <table class="table">
+        <div class="table-responsive">
+        <table class="table align-middle mb-0">
           <thead>
             <tr>
               <th>ID</th>
               <th>ວັນທີ</th>
-              <th>ພະນັກງານ</th>
+              <th>ລູກຄ້າ / ພະນັກງານ</th>
+              <th>ຍອດເງິນ</th>
               <th>ສະຖານະ</th>
             </tr>
           </thead>
           <tbody>
             {% for order in recent_orders %}
             <tr>
-              <td>#{{ order.id }}</td>
-              <td>{{ order.order_date|date:"d/m/Y H:i" }}</td>
-              <td>{{ order.employee.emp_name|default:"-" }}</td>
-              <td><span class="badge bg-success">{{ order.status }}</span></td>
+              <td class="font-monospace">#{{ order.id }}</td>
+              <td class="small text-muted">{{ order.order_date|date:"d/m/Y H:i" }}</td>
+              <td>
+                {% if order.customer %}{{ order.customer.cus_name }}{% elif order.employee %}{{ order.employee.emp_name }} <span class="text-muted small">(POS)</span>{% else %}-{% endif %}
+              </td>
+              <td>{{ order.bill.total_amount|default:0|kip }} ₭</td>
+              <td><span class="badge text-bg-{{ order.status|status_badge }}">{{ order.get_status_display }}</span></td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="4" class="text-center text-muted">ຍັງບໍ່ມີອໍເດີ</td>
+              <td colspan="5" class="text-center text-muted py-4">ຍັງບໍ່ມີອໍເດີ</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   </div>

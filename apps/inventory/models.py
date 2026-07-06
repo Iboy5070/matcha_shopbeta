@@ -13,11 +13,16 @@ class Supplier(models.Model):
         return self.sup_name
 
 class PurchaseOrder(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "ລໍຖ້າ"
+        COMPLETED = "COMPLETED", "ສຳເລັດ"
+        CANCELLED = "CANCELLED", "ຍົກເລີກ"
+
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     po_date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, default="PENDING")
+    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
         return f"PO #{self.id} from {self.supplier.sup_name}"
@@ -48,6 +53,7 @@ class ImportDetail(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return f"Import Detail #{self.id}"

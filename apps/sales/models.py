@@ -5,10 +5,16 @@ from apps.catalog.models import Product
 
 
 class Order(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "ລໍຖ້າ"
+        RESERVED = "RESERVED", "ຈອງ"
+        COMPLETED = "COMPLETED", "ສຳເລັດ"
+        CANCELLED = "CANCELLED", "ຍົກເລີກ"
+
     order_date = models.DateTimeField(auto_now_add=True)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_orders")
-    status = models.CharField(max_length=30, default="PENDING")
+    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
         return f"Order #{self.id}"
@@ -26,22 +32,32 @@ class OrderItem(models.Model):
 
 
 class Bill(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "ຍັງບໍ່ຊຳລະ"
+        PARTIAL = "PARTIAL", "ຊຳລະບາງສ່ວນ"
+        PAID = "PAID", "ຊຳລະຄົບ"
+
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="bill")
     bill_date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     balance_due = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, default="UNPAID")
+    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
         return f"Bill #{self.id} for {self.order}"
 
 
 class Payment(models.Model):
+    class PayWith(models.TextChoices):
+        CASH = "CASH", "ເງິນສົດ"
+        TRANSFER = "TRANSFER", "ໂອນ"
+        QR = "QR", "QR"
+
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments")
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_payments")
     pay_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    pay_with = models.CharField(max_length=50)
+    pay_with = models.CharField(max_length=50, choices=PayWith.choices, default=PayWith.TRANSFER)
     pay_date = models.DateTimeField(auto_now_add=True)
     slip_url = models.CharField(max_length=500, null=True, blank=True)
 
@@ -50,12 +66,18 @@ class Payment(models.Model):
 
 
 class Reserved(models.Model):
+    class Status(models.TextChoices):
+        RESERVED = "RESERVED", "ຈອງ"
+        PAID = "PAID", "ຊຳລະຄົບ"
+        COMPLETED = "COMPLETED", "ສຳເລັດ"
+        CANCELLED = "CANCELLED", "ຍົກເລີກ"
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="reservations")
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=1)
     deposit_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     remain_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, default="RESERVED")
+    status = models.CharField(max_length=30, choices=Status.choices, default=Status.RESERVED)
     res_date = models.DateTimeField(auto_now_add=True)
     expire_at = models.DateTimeField()
 

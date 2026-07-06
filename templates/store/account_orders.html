@@ -13,7 +13,7 @@
   <div class="col-lg-9">
     <div class="mz-page-hero mb-4">
       <h1 class="mz-section-title mb-2">{% trans "My orders" %}</h1>
-      <p class="text-muted mb-0">{% trans "Track your orders and upload payment slips." %}</p>
+      <p class="text-muted mb-0">{% trans "Track your orders and payment status." %}</p>
     </div>
 
     <div class="mz-auth-card">
@@ -22,7 +22,7 @@
         <table class="table align-middle mb-0">
           <thead>
             <tr>
-              <th>{% trans "Order number" %}</th>
+              <th>{% trans "Order" %}</th>
               <th>{% trans "Date" %}</th>
               <th>{% trans "Total" %}</th>
               <th>{% trans "Status" %}</th>
@@ -32,18 +32,16 @@
           <tbody>
             {% for order in orders %}
             <tr>
-              <td class="font-monospace">{{ order.order_no }}</td>
-              <td class="small text-muted">{{ order.created_at|date:"d/m/Y H:i" }}</td>
-              <td>{{ order.grand_total|kip }} ກີບ</td>
-              <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+              <td class="font-monospace">#{{ order.id }}</td>
+              <td class="small text-muted">{{ order.order_date|date:"d/m/Y H:i" }}</td>
+              <td>{{ order.bill.total_amount|default:0|kip }} ກີບ</td>
+              <td><span class="badge text-bg-{{ order.status|status_badge }}">{{ order.get_status_display }}</span></td>
               <td class="text-end">
-                <a class="btn btn-sm mz-btn-outline" href="{% url 'store_order_success' order.order_no %}">
-                  {% if order.payment_method == "transfer" and order.status == "WAITING_PAYMENT" %}
+                {% if order.bill and order.bill.status != "PAID" %}
+                <a class="btn btn-sm mz-btn-outline" href="{% url 'store_confirm_payment' order.id %}">
                   {% trans "Pay & upload slip" %}
-                  {% else %}
-                  {% trans "View order" %}
-                  {% endif %}
                 </a>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
