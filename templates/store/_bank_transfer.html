@@ -1,5 +1,14 @@
 {% load i18n static mz_extras %}
 <div class="mz-bank-transfer">
+  {% if not compact %}
+  <div class="mz-bank-transfer-head">
+    <div class="mz-bank-transfer-icon" aria-hidden="true">₭</div>
+    <div>
+      <div class="mz-bank-transfer-title">{% trans "Bank transfer (LAO QR)" %}</div>
+      <div class="mz-bank-transfer-sub">{% trans "Scan, transfer, then upload your slip below" %}</div>
+    </div>
+  </div>
+  {% endif %}
   {% if transfer_amount %}
   <div class="mz-bank-amount-banner">
     <span class="mz-bank-amount-label">{% trans "Amount to transfer" %}</span>
@@ -49,6 +58,13 @@
       </p>
       {% else %}
       <p class="mz-bank-note mb-0">{% trans "Transfer the exact amount above. Include your order number in the transfer note if possible." %}</p>
+      {% endif %}
+      {% if not compact %}
+      <div class="mz-bank-steps">
+        <span>1. {% trans "Scan QR" %}</span>
+        <span>2. {% trans "Transfer" %}</span>
+        <span>3. {% trans "Upload slip" %}</span>
+      </div>
       {% endif %}
     </div>
   </div>

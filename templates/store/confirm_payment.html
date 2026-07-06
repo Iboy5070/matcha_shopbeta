@@ -5,25 +5,25 @@
 
 {% include "store/_checkout_steps.html" with step=3 %}
 
-<div class="mz-pay-page mx-auto" style="max-width: 32rem;">
-  <div class="text-center mb-4">
-    <h1 class="mz-section-title h3 mb-2">{% trans "Upload payment slip" %}</h1>
-    <p class="text-muted mb-0">{% trans "Already ordered? Enter your order number and upload your slip." %}</p>
+<div class="text-center mb-4">
+  <h1 class="mz-section-title h3 mb-2">{% trans "Pay & upload slip" %}</h1>
+  <p class="text-muted mb-0">{% trans "Scan the QR to transfer, then upload your slip photo below." %}</p>
+</div>
+
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+{% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+
+<div class="row g-4 mz-pay-page">
+  <div class="col-lg-7 order-2 order-lg-1">
+    <div class="mz-pay-step-card">
+      <div class="mz-pay-step-head">
+        <span class="mz-pay-step-badge">1</span>
+        <h2 class="h6 fw-bold text-muted text-uppercase mb-0">{% trans "Upload your transfer slip" %}</h2>
+      </div>
+      {% include "store/_slip_upload_form.html" %}
+    </div>
   </div>
-
-  {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
-  {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
-
-  <div class="mz-pay-step-card">
-    {% include "store/_slip_upload_form.html" %}
-  </div>
-
-  <p class="text-center small text-muted mt-3 mb-0">
-    {% trans "Need bank details?" %}
-    <a href="{% url 'store_confirm_payment' order.id %}#bank">{% trans "View transfer info" %}</a>
-  </p>
-
-  <div id="bank" class="mt-4">
+  <div class="col-lg-5 order-1 order-lg-2">
     {% include "store/_bank_transfer.html" %}
   </div>
 </div>

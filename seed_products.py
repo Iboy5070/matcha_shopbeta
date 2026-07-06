@@ -23,6 +23,7 @@ products = [
         "description": "Premium matcha from Uji, Kyoto.",
         "price": 250000.00,
         "slug": "ceremonial-matcha",
+        "image_url": "/static/img/products/matcha-ceremonial-50g.jpg",
         "is_active": True,
         "is_featured": True
     },
@@ -32,6 +33,7 @@ products = [
         "description": "Perfect for baking and lattes.",
         "price": 120000.00,
         "slug": "culinary-matcha",
+        "image_url": "/static/img/products/matcha-premium-30g.jpg",
         "is_active": True,
         "is_featured": False
     },
@@ -41,6 +43,7 @@ products = [
         "description": "Low caffeine roasted green tea.",
         "price": 150000.00,
         "slug": "houjicha",
+        "image_url": "/static/img/products/matcha-classic-100g.jpg",
         "is_active": True,
         "is_featured": True
     },
@@ -50,6 +53,7 @@ products = [
         "description": "Traditional tool for whisking matcha.",
         "price": 85000.00,
         "slug": "bamboo-whisk",
+        "image_url": "/static/img/products/bamboo-whisk-chasen.jpg",
         "is_active": True,
         "is_featured": True
     }

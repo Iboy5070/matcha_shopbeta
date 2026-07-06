@@ -89,15 +89,24 @@ def store_clear_cart(request):
     request.session["store_cart"] = {}
     return redirect("store_cart")
 
+RESERVE_DEPOSIT_RATE = Decimal("0.5")
+RESERVE_EXPIRE_DAYS = 7
+
+
 @login_required(login_url="store_login")
 @transaction.atomic
 def store_checkout(request):
+    from datetime import timedelta
+    from django.utils import timezone
+    from apps.sales.models import Reserved
+
     cart_items, total = get_store_cart(request)
     if not cart_items:
         messages.error(request, "ກະຕ່າຂອງທ່ານວ່າງເປົ່າ")
         return redirect("store_shop")
         
     if request.method == "POST":
+        order_type = request.POST.get("order_type", "buy")
         customer = getattr(request.user, "customer_profile", None)
         if not customer:
             customer = Customer.objects.create(
@@ -114,12 +123,13 @@ def store_checkout(request):
             customer.cus_tel = request.POST.get("phone", customer.cus_tel)
             customer.address = request.POST.get("address", customer.address)
             customer.save()
-            
+
+        is_reserve = order_type == "reserve"
         order = Order.objects.create(
             customer=customer,
-            status="PENDING"
+            status=Order.Status.RESERVED if is_reserve else Order.Status.PENDING,
         )
-        
+
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -128,14 +138,39 @@ def store_checkout(request):
                 price=item["unit_price"],
                 subtotal=item["line_total"]
             )
-            
-        bill = Bill.objects.create(
-            order=order,
-            total_amount=total,
-            balance_due=total,
-            status=Bill.Status.PENDING
-        )
-        
+
+        if is_reserve:
+            deposit_total = (total * RESERVE_DEPOSIT_RATE).quantize(Decimal("1"))
+            expire_at = timezone.now() + timedelta(days=RESERVE_EXPIRE_DAYS)
+            for item in cart_items:
+                line_deposit = (item["line_total"] * RESERVE_DEPOSIT_RATE).quantize(Decimal("0.01"))
+                Reserved.objects.create(
+                    order=order,
+                    product=item["product"],
+                    quantity=item["qty"],
+                    deposit_amount=line_deposit,
+                    remain_amount=(item["line_total"] - line_deposit).quantize(Decimal("0.01")),
+                    status=Reserved.Status.RESERVED,
+                    expire_at=expire_at,
+                )
+            bill = Bill.objects.create(
+                order=order,
+                total_amount=total,
+                balance_due=deposit_total,
+                status=Bill.Status.PENDING,
+            )
+            messages.info(
+                request,
+                f"ຈອງລ່ວງໜ້າ — ກະລຸນາຈ່າຍມັດຈຳ {int(deposit_total):,} ກີບ ພາຍໃນ {RESERVE_EXPIRE_DAYS} ມື້",
+            )
+        else:
+            bill = Bill.objects.create(
+                order=order,
+                total_amount=total,
+                balance_due=total,
+                status=Bill.Status.PENDING
+            )
+
         request.session["store_cart"] = {}
         return redirect("store_confirm_payment", order_id=order.id)
         
@@ -143,13 +178,16 @@ def store_checkout(request):
     customer_name = customer.cus_name if customer else request.user.first_name
     phone = customer.cus_tel if customer else ""
     address = customer.address if customer else ""
-    
+    deposit_preview = (total * RESERVE_DEPOSIT_RATE).quantize(Decimal("1"))
+
     return render(request, "store/checkout.html", {
         "items": cart_items,
         "total": total,
         "customer_name": customer_name,
         "phone": phone,
         "address": address,
+        "deposit_preview": deposit_preview,
+        "reserve_expire_days": RESERVE_EXPIRE_DAYS,
     })
 
 from decimal import Decimal, InvalidOperation
@@ -197,10 +235,19 @@ def store_confirm_payment(request, order_id):
             bill.status = Bill.Status.PARTIAL
         bill.save()
 
-        order.status = Order.Status.PENDING
+        # Reserved orders stay RESERVED after deposit is paid — staff completes
+        # them when the customer picks up and pays the remainder in person.
+        if order.status != Order.Status.RESERVED:
+            order.status = Order.Status.PENDING
         order.save()
 
-        messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
+        if order.status == Order.Status.RESERVED:
+            messages.success(
+                request,
+                "ຈ່າຍມັດຈຳສຳເລັດ! ການຈອງຂອງທ່ານຢືນຢັນແລ້ວ — ມາຮັບເຄື່ອງ ແລະ ຊຳລະສ່ວນທີ່ເຫຼືອຢູ່ຮ້ານພາຍໃນກຳນົດ",
+            )
+        else:
+            messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
         return redirect("store_home")
         
     return render(request, "store/confirm_payment.html", {
@@ -210,6 +257,7 @@ def store_confirm_payment(request, order_id):
         "prefill_paid_amount": order.bill.balance_due,
         "order_no": order.id,
         "transfer_amount": order.bill.balance_due,
+        "is_reserve": order.status == Order.Status.RESERVED,
     })
 
 def store_login(request):

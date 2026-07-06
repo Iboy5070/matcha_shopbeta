@@ -36,7 +36,28 @@
             <option value="cod">{% trans "Cash on delivery" %}</option>
           </select>
         </div>
-        <button class="btn mz-btn-primary btn-lg w-100">{% trans "Place order" %}</button>
+
+        <div class="mb-4">
+          <label class="form-label d-block mb-2">{% trans "Order type" %}</label>
+          <div class="mz-order-type-options">
+            <label class="mz-order-type-option">
+              <input type="radio" name="order_type" value="buy" checked>
+              <span class="mz-order-type-card">
+                <strong>{% trans "Buy now" %}</strong>
+                <small>{% trans "Pay in full and we ship right away" %}</small>
+              </span>
+            </label>
+            <label class="mz-order-type-option">
+              <input type="radio" name="order_type" value="reserve">
+              <span class="mz-order-type-card">
+                <strong>{% trans "Reserve (pay 50% deposit)" %}</strong>
+                <small>{% blocktrans with deposit=deposit_preview|kip days=reserve_expire_days %}Pay {{ deposit }} ກີບ deposit now, hold {{ days }} days, pay the rest & pick up at the shop{% endblocktrans %}</small>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn mz-btn-primary btn-lg w-100" id="mzPlaceOrderBtn">{% trans "Place order" %}</button>
       </form>
     </div>
   </div>
@@ -60,12 +81,38 @@
         <span>{% trans "Confirm after order" %}</span>
       </div>
       <div class="mz-checkout-total mb-0 pt-2 border-top">
-        <span class="text-muted">{% trans "Grand total" %}</span>
-        <span class="mz-checkout-amount">{{ total|kip }} <small>ກີບ</small></span>
+        <span class="text-muted" id="mzTotalLabel">{% trans "Grand total" %}</span>
+        <span class="mz-checkout-amount" id="mzTotalAmount">{{ total|kip }} <small>ກີບ</small></span>
       </div>
+      <p class="small text-muted mt-2 mb-0" id="mzReserveNote" style="display:none;">
+        {% trans "Deposit today" %}: <strong>{{ deposit_preview|kip }} ກີບ</strong> ·
+        {% trans "hold" %} {{ reserve_expire_days }} {% trans "days" %}
+      </p>
       <p class="small text-muted mt-2 mb-0">{% trans "Shipping fee may apply — we confirm via phone or WhatsApp." %}</p>
     </div>
     {% include "store/_payment_hint.html" %}
   </div>
 </div>
+
+<script>
+(function () {
+  var radios = document.querySelectorAll('input[name="order_type"]');
+  var totalLabel = document.getElementById('mzTotalLabel');
+  var totalAmount = document.getElementById('mzTotalAmount');
+  var reserveNote = document.getElementById('mzReserveNote');
+  var placeBtn = document.getElementById('mzPlaceOrderBtn');
+  var grandTotalHtml = totalAmount ? totalAmount.innerHTML : '';
+  var depositHtml = '{{ deposit_preview|kip }} <small>ກີບ</small>';
+
+  function sync() {
+    var isReserve = document.querySelector('input[name="order_type"]:checked').value === 'reserve';
+    if (totalLabel) totalLabel.textContent = isReserve ? '{% trans "Deposit due now" %}' : '{% trans "Grand total" %}';
+    if (totalAmount) totalAmount.innerHTML = isReserve ? depositHtml : grandTotalHtml;
+    if (reserveNote) reserveNote.style.display = isReserve ? '' : 'none';
+    if (placeBtn) placeBtn.textContent = isReserve ? '{% trans "Reserve & pay deposit" %}' : '{% trans "Place order" %}';
+  }
+  radios.forEach(function (r) { r.addEventListener('change', sync); });
+  sync();
+})();
+</script>
 {% endblock %}

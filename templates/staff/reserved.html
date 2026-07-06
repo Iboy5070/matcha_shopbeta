@@ -48,7 +48,14 @@
                   </small>
                 </td>
                 <td>{{ r.quantity }}</td>
-                <td class="text-success fw-semibold">{{ r.deposit_amount|floatformat:0|kip }} ₭</td>
+                <td class="text-success fw-semibold">
+                  {{ r.deposit_amount|floatformat:0|kip }} ₭
+                  {% with payment=r.order.bill.payments.first %}
+                  {% if payment and payment.slip_url %}
+                  <br><a href="{{ payment.slip_url }}" target="_blank" class="small">🖼️ ເບິ່ງສະລິບ</a>
+                  {% endif %}
+                  {% endwith %}
+                </td>
                 <td>{{ r.remain_amount|floatformat:0|kip }} ₭</td>
                 <td class="small {% if r.expire_at < now and r.status == 'RESERVED' %}text-danger fw-bold{% else %}text-muted{% endif %}">
                   {{ r.expire_at|date:"d/m/Y" }}
