@@ -9,7 +9,6 @@ import config.admin_users  # noqa: F401 — custom User admin
 admin.site.site_header = f"{settings.SHOP_BRAND} — Admin"
 admin.site.site_title = f"{settings.SHOP_BRAND} Admin"
 admin.site.index_title = "Admin Dashboard"
-admin.site.enable_nav_sidebar = False
 
 _index_view = admin.site.index
 _login_view = admin.site.login
