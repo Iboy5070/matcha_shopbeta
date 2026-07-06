@@ -152,11 +152,10 @@ def store_checkout(request):
         "address": address,
     })
 
-import uuid
 from decimal import Decimal, InvalidOperation
-from supabase import create_client, Client
 from django.conf import settings
 from apps.sales.models import Payment
+from .slip_storage import upload_slip_to_supabase
 
 @login_required(login_url="store_login")
 def store_confirm_payment(request, order_id):
@@ -164,7 +163,6 @@ def store_confirm_payment(request, order_id):
     
     if request.method == "POST":
         slip_image = request.FILES.get("slip_image")
-        bank_name = request.POST.get("bank_name", "Transfer")
         paid_amount_str = request.POST.get("paid_amount", "0")
         
         if not slip_image:
@@ -176,56 +174,34 @@ def store_confirm_payment(request, order_id):
         except InvalidOperation:
             messages.error(request, "ຈຳນວນເງິນບໍ່ຖືກຕ້ອງ")
             return redirect("store_confirm_payment", order_id=order.id)
-            
-        # Upload to Supabase
-        if settings.SUPABASE_URL and settings.SUPABASE_SERVICE_KEY:
-            try:
-                supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_KEY)
-                
-                # Get file extension
-                ext = slip_image.name.split('.')[-1] if '.' in slip_image.name else 'jpg'
-                filename = f"order_{order.id}_{uuid.uuid4().hex[:8]}.{ext}"
-                
-                # Upload file
-                res = supabase.storage.from_(settings.SUPABASE_SLIP_BUCKET).upload(
-                    filename, 
-                    slip_image.read(), 
-                    {"content-type": slip_image.content_type}
-                )
-                
-                # Get public URL
-                public_url = supabase.storage.from_(settings.SUPABASE_SLIP_BUCKET).get_public_url(filename)
-                
-                # Create Payment record (slip uploaded by customer via transfer)
-                Payment.objects.create(
-                    bill=order.bill,
-                    pay_amount=paid_amount,
-                    pay_with=Payment.PayWith.TRANSFER,
-                    slip_url=public_url
-                )
 
-                # Record payment on the bill; order stays PENDING until staff verifies
-                bill = order.bill
-                bill.paid_amount = (bill.paid_amount or Decimal("0")) + paid_amount
-                bill.balance_due = max(bill.total_amount - bill.paid_amount, Decimal("0"))
-                if bill.paid_amount >= bill.total_amount:
-                    bill.status = Bill.Status.PAID
-                elif bill.paid_amount > 0:
-                    bill.status = Bill.Status.PARTIAL
-                bill.save()
-
-                order.status = Order.Status.PENDING
-                order.save()
-
-                messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
-                return redirect("store_home")
-                
-            except Exception as e:
-                messages.error(request, f"ເກີດຂໍ້ຜິດພາດໃນການອັບໂຫຼດຮູບ: {str(e)}")
-                return redirect("store_confirm_payment", order_id=order.id)
-        else:
-            messages.error(request, "ລະບົບຍັງບໍ່ທັນຕັ້ງຄ່າບ່ອນເກັບຮູບ (Supabase)")
+        public_url = upload_slip_to_supabase(slip_image, f"order_{order.id}")
+        if not public_url:
+            messages.error(request, "ອັບໂຫຼດຮູບບໍ່ສຳເລັດ — ລະບົບຍັງບໍ່ທັນຕັ້ງຄ່າ ຫຼື ເກີດຂໍ້ຜິດພາດ, ກະລຸນາລອງໃໝ່")
             return redirect("store_confirm_payment", order_id=order.id)
+
+        Payment.objects.create(
+            bill=order.bill,
+            pay_amount=paid_amount,
+            pay_with=Payment.PayWith.TRANSFER,
+            slip_url=public_url
+        )
+
+        # Record payment on the bill; order stays PENDING until staff verifies
+        bill = order.bill
+        bill.paid_amount = (bill.paid_amount or Decimal("0")) + paid_amount
+        bill.balance_due = max(bill.total_amount - bill.paid_amount, Decimal("0"))
+        if bill.paid_amount >= bill.total_amount:
+            bill.status = Bill.Status.PAID
+        elif bill.paid_amount > 0:
+            bill.status = Bill.Status.PARTIAL
+        bill.save()
+
+        order.status = Order.Status.PENDING
+        order.save()
+
+        messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
+        return redirect("store_home")
         
     return render(request, "store/confirm_payment.html", {
         "order": order,
