@@ -9,6 +9,11 @@
         <img src="{% static 'img/icons/matcha.png' %}" alt="" width="{% if home_style %}48{% else %}40{% endif %}" height="{% if home_style %}48{% else %}40{% endif %}">
       </div>
     {% endif %}
+    {% if p.stock_qty <= 0 %}
+    <span class="mz-stock-badge mz-stock-badge--out">{% trans "Out of stock — reserve only" %}</span>
+    {% elif p.stock_qty <= 5 %}
+    <span class="mz-stock-badge mz-stock-badge--low">{% trans "Only" %} {{ p.stock_qty }} {% trans "left" %}</span>
+    {% endif %}
   </a>
   <div class="mz-product-card-body">
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>

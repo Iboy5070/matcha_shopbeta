@@ -72,6 +72,11 @@ def verify_slip(request, order_id):
                 bill.paid_amount = bill.total_amount
                 bill.balance_due = Decimal("0")
                 bill.save()
+
+            from apps.catalog.stock import deduct_stock
+            for item in order.items.all():
+                deduct_stock(item.product_id, item.quantity)
+
             messages.success(request, f"Order #{order.id} approved successfully!")
         elif action == "reject":
             order.status = Order.Status.CANCELLED
@@ -79,6 +84,31 @@ def verify_slip(request, order_id):
             messages.warning(request, f"Order #{order.id} payment rejected.")
             
     return redirect("staff_slips")
+
+
+@login_required(login_url="/admin/login/")
+def staff_inventory(request):
+    """Read-only stock view for staff — they can see quantities but all
+    editing (adding new stock batches, correcting numbers) stays in the
+    Admin database, superuser only."""
+    from apps.catalog.models import Product
+    from apps.inventory.models import Inventory
+
+    if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
+        return redirect("/admin/login/")
+
+    products = (
+        Product.objects.filter(is_active=True)
+        .select_related("category")
+        .order_by("category__name", "name")
+    )
+    recent_batches = Inventory.objects.select_related("product").order_by("-created_at")[:20]
+
+    return render(request, "staff/inventory.html", {
+        "staff_section": "inventory",
+        "products": products,
+        "recent_batches": recent_batches,
+    })
 
 
 @login_required(login_url="/admin/login/")
@@ -121,6 +151,12 @@ def staff_reserved_action(request, reserved_id):
             reserved.remain_amount = Decimal("0")
             reserved.save()
 
+            from apps.catalog.stock import deduct_stock, consume_allocated_stock
+            if reserved.stock_ready:
+                consume_allocated_stock(reserved.product_id, reserved.quantity)
+            else:
+                deduct_stock(reserved.product_id, reserved.quantity)
+
             if not order.reservations.exclude(status=Reserved.Status.COMPLETED).exists():
                 order.status = Order.Status.COMPLETED
                 order.save()
@@ -134,6 +170,10 @@ def staff_reserved_action(request, reserved_id):
 
         elif action == "cancel":
             reserved.status = Reserved.Status.CANCELLED
+            if reserved.stock_ready:
+                from apps.catalog.stock import release_stock
+                release_stock(reserved.product_id, reserved.quantity)
+                reserved.stock_ready = False
             reserved.save()
             if not order.reservations.exclude(status=Reserved.Status.CANCELLED).exists():
                 order.status = Order.Status.CANCELLED

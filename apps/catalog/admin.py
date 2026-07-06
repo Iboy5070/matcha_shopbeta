@@ -9,7 +9,8 @@ class CategoryAdmin(ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    list_display = ("name", "category", "price", "active_status")
+    list_display = ("name", "category", "price", "stock_qty", "active_status")
+    list_editable = ("stock_qty",)
     search_fields = ("name", "slug")
     list_filter = ("category", "is_active")
 

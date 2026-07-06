@@ -39,16 +39,21 @@
 
         <div class="mb-4">
           <label class="form-label d-block mb-2">{% trans "Order type" %}</label>
+          {% if has_out_of_stock %}
+          <div class="alert alert-warning py-2 px-3 small mb-2">
+            ⚠ {% trans "Out of stock" %}: {{ out_of_stock_names }} — {% trans "only reservation is available for this order" %}
+          </div>
+          {% endif %}
           <div class="mz-order-type-options">
-            <label class="mz-order-type-option">
-              <input type="radio" name="order_type" value="buy" checked>
+            <label class="mz-order-type-option{% if has_out_of_stock %} mz-order-type-option--disabled{% endif %}">
+              <input type="radio" name="order_type" value="buy" {% if has_out_of_stock %}disabled{% else %}checked{% endif %}>
               <span class="mz-order-type-card">
                 <strong>{% trans "Buy now" %}</strong>
-                <small>{% trans "Pay in full and we ship right away" %}</small>
+                <small>{% if has_out_of_stock %}{% trans "Unavailable — out of stock" %}{% else %}{% trans "Pay in full and we ship right away" %}{% endif %}</small>
               </span>
             </label>
             <label class="mz-order-type-option">
-              <input type="radio" name="order_type" value="reserve">
+              <input type="radio" name="order_type" value="reserve" {% if has_out_of_stock %}checked{% endif %}>
               <span class="mz-order-type-card">
                 <strong>{% trans "Reserve (pay 50% deposit)" %}</strong>
                 <small>{% blocktrans with deposit=deposit_preview|kip days=reserve_expire_days %}Pay {{ deposit }} ກີບ deposit now, hold {{ days }} days, pay the rest & pick up at the shop{% endblocktrans %}</small>

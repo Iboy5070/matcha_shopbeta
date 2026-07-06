@@ -106,7 +106,20 @@ def store_checkout(request):
         return redirect("store_shop")
         
     if request.method == "POST":
+        from apps.catalog.stock import check_stock
+
         order_type = request.POST.get("order_type", "buy")
+
+        if order_type != "reserve":
+            insufficient = check_stock(cart_items)
+            if insufficient:
+                names = ", ".join(item["product"].name for item in insufficient)
+                messages.error(
+                    request,
+                    f"ສິນຄ້າໝົດ ຫຼື ບໍ່ພຽງພໍ: {names} — ກະລຸນາຫຼຸດຈຳນວນ ຫຼື ເລືອກ 'ຈອງລ່ວງໜ້າ' ແທນ",
+                )
+                return redirect("store_checkout")
+
         customer = getattr(request.user, "customer_profile", None)
         if not customer:
             customer = Customer.objects.create(
@@ -164,6 +177,8 @@ def store_checkout(request):
                 f"ຈອງລ່ວງໜ້າ — ກະລຸນາຈ່າຍມັດຈຳ {int(deposit_total):,} ກີບ ພາຍໃນ {RESERVE_EXPIRE_DAYS} ມື້",
             )
         else:
+            # Stock is only removed once staff approves the payment slip
+            # (see verify_slip) — not at checkout time.
             bill = Bill.objects.create(
                 order=order,
                 total_amount=total,
@@ -174,11 +189,14 @@ def store_checkout(request):
         request.session["store_cart"] = {}
         return redirect("store_confirm_payment", order_id=order.id)
         
+    from apps.catalog.stock import check_stock
+
     customer = getattr(request.user, "customer_profile", None)
     customer_name = customer.cus_name if customer else request.user.first_name
     phone = customer.cus_tel if customer else ""
     address = customer.address if customer else ""
     deposit_preview = (total * RESERVE_DEPOSIT_RATE).quantize(Decimal("1"))
+    out_of_stock_items = check_stock(cart_items)
 
     return render(request, "store/checkout.html", {
         "items": cart_items,
@@ -188,6 +206,8 @@ def store_checkout(request):
         "address": address,
         "deposit_preview": deposit_preview,
         "reserve_expire_days": RESERVE_EXPIRE_DAYS,
+        "has_out_of_stock": bool(out_of_stock_items),
+        "out_of_stock_names": ", ".join(i["product"].name for i in out_of_stock_items),
     })
 
 from decimal import Decimal, InvalidOperation

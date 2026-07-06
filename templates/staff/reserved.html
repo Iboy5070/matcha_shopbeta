@@ -32,6 +32,7 @@
                 <th>ຄ້າງຈ່າຍ</th>
                 <th>ໝົດອາຍຸ</th>
                 <th>ສະຖານະ</th>
+                <th>ສິນຄ້າ</th>
                 <th>ການຈັດການ</th>
               </tr>
             </thead>
@@ -62,6 +63,15 @@
                 </td>
                 <td><span class="badge text-bg-{{ r.status|status_badge }}">{{ r.get_status_display }}</span></td>
                 <td>
+                  {% if r.stock_ready %}
+                  <span class="badge text-bg-success">✅ ພ້ອມ</span>
+                  {% elif r.status == "RESERVED" %}
+                  <span class="badge text-bg-secondary">⏳ ລໍສິນຄ້າ</span>
+                  {% else %}
+                  <span class="text-muted small">—</span>
+                  {% endif %}
+                </td>
+                <td>
                   {% if r.status == "RESERVED" %}
                   <form method="POST" action="{% url 'staff_reserved_action' r.id %}" class="d-inline">
                     {% csrf_token %}
@@ -79,7 +89,7 @@
               </tr>
               {% empty %}
               <tr>
-                <td colspan="9" class="text-center py-5 text-muted">
+                <td colspan="10" class="text-center py-5 text-muted">
                   <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
                   <h4>ຍັງບໍ່ມີການຈອງສິນຄ້າ</h4>
                   <p>ໄປທີ່ POS → ໃສ່ສິນຄ້າໃນກະຕ່າ → ກົດ "ຈອງສິນຄ້າ (ມັດຈຳ)"</p>

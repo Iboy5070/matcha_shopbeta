@@ -29,9 +29,15 @@
         <span>ກີບ</span>
       </div>
 
-      <p class="text-danger small mb-3{% if product.stock_qty > 0 %} d-none{% endif %}" id="mz-detail-oos">{% trans "Out of stock" %}</p>
+      {% if product.stock_qty <= 0 %}
+      <p class="text-danger small mb-3" id="mz-detail-oos">
+        ⚠ {% trans "Out of stock — you can still reserve it below and pick a deposit option at checkout." %}
+      </p>
+      {% elif product.stock_qty <= 5 %}
+      <p class="text-warning small mb-3">{% trans "Only" %} {{ product.stock_qty }} {% trans "left in stock" %}</p>
+      {% endif %}
 
-      <form method="post" action="{% url 'store_add_to_cart' product.id %}" class="mz-product-buy{% if product.stock_qty <= 0 %} d-none{% endif %}" id="mz-product-buy">
+      <form method="post" action="{% url 'store_add_to_cart' product.id %}" class="mz-product-buy" id="mz-product-buy">
         {% csrf_token %}
         <input type="hidden" name="next" value="cart">
         <div class="d-flex flex-wrap align-items-center gap-3 mb-3 d-none">

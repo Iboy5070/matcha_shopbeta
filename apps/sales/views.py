@@ -88,6 +88,20 @@ def pos_checkout(request):
         messages.error(request, "ກະຕ່າສິນຄ້າວ່າງເປົ່າ!")
         return redirect("pos")
 
+    from apps.catalog.stock import check_stock, deduct_stock
+
+    cart_items_for_check = []
+    cart_products = {str(p.id): p for p in Product.objects.filter(id__in=cart.keys())}
+    for pid, qty in cart.items():
+        if pid in cart_products:
+            cart_items_for_check.append({"product": cart_products[pid], "qty": qty})
+
+    insufficient = check_stock(cart_items_for_check)
+    if insufficient:
+        names = ", ".join(item["product"].name for item in insufficient)
+        messages.error(request, f"ສິນຄ້າໝົດ ຫຼື ບໍ່ພຽງພໍ: {names} — ໃຊ້ 'ຈອງສິນຄ້າ' ແທນ ຫຼື ຫຼຸດຈຳນວນ")
+        return redirect("pos")
+
     # Get employee
     employee = None
     if hasattr(request.user, "employee_profile"):
@@ -95,8 +109,6 @@ def pos_checkout(request):
 
     # Calculate total
     total = Decimal("0")
-    cart_products = {str(p.id): p for p in Product.objects.filter(id__in=cart.keys())}
-    
     for pid, qty in cart.items():
         if pid in cart_products:
             total += cart_products[pid].price * qty
@@ -118,6 +130,7 @@ def pos_checkout(request):
                 price=p.price,
                 subtotal=p.price * qty
             )
+            deduct_stock(p.id, qty)
             
     # Create Bill
     Bill.objects.create(

@@ -1,0 +1,85 @@
+{% extends "staff/app.html" %}
+{% load i18n static mz_extras %}
+{% block title %}ສາງສິນຄ້າ (Stock){% endblock %}
+
+{% block staff_page %}
+<div class="sp-page-head">
+  <p class="sp-page-lead">ເບິ່ງຈຳນວນສິນຄ້າໃນສາງ — ເບິ່ງໄດ້ຢ່າງດຽວ, ການແກ້ໄຂ (ເພີ່ມສິນຄ້າໃໝ່) ຕ້ອງຜ່ານ Admin ເທົ່ານັ້ນ</p>
+</div>
+
+<div class="row g-3 g-lg-4 mb-4">
+  <div class="col-lg-7">
+    <div class="sp-panel">
+      <div class="sp-panel-head">
+        <h2>ຈຳນວນສິນຄ້າປັດຈຸບັນ (Current Stock)</h2>
+      </div>
+      <div class="sp-panel-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ສິນຄ້າ</th>
+                <th>ໝວດໝູ່</th>
+                <th class="text-end">ຈຳນວນ</th>
+                <th>ສະຖານະ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in products %}
+              <tr>
+                <td>{{ p.name }}</td>
+                <td class="text-muted small">{{ p.category.name }}</td>
+                <td class="text-end fw-semibold">{{ p.stock_qty }}</td>
+                <td>
+                  {% if p.stock_qty <= 0 %}
+                  <span class="badge text-bg-danger">ໝົດແລ້ວ</span>
+                  {% elif p.stock_qty <= 5 %}
+                  <span class="badge text-bg-warning">ໃກ້ໝົດ</span>
+                  {% else %}
+                  <span class="badge text-bg-success">ພຽງພໍ</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted py-4">ຍັງບໍ່ມີສິນຄ້າ</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="sp-panel">
+      <div class="sp-panel-head">
+        <h2>ປະຫວັດການເຕີມສິນຄ້າ (Recent Stock In)</h2>
+      </div>
+      <div class="sp-panel-body">
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ວັນທີ</th>
+                <th>ສິນຄ້າ</th>
+                <th class="text-end">ຈຳນວນ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in recent_batches %}
+              <tr>
+                <td class="small text-muted">{{ b.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ b.product.name }}</td>
+                <td class="text-end">+{{ b.quantity }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted py-4">ຍັງບໍ່ມີການເຕີມສິນຄ້າ</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

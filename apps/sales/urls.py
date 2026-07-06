@@ -19,4 +19,5 @@ urlpatterns = [
     path('staff/slips/<int:order_id>/verify/', staff_views.verify_slip, name='verify_slip'),
     path('staff/reserved/', staff_views.staff_reserved, name='staff_reserved'),
     path('staff/reserved/<int:reserved_id>/action/', staff_views.staff_reserved_action, name='staff_reserved_action'),
+    path('staff/inventory/', staff_views.staff_inventory, name='staff_inventory'),
 ]

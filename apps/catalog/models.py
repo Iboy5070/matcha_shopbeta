@@ -34,6 +34,10 @@ class Category(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = "ໝວດໝູ່ (Category)"
+        verbose_name_plural = "ໝວດໝູ່ (Categories)"
+
     def __str__(self):
         return self.name
 
@@ -49,6 +53,7 @@ class Product(models.Model):
     description_en = models.TextField("Description (EN)", blank=True)
     
     price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    stock_qty = models.PositiveIntegerField("ຈຳນວນໃນສາງ (Stock)", default=0)
     image = models.ImageField(upload_to="products/", blank=True)
     image_url = models.URLField(
         blank=True,
@@ -82,6 +87,10 @@ class Product(models.Model):
         if self.image:
             return self.image.url
         return ""
+
+    class Meta:
+        verbose_name = "ສິນຄ້າ (Product)"
+        verbose_name_plural = "ສິນຄ້າ (Products)"
 
     def __str__(self):
         return self.name

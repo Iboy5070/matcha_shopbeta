@@ -9,6 +9,10 @@ class Supplier(models.Model):
     sup_address = models.TextField()
     email = models.EmailField()
 
+    class Meta:
+        verbose_name = "ຜູ້ສະໜອງ (Supplier)"
+        verbose_name_plural = "ຜູ້ສະໜອງ (Suppliers)"
+
     def __str__(self):
         return self.sup_name
 
@@ -24,6 +28,10 @@ class PurchaseOrder(models.Model):
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
 
+    class Meta:
+        verbose_name = "ໃບສັ່ງຊື້ (Purchase Order)"
+        verbose_name_plural = "ໃບສັ່ງຊື້ (Purchase Orders)"
+
     def __str__(self):
         return f"PO #{self.id} from {self.supplier.sup_name}"
 
@@ -34,6 +42,10 @@ class PODetail(models.Model):
     cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
+    class Meta:
+        verbose_name = "ລາຍລະອຽດໃບສັ່ງຊື້ (PO Detail)"
+        verbose_name_plural = "ລາຍລະອຽດໃບສັ່ງຊື້ (PO Details)"
+
     def __str__(self):
         return f"PO Detail #{self.id}"
 
@@ -43,6 +55,10 @@ class Imports(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     imp_date = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+
+    class Meta:
+        verbose_name = "ນຳເຂົ້າ (Import)"
+        verbose_name_plural = "ນຳເຂົ້າ (Imports)"
 
     def __str__(self):
         return f"Import #{self.id} for PO #{self.purchase_order_id}"
@@ -55,6 +71,17 @@ class ImportDetail(models.Model):
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
+    class Meta:
+        verbose_name = "ລາຍລະອຽດນຳເຂົ້າ (Import Detail)"
+        verbose_name_plural = "ລາຍລະອຽດນຳເຂົ້າ (Import Details)"
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and self.quantity > 0:
+            from apps.catalog.stock import receive_stock
+            receive_stock(self.product_id, self.quantity)
+
     def __str__(self):
         return f"Import Detail #{self.id}"
 
@@ -63,6 +90,17 @@ class Inventory(models.Model):
     quantity = models.IntegerField(default=0)
     expiry_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "ສິນຄ້າໃນສາງ (Stock)"
+        verbose_name_plural = "ສິນຄ້າໃນສາງ (Stock)"
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new and self.quantity > 0:
+            from apps.catalog.stock import receive_stock
+            receive_stock(self.product_id, self.quantity)
 
     def __str__(self):
         return f"Inventory for {self.product.name}"

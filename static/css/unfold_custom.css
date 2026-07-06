@@ -4,3 +4,37 @@
 body {
     font-family: 'Noto Sans Lao', ui-sans-serif, system-ui, sans-serif !important;
 }
+
+/* User list badges (staff/admin/active) — used by config/admin_users.py */
+.pa-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.pa-badge--staff {
+  background: #e0f7f0;
+  color: #1a7a5c;
+}
+
+.pa-badge--admin {
+  background: #d9ead9;
+  color: #1e3d2a;
+}
+
+.pa-badge--ok {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.pa-badge--no {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.pa-badge--muted {
+  color: #9ca3af;
+}
