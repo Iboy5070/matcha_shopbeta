@@ -102,6 +102,8 @@ LANGUAGES = [
     ("th", "Thai"),
 ]
 
+import django.conf.locale
+
 EXTRA_LANG_INFO = {
     "lo": {
         "bidi": False,
@@ -110,6 +112,8 @@ EXTRA_LANG_INFO = {
         "name_local": "ລາວ",
     },
 }
+
+django.conf.locale.LANG_INFO.update(EXTRA_LANG_INFO)
 
 LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Asia/Vientiane"
