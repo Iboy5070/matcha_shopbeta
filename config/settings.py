@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.urls import reverse_lazy
 
 from config.database import configure_databases
 
@@ -228,27 +229,129 @@ UNFOLD = {
     "SITE_HEADER": SHOP_NAME,
     "SITE_URL": "/",
     "SITE_ICON": {
-        "light": lambda request: static("img/hero.png"),
-        "dark": lambda request: static("img/hero.png"),
+        "light": lambda request: static("img/icons/logo-cup.png"),
+        "dark": lambda request: static("img/icons/logo-cup.png"),
     },
     "COLORS": {
         "primary": {
-            "50": "240 253 244",
-            "100": "220 252 231",
-            "200": "187 247 208",
-            "300": "134 239 172",
-            "400": "74 222 128",
-            "500": "34 197 94",
-            "600": "22 163 74",
-            "700": "21 128 61",
-            "800": "22 101 52",
-            "900": "20 83 45",
-            "950": "5 46 22",
+            "50": "246 250 247",
+            "100": "232 243 236",
+            "200": "206 229 216",
+            "300": "167 207 184",
+            "400": "122 178 144",
+            "500": "88 149 112",
+            "600": "65 119 86",
+            "700": "53 96 70",
+            "800": "45 78 58",
+            "900": "37 64 48",
+            "950": "20 37 27",
         },
     },
     "SIDEBAR": {
         "show_search": True,
-        "show_all_applications": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "ສະຫຼຸບຂໍ້ມູນ (Dashboard)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "ໜ້າຫຼັກ",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
+            {
+                "title": "ການຂາຍ (Sales)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "ອໍເດີ (Orders)",
+                        "icon": "shopping_cart",
+                        "link": reverse_lazy("admin:sales_order_changelist"),
+                    },
+                    {
+                        "title": "ການຊຳລະເງິນ (Payments)",
+                        "icon": "payments",
+                        "link": reverse_lazy("admin:sales_payment_changelist"),
+                    },
+                    {
+                        "title": "ບິນ (Bills)",
+                        "icon": "receipt",
+                        "link": reverse_lazy("admin:sales_bill_changelist"),
+                    },
+                    {
+                        "title": "ສິນຄ້າຈອງ (Reserved)",
+                        "icon": "bookmark",
+                        "link": reverse_lazy("admin:sales_reserved_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "ສາງສິນຄ້າ (Inventory)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "ສິນຄ້າໃນສາງ (Stock)",
+                        "icon": "inventory_2",
+                        "link": reverse_lazy("admin:inventory_inventory_changelist"),
+                    },
+                    {
+                        "title": "ນຳເຂົ້າ (Imports)",
+                        "icon": "local_shipping",
+                        "link": reverse_lazy("admin:inventory_imports_changelist"),
+                    },
+                    {
+                        "title": "ໃບສັ່ງຊື້ (Purchase Orders)",
+                        "icon": "receipt_long",
+                        "link": reverse_lazy("admin:inventory_purchaseorder_changelist"),
+                    },
+                    {
+                        "title": "ຜູ້ສະໜອງ (Suppliers)",
+                        "icon": "storefront",
+                        "link": reverse_lazy("admin:inventory_supplier_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "ສິນຄ້າ (Catalog)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "ລາຍການສິນຄ້າ",
+                        "icon": "category",
+                        "link": reverse_lazy("admin:catalog_product_changelist"),
+                    },
+                    {
+                        "title": "ໝວດໝູ່ (Categories)",
+                        "icon": "folder",
+                        "link": reverse_lazy("admin:catalog_category_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "ຜູ້ໃຊ້ (Users)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "ພະນັກງານ (Employees)",
+                        "icon": "badge",
+                        "link": reverse_lazy("admin:store_employee_changelist"),
+                    },
+                    {
+                        "title": "ລູກຄ້າ (Customers)",
+                        "icon": "groups",
+                        "link": reverse_lazy("admin:store_customer_changelist"),
+                    },
+                    {
+                        "title": "ແອັດມິນ (Admins)",
+                        "icon": "admin_panel_settings",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                ],
+            },
+        ],
     },
     "STYLES": [
         "/static/css/unfold_custom.css",
