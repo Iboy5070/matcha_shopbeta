@@ -97,10 +97,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "lo"
 LANGUAGES = [
-    ("lo", "ລາວ"),
-    ("th", "ไทย"),
+    ("lo", "Lao"),
     ("en", "English"),
+    ("th", "Thai"),
 ]
+
+EXTRA_LANG_INFO = {
+    "lo": {
+        "bidi": False,
+        "code": "lo",
+        "name": "Lao",
+        "name_local": "ລາວ",
+    },
+}
+
 LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Asia/Vientiane"
 USE_I18N = True
