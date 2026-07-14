@@ -2,6 +2,15 @@
 
 Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, bilingual storefront, and POS for staff.
 
+## Documentation
+
+| Doc | Description |
+|-----|-------------|
+| [docs/README.md](docs/README.md) | Doc index + folder map |
+| [docs/DEV.md](docs/DEV.md) | Local setup, commands, troubleshooting |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Apps, models, stock/checkout/reserve flows |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Render, Supabase, wake page, production env |
+
 ## Requirements
 
 - Python 3.11+
@@ -39,7 +48,8 @@ docker compose up -d db
 # Wait until the db container is healthy, then migrate
 python manage.py migrate
 python manage.py createsuperuser
-python manage.py seed_demo   # optional sample FAQ & testimonials
+python seed_products.py      # optional sample products (clears existing catalog)
+python manage.py create_staff
 python manage.py compilemessages
 
 python manage.py runserver
