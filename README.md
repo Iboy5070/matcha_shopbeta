@@ -8,17 +8,13 @@ Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, 
 |--|------|
 | **ເຂົ້າເບິ່ງລະບົບ (demo)** | https://iboy5070.github.io/matcha_shopbeta/ |
 | **Source code (GitHub)** | https://github.com/Iboy5070/matcha_shopbeta |
-| **Database Q&A (ສອບບົດ)** | [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) |
-| **ER / Data Dictionary** | [docs/THESIS_CH3_P37-45.md](docs/THESIS_CH3_P37-45.md) |
 
-> ໃຊ້ **demo link ຂ້າງເທິງ** (wake page) — ລໍສອງສາມວິນາທີຖ້າ server ກຳລັງຕື່ນ (Render free tier). ຢ່າໃຊ້ Render URL ໂດຍກົງ.
+> ໃຊ້ **demo link ຂ້າງເທິງ** (wake page) — ລໍສອງສາມວິນາທີຖ້າ server ກຳລັງຕື່ນ (Render free tier). �າ server ກຳລັງຕື່ນ (Render free tier). ຢ່າໃຊ້ Render URL ໂດຍກົງ.
 
 ## Documentation
 
 | Doc | Description |
 |-----|-------------|
-| [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) | Database Q&A for oral defense |
-| [docs/THESIS_CH3_P37-45.md](docs/THESIS_CH3_P37-45.md) | ER + Data Dictionary (Ch.3) |
 | [docs/index.html](docs/index.html) | Wake page (GitHub Pages demo) |
 
 ## Requirements
