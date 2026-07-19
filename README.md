@@ -9,7 +9,7 @@ Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, 
 | **ເຂົ້າເບິ່ງລະບົບ (demo)** | https://iboy5070.github.io/matcha_shopbeta/ |
 | **Source code (GitHub)** | https://github.com/Iboy5070/matcha_shopbeta |
 
-> ໃຊ້ **demo link ຂ້າງເທິງ** (wake page) — ລໍສອງສາມວິນາທີຖ້າ server ກຳລັງຕື່ນ (Render free tier). �າ server ກຳລັງຕື່ນ (Render free tier). ຢ່າໃຊ້ Render URL ໂດຍກົງ.
+> ໃຊ້ **demo link ຂ້າງເທິງ** (wake page) — ລໍສອງສາມວິນາທີຖ້າ server ກຳລັງຕື່ນ (Render free tier). ຢ່າໃຊ້ Render URL ໂດຍກົງ.
 
 ## Documentation
 
