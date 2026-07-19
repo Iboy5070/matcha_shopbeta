@@ -139,7 +139,7 @@ Trigger ເຕີມ stock:
 - Default: `lo` (Lao)
 - Languages: lo, en, th
 - Locale: `locale/*/LC_MESSAGES/django.po`
-- Catalog i18n: `sync_catalog_i18n` command
+- Catalog: ຊື່ສິນຄ້າ 3 ພາສາໃນ model (`name`, `name_th`, `name_en`)
 
 ## ໄຟລ config ສຳຄັນ
 

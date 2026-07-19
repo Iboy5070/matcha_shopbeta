@@ -2,12 +2,22 @@
 
 Django e-commerce shop — **The 196 Haus Matcha** (ພາສາລາວເປັນຫຼັກ, lo/en/th)
 
+## ລິ້ງສຳລັບຜູ້ກວດສອບ
+
+| | Link |
+|--|------|
+| Demo (wake page) | https://iboy5070.github.io/matcha_shopbeta/ |
+| Source code | https://github.com/Iboy5070/matcha_shopbeta |
+| Database Q&A | [THESIS_DATABASE_QA.md](THESIS_DATABASE_QA.md) |
+
 ## ເອກະສານຫຼັກ
 
 | ໄຟລ | ໃຊ້ເມື່ອ |
 |-----|----------|
 | [DEV.md](DEV.md) | ຕັ້ງເຄື່ອງ local, run, migrate, seed, ແກ້ບັກ |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | ເຂົ້າໃຈໂຄງສ້າງ app, model, flow, ໄຟລສຳຄັນ |
+| [THESIS_CH3_P37-45.md](THESIS_CH3_P37-45.md) | ບົດທີ 3 ໜ້າ 37–45: ER, Data Relation, Data Dictionary |
+| [THESIS_DATABASE_QA.md](THESIS_DATABASE_QA.md) | ຄຳຖາມ-ຄຳຕອບສອບບົດ (ອາຈານຖາບ DB) |
 | [DEPLOY.md](DEPLOY.md) | ອັບ Render, Supabase, env, wake page |
 
 ## URL ສຳຄັນ

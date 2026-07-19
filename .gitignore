@@ -16,8 +16,14 @@ pgdata/
 # Media uploads
 media/
 
+# collectstatic output (regenerated on deploy / local)
+staticfiles/
+
 # OS
 .DS_Store
+
+# Cursor / VS Code local workspace
+*.code-workspace
 
 # Cursor IDE (local rules only)
 .cursor/

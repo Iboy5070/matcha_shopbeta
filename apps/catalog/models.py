@@ -13,7 +13,7 @@ def _pick_lang(lang, lo, th="", en=""):
 
 
 class Category(models.Model):
-    name = models.CharField("ຊື່ (ລາວ)", max_length=100, unique=True)
+    name = models.CharField("Cas_Name", max_length=100, unique=True)
     name_th = models.CharField("ชื่อ (ไทย)", max_length=100, blank=True)
     name_en = models.CharField("Name (EN)", max_length=100, blank=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
@@ -43,25 +43,30 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
-    name = models.CharField("ຊື່ (ລາວ)", max_length=200)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products", verbose_name="Cas_ID")
+    name = models.CharField("Pro_Name", max_length=200)
     name_th = models.CharField("ชื่อ (ไทย)", max_length=200, blank=True)
     name_en = models.CharField("Name (EN)", max_length=200, blank=True)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
-    description = models.TextField("ຄຳອະທິບາຍ (ລາວ)", blank=True)
+    description = models.TextField("Description", blank=True)
     description_th = models.TextField("คำอธิบาย (ไทย)", blank=True)
     description_en = models.TextField("Description (EN)", blank=True)
     
-    price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    stock_qty = models.PositiveIntegerField("ຈຳນວນໃນສາງ (Stock)", default=0)
-    image = models.ImageField(upload_to="products/", blank=True)
+    price = models.DecimalField("Price", max_digits=12, decimal_places=2, default=0)
+    stock_qty = models.PositiveIntegerField(
+        "Stock_qty (impl.)",
+        default=0,
+        help_text="ເພີ່ມຕອນ implement — ຈຳນວນພ້ອມຂาย (ບົດບໍ່ມີ)",
+    )
+    image = models.ImageField("Img_path (upload)", upload_to="products/", blank=True)
     image_url = models.URLField(
+        "Img_path (URL)",
         blank=True,
-        help_text="ລິ້ງຮູບຈາກ CDN (ແນະນຳສຳລັບ production — ບໍ່ຫາຍເມື່ອ deploy)",
+        help_text="ບົດ: Img_path — ລິ້ງຮູບ CDN/Supabase",
     )
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField("Created_at", auto_now_add=True)
 
     def name_for(self, lang):
         return _pick_lang(lang, self.name, self.name_th, self.name_en)

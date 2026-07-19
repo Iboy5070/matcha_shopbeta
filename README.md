@@ -2,6 +2,17 @@
 
 Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, bilingual storefront, and POS for staff.
 
+## ສຳລັບຜູ້ກວດສອບ / For reviewers
+
+| | Link |
+|--|------|
+| **ເຂົ້າເບິ່ງລະບົບ (demo)** | https://iboy5070.github.io/matcha_shopbeta/ |
+| **Source code (GitHub)** | https://github.com/Iboy5070/matcha_shopbeta |
+| **Database Q&A (ສອບບົດ)** | [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) |
+| **ER / Data Dictionary** | [docs/THESIS_CH3_P37-45.md](docs/THESIS_CH3_P37-45.md) |
+
+> ໃຊ້ **demo link ຂ້າງເທິງ** (wake page) — ລໍສອງສາມວິນາທີຖ້າ server ກຳລັງຕື່ນ (Render free tier). ຢ່າໃຊ້ Render URL ໂດຍກົງ.
+
 ## Documentation
 
 | Doc | Description |
@@ -10,6 +21,8 @@ Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, 
 | [docs/DEV.md](docs/DEV.md) | Local setup, commands, troubleshooting |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Apps, models, stock/checkout/reserve flows |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Render, Supabase, wake page, production env |
+| [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) | ຄຳຖາມ-ຄຳຕອບດາຕ້າເບສ (ສອບບົດ) |
+| [docs/THESIS_CH3_P37-45.md](docs/THESIS_CH3_P37-45.md) | ER + Data Dictionary (Ch.3) |
 
 ## Requirements
 
@@ -33,7 +46,7 @@ Without Docker: add `USE_SQLITE=1` to `.env` or just run `make run` (auto-fallba
 ## Setup (manual)
 
 ```bash
-git clone <repo_url>
+git clone https://github.com/Iboy5070/matcha_shopbeta.git
 cd matcha_shopbeta
 
 python -m venv .venv

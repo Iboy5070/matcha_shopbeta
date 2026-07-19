@@ -103,7 +103,6 @@ USE_SQLITE=1
 | `create_admin` | Admin helper (alternative) |
 | `migrate` | DB migrations |
 | `compilemessages` | compile .po → .mo (i18n) |
-| `sync_catalog_i18n` | sync catalog translations |
 
 ## Env ສຳຄັນ (local)
 

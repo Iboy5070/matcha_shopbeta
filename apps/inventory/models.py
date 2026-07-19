@@ -4,10 +4,10 @@ from apps.store.models import Employee
 from apps.catalog.models import Product
 
 class Supplier(models.Model):
-    sup_name = models.CharField(max_length=100)
-    sup_tel = models.CharField(max_length=20)
-    sup_address = models.TextField()
-    email = models.EmailField()
+    sup_name = models.CharField("Sup_Name", max_length=100)
+    sup_tel = models.CharField("Sup_Tel", max_length=20)
+    sup_address = models.TextField("Sup_Address")
+    email = models.EmailField("Email")
 
     class Meta:
         verbose_name = "ຜູ້ສະໜອງ (Supplier)"
@@ -22,39 +22,39 @@ class PurchaseOrder(models.Model):
         COMPLETED = "COMPLETED", "ສຳເລັດ"
         CANCELLED = "CANCELLED", "ຍົກເລີກ"
 
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    po_date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Emp_ID")
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="Sup_ID")
+    po_date = models.DateTimeField("PO_date", auto_now_add=True)
+    total_amount = models.DecimalField("Total_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField("Status", max_length=30, choices=Status.choices, default=Status.PENDING)
 
     class Meta:
-        verbose_name = "ໃບສັ່ງຊື້ (Purchase Order)"
-        verbose_name_plural = "ໃບສັ່ງຊື້ (Purchase Orders)"
+        verbose_name = "ໃບສັ່ງຊື້ (Purchase_order)"
+        verbose_name_plural = "ໃບສັ່ງຊື້ (Purchase_order)"
 
     def __str__(self):
         return f"PO #{self.id} from {self.supplier.sup_name}"
 
 class PODetail(models.Model):
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name="details")
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(default=1)
-    cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name="details", verbose_name="PO_ID")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Pro_ID")
+    quantity = models.PositiveIntegerField("Quantity", default=1)
+    cost_price = models.DecimalField("Cost_price", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField("Subtotal", max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     class Meta:
-        verbose_name = "ລາຍລະອຽດໃບສັ່ງຊື້ (PO Detail)"
-        verbose_name_plural = "ລາຍລະອຽດໃບສັ່ງຊື້ (PO Details)"
+        verbose_name = "ລາຍລະອຽດ PO (PO_detail)"
+        verbose_name_plural = "ລາຍລະອຽດ PO (PO_detail)"
 
     def __str__(self):
         return f"PO Detail #{self.id}"
 
 class Imports(models.Model):
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    imp_date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, verbose_name="PO_ID")
+    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Emp_ID")
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, verbose_name="Sup_ID")
+    imp_date = models.DateTimeField("Imp_date", auto_now_add=True)
+    total_amount = models.DecimalField("Total_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     class Meta:
         verbose_name = "ນຳເຂົ້າ (Import)"
@@ -64,16 +64,16 @@ class Imports(models.Model):
         return f"Import #{self.id} for PO #{self.purchase_order_id}"
 
 class ImportDetail(models.Model):
-    imports = models.ForeignKey(Imports, on_delete=models.CASCADE, related_name="details")
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(default=1)
-    cost_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    imports = models.ForeignKey(Imports, on_delete=models.CASCADE, related_name="details", verbose_name="Imp_ID")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Pro_ID")
+    quantity = models.PositiveIntegerField("Quantity", default=1)
+    cost_price = models.DecimalField("Cost_price", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField("Subtotal", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    created_at = models.DateTimeField("Created_at", auto_now_add=True, null=True, blank=True)
 
     class Meta:
-        verbose_name = "ລາຍລະອຽດນຳເຂົ້າ (Import Detail)"
-        verbose_name_plural = "ລາຍລະອຽດນຳເຂົ້າ (Import Details)"
+        verbose_name = "ລາຍລະອຽດນຳເຂົ້າ (Import_detail)"
+        verbose_name_plural = "ລາຍລະອຽດນຳເຂົ້າ (Import_detail)"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -86,14 +86,14 @@ class ImportDetail(models.Model):
         return f"Import Detail #{self.id}"
 
 class Inventory(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory")
-    quantity = models.IntegerField(default=0)
-    expiry_date = models.DateField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="inventory", verbose_name="Pro_ID")
+    quantity = models.IntegerField("Quantity", default=0)
+    expiry_date = models.DateField("Expiry_date", null=True, blank=True)
+    created_at = models.DateTimeField("Created_at", auto_now_add=True)
 
     class Meta:
-        verbose_name = "ສິນຄ້າໃນສາງ (Stock)"
-        verbose_name_plural = "ສິນຄ້າໃນສາງ (Stock)"
+        verbose_name = "ສິນຄ້າໃນສາງ (Inventory)"
+        verbose_name_plural = "ສິນຄ້າໃນສາງ (Inventory)"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None

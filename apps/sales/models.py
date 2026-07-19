@@ -11,13 +11,20 @@ class Order(models.Model):
         COMPLETED = "COMPLETED", "ສຳເລັດ"
         CANCELLED = "CANCELLED", "ຍົກເລີກ"
 
-    order_date = models.DateTimeField(auto_now_add=True)
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, related_name="orders")
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_orders")
-    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
+    order_date = models.DateTimeField("Order_date", auto_now_add=True)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="orders", verbose_name="Cus_ID",
+    )
+    employee = models.ForeignKey(
+        Employee, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="processed_orders", verbose_name="Emp_ID",
+        help_text="nullable ສຳລັບ web order (ບົດ: NOT NULL)",
+    )
+    status = models.CharField("Status", max_length=30, choices=Status.choices, default=Status.PENDING)
 
     class Meta:
-        verbose_name = "ອໍເດີ (Order)"
+        verbose_name = "ອໍເດີ (Orders)"
         verbose_name_plural = "ອໍເດີ (Orders)"
 
     def __str__(self):
@@ -25,15 +32,15 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items", verbose_name="Order_ID")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Pro_ID")
+    quantity = models.PositiveIntegerField("Quantity", default=1)
+    price = models.DecimalField("Price", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    subtotal = models.DecimalField("Subtotal", max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     class Meta:
-        verbose_name = "ລາຍການອໍເດີ (Order Item)"
-        verbose_name_plural = "ລາຍການອໍເດີ (Order Items)"
+        verbose_name = "ລາຍລະອຽດ (Order_detail)"
+        verbose_name_plural = "ລາຍລະອຽດ (Order_detail)"
 
     def __str__(self):
         return f"{self.order} - {self.product.name}"
@@ -45,12 +52,12 @@ class Bill(models.Model):
         PARTIAL = "PARTIAL", "ຊຳລະບາງສ່ວນ"
         PAID = "PAID", "ຊຳລະຄົບ"
 
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="bill")
-    bill_date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    balance_due = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, choices=Status.choices, default=Status.PENDING)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="bill", verbose_name="Order_ID")
+    bill_date = models.DateTimeField("Bill_date", auto_now_add=True)
+    total_amount = models.DecimalField("Total_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    paid_amount = models.DecimalField("Paid_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    balance_due = models.DecimalField("Balance_due", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField("Status", max_length=30, choices=Status.choices, default=Status.PENDING)
 
     class Meta:
         verbose_name = "ບິນ (Bill)"
@@ -66,12 +73,21 @@ class Payment(models.Model):
         TRANSFER = "TRANSFER", "ໂອນ"
         QR = "QR", "QR"
 
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments")
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True, related_name="processed_payments")
-    pay_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    pay_with = models.CharField(max_length=50, choices=PayWith.choices, default=PayWith.TRANSFER)
-    pay_date = models.DateTimeField(auto_now_add=True)
-    slip_url = models.CharField(max_length=500, null=True, blank=True)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="payments", verbose_name="Bill_ID")
+    employee = models.ForeignKey(
+        Employee, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="processed_payments", verbose_name="Emp_ID",
+    )
+    pay_amount = models.DecimalField("Pay_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    pay_with = models.CharField("Pay_with", max_length=50, choices=PayWith.choices, default=PayWith.TRANSFER)
+    pay_date = models.DateTimeField("Pay_date", auto_now_add=True)
+    slip_url = models.CharField(
+        "Img_path (Slip URL)",
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="ບົດ: Img_path — URL ຮູບ slip ຈາກ Supabase",
+    )
 
     class Meta:
         verbose_name = "ການຊຳລະເງິນ (Payment)"
@@ -88,19 +104,19 @@ class Reserved(models.Model):
         COMPLETED = "COMPLETED", "ສຳເລັດ"
         CANCELLED = "CANCELLED", "ຍົກເລີກ"
 
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="reservations")
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(default=1)
-    deposit_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    remain_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    status = models.CharField(max_length=30, choices=Status.choices, default=Status.RESERVED)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="reservations", verbose_name="Order_ID")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Pro_ID")
+    quantity = models.PositiveIntegerField("Quantity", default=1)
+    deposit_amount = models.DecimalField("Deposit_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    remain_amount = models.DecimalField("Remain_amount", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    status = models.CharField("Status", max_length=30, choices=Status.choices, default=Status.RESERVED)
     stock_ready = models.BooleanField(
-        "ສິນຄ້າພ້ອມ (Stock ready)",
+        "Stock_ready (impl.)",
         default=False,
-        help_text="ອັດຕະໂນມັດ True ເມື່ອສິນຄ້າໃໝ່ເຂົ້າ ແລະ ຈັດສັນໃຫ້ການຈອງນີ້ແລ້ວ",
+        help_text="ເພີ່ມຕອນ implement — ສິນຄ້າຈັດໃຫ້ຈອງແລ້ວ (ບົດບໍ່ມີ)",
     )
-    res_date = models.DateTimeField(auto_now_add=True)
-    expire_at = models.DateTimeField()
+    res_date = models.DateTimeField("Res_date", auto_now_add=True)
+    expire_at = models.DateTimeField("Expire_at")
 
     class Meta:
         verbose_name = "ສິນຄ້າຈອງ (Reserved)"
