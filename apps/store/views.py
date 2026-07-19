@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.db import DatabaseError, transaction
 from django.utils.timezone import now
 
-from apps.catalog.models import Product
+from apps.catalog.models import Category, Product
 from apps.sales.models import Customer, Order, OrderItem, Bill
 
 def get_store_cart(request):
@@ -32,23 +32,29 @@ def get_store_cart(request):
     return cart_items, total
 
 def store_home(request):
-    featured_products = Product.objects.filter(is_active=True)[:4]
+    try:
+        featured_products = list(Product.objects.filter(is_active=True)[:4])
+    except DatabaseError:
+        # Avoid hard 500 when Supabase/Render DB is briefly unreachable
+        featured_products = []
     return render(request, "store/home.html", {"featured_products": featured_products})
 
-from apps.catalog.models import Product, Category
-
 def store_shop(request):
-    products = Product.objects.filter(is_active=True)
-    categories = Category.objects.all()
-    
     q = request.GET.get('q')
-    if q:
-        products = products.filter(name__icontains=q)
-        
     cat_slug = request.GET.get('category')
-    if cat_slug:
-        products = products.filter(category__slug=cat_slug)
-        
+    try:
+        products = Product.objects.filter(is_active=True)
+        categories = Category.objects.all()
+        if q:
+            products = products.filter(name__icontains=q)
+        if cat_slug:
+            products = products.filter(category__slug=cat_slug)
+        products = list(products)
+        categories = list(categories)
+    except DatabaseError:
+        products = []
+        categories = []
+
     return render(request, "store/shop.html", {
         "products": products,
         "categories": categories,

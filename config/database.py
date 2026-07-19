@@ -50,8 +50,15 @@ def configure_databases(base_dir: Path, debug: bool) -> dict:
 
     if db_url.startswith(("postgres://", "postgresql://")):
         cfg = dj_database_url.parse(db_url)
-        cfg["CONN_MAX_AGE"] = 600
+        # Supabase pooler (*.pooler.supabase.com / :6543) breaks with long-lived
+        # connections — keep CONN_MAX_AGE low. Direct DB can use a bit more.
+        host = (urlparse(db_url).hostname or "").lower()
+        port = urlparse(db_url).port or 5432
+        is_pooler = "pooler.supabase.com" in host or port == 6543
+        cfg["CONN_MAX_AGE"] = 0 if is_pooler else 60
         cfg["CONN_HEALTH_CHECKS"] = True
+        opts = cfg.setdefault("OPTIONS", {})
+        opts.setdefault("sslmode", "require")
     else:
         cfg = dj_database_url.parse(db_url)
 
