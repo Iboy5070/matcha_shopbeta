@@ -17,12 +17,9 @@ Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, 
 
 | Doc | Description |
 |-----|-------------|
-| [docs/README.md](docs/README.md) | Doc index + folder map |
-| [docs/DEV.md](docs/DEV.md) | Local setup, commands, troubleshooting |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Apps, models, stock/checkout/reserve flows |
-| [docs/DEPLOY.md](docs/DEPLOY.md) | Render, Supabase, wake page, production env |
-| [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) | ຄຳຖາມ-ຄຳຕອບດາຕ້າເບສ (ສອບບົດ) |
+| [docs/THESIS_DATABASE_QA.md](docs/THESIS_DATABASE_QA.md) | Database Q&A for oral defense |
 | [docs/THESIS_CH3_P37-45.md](docs/THESIS_CH3_P37-45.md) | ER + Data Dictionary (Ch.3) |
+| [docs/index.html](docs/index.html) | Wake page (GitHub Pages demo) |
 
 ## Requirements
 

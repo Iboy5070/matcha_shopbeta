@@ -246,6 +246,5 @@ DATABASE_URL="postgres://...@db....supabase.co:5432/postgres" \
 | ໄຟລ | ເນື້ອໃນ |
 |-----|---------|
 | `docs/THESIS_CH3_P37-45.md` | ER + Data Dictionary sync Django |
-| `docs/ARCHITECTURE.md` | Stock, checkout, reserve flows |
 | `apps/*/models.py` | Source of truth |
 | `scripts/check_db_schema.py` | ກວດ Supabase vs Django |

@@ -523,4 +523,4 @@ erDiagram
 | Inventory | `Inventory` | `apps/inventory` |
 | Reserved | `Reserved` | `apps/sales` |
 
-ເບິ່ງໂຄງສ້າງລະບົບເພີ່ມເຕີມໄດ້ທີ່ [ARCHITECTURE.md](ARCHITECTURE.md)
+ເບິ່ງໂຄງສ້າງລະບົບເພີ່ມເຕີມໄດ້ທີ່ README.md / source code
