@@ -1,17 +1,17 @@
 {% load i18n %}
-<nav class="mz-steps" aria-label="{% trans 'Order progress' %}">
+<nav class="mz-steps" aria-label="ຂັ້ນຕອນສັ່ງຊື້">
   <ol class="mz-steps-list mz-steps-3">
     <li class="mz-step {% if step >= 1 %}mz-step-done{% endif %} {% if step == 1 %}mz-step-current{% endif %}">
       <span class="mz-step-num">1</span>
-      <span class="mz-step-label">{% trans "Cart" %}</span>
+      <span class="mz-step-label">ກະຕ່າ</span>
     </li>
     <li class="mz-step {% if step >= 2 %}mz-step-done{% endif %} {% if step == 2 %}mz-step-current{% endif %}">
       <span class="mz-step-num">2</span>
-      <span class="mz-step-label">{% trans "Checkout" %}</span>
+      <span class="mz-step-label">ຂໍ້ມູນສັ່ງ</span>
     </li>
     <li class="mz-step {% if step >= 3 %}mz-step-done{% endif %} {% if step == 3 %}mz-step-current{% endif %}">
       <span class="mz-step-num">3</span>
-      <span class="mz-step-label">{% trans "Pay & upload slip" %}</span>
+      <span class="mz-step-label">ໂອນ + ສະລິບ</span>
     </li>
   </ol>
 </nav>

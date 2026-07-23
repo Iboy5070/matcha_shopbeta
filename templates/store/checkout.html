@@ -1,11 +1,14 @@
 {% extends "store/base.html" %}
 {% load i18n mz_extras catalog_i18n %}
-{% block title %}{% trans "Checkout" %}{% endblock %}
+{% block title %}ຊຳລະເງິນ{% endblock %}
 {% block content %}
 
 {% include "store/_checkout_steps.html" with step=2 %}
 
-<h1 class="mz-section-title h3 mb-4">{% trans "Checkout" %}</h1>
+<div class="mz-flow-head mb-4">
+  <h1 class="mz-section-title h3 mb-2">ຂໍ້ມູນສັ່ງຊື້</h1>
+  <p class="text-muted mb-0">ຕື່ມຂໍ້ມູນ → ເລືອກວິທີຈ່າຍ → ຢືນຢັນອໍເດີ</p>
+</div>
 
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
@@ -14,61 +17,65 @@
 <div class="row g-4">
   <div class="col-lg-7 order-2 order-lg-1">
     <div class="mz-checkout-card">
-      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Delivery details" %}</h2>
+      <h2 class="mz-card-label">1. ຂໍ້ມູນຮັບສິນຄ້າ</h2>
       <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-          <label class="form-label">{% trans "Name" %} *</label>
-          <input class="form-control form-control-lg" name="customer_name" required placeholder="{% trans 'Your name' %}" value="{{ customer_name|default:'' }}">
+          <label class="form-label">ຊື່-ນາມສະກຸນ *</label>
+          <input class="form-control form-control-lg" name="customer_name" required placeholder="ຊື່ຂອງທ່ານ" value="{{ customer_name|default:'' }}">
         </div>
         <div class="mb-3">
-          <label class="form-label">{% trans "Phone" %} *</label>
+          <label class="form-label">ເບີໂທ *</label>
           <input class="form-control form-control-lg" name="phone" required placeholder="020 XXXXXXXX" value="{{ phone|default:'' }}">
+          <div class="form-text">ໃຊ້ຕິດຕໍ່ຢືນຢັນອໍເດີ / ຄ່າສົ່ງ</div>
         </div>
         <div class="mb-3">
-          <label class="form-label">{% trans "Address" %}</label>
-          <textarea class="form-control" name="address" rows="3" placeholder="{% trans 'Delivery address (optional for pickup)' %}">{{ address|default:'' }}</textarea>
+          <label class="form-label">ທີ່ຢູ່ຈັດສົ່ງ</label>
+          <textarea class="form-control" name="address" rows="3" placeholder="ປ່ອຍວ່າງໄດ້ຖ້າມາຮັບເອງທີ່ຮ້ານ">{{ address|default:'' }}</textarea>
         </div>
+
+        <h2 class="mz-card-label mt-4">2. ວິທີຈ່າຍເງິນ</h2>
         <div class="mb-4">
-          <label class="form-label">{% trans "Payment" %}</label>
           <select class="form-select form-select-lg" name="payment_method">
-            <option value="transfer">{% trans "Bank transfer" %}</option>
-            <option value="cod">{% trans "Cash on delivery" %}</option>
+            <option value="transfer">ໂອນທະນາຄານ / QR (ແນະນຳ)</option>
+            <option value="cod">ຈ່າຍເງິນສົດເມື່ອຮັບເຄື່ອງ (COD)</option>
           </select>
         </div>
 
+        <h2 class="mz-card-label">3. ປະເພດອໍເດີ</h2>
         <div class="mb-4">
-          <label class="form-label d-block mb-2">{% trans "Order type" %}</label>
           {% if has_out_of_stock %}
-          <div class="alert alert-warning py-2 px-3 small mb-2">
-            ⚠ {% trans "Out of stock" %}: {{ out_of_stock_names }} — {% trans "only reservation is available for this order" %}
+          <div class="alert alert-warning py-2 px-3 small mb-3">
+            ສິນຄ້າໝົດສະຕັອກ: {{ out_of_stock_names }} — ສາມາດ<strong>ຈອງ</strong>ໄດ້ເທົ່ານັ້ນ (ຈ່າຍມັດຈຳ 50%)
           </div>
           {% endif %}
           <div class="mz-order-type-options">
             <label class="mz-order-type-option{% if has_out_of_stock %} mz-order-type-option--disabled{% endif %}">
               <input type="radio" name="order_type" value="buy" {% if has_out_of_stock %}disabled{% else %}checked{% endif %}>
               <span class="mz-order-type-card">
-                <strong>{% trans "Buy now" %}</strong>
-                <small>{% if has_out_of_stock %}{% trans "Unavailable — out of stock" %}{% else %}{% trans "Pay in full and we ship right away" %}{% endif %}</small>
+                <strong>ຊື້ເລີຍ</strong>
+                <small>{% if has_out_of_stock %}ບໍ່ພ້ອມ — ສິນຄ້າໝົດ{% else %}ຈ່າຍຄົບ → ຮ້ານຈັດສົ່ງ / ໃຫ້ຮັບເຄື່ອງ{% endif %}</small>
               </span>
             </label>
             <label class="mz-order-type-option">
               <input type="radio" name="order_type" value="reserve" {% if has_out_of_stock %}checked{% endif %}>
               <span class="mz-order-type-card">
-                <strong>{% trans "Reserve (pay 50% deposit)" %}</strong>
-                <small>{% blocktrans with deposit=deposit_preview|kip days=reserve_expire_days %}Pay {{ deposit }} ກີບ deposit now, hold {{ days }} days, pay the rest & pick up at the shop{% endblocktrans %}</small>
+                <strong>ຈອງໄວ້ (ມັດຈຳ 50%)</strong>
+                <small>ຈ່າຍ {{ deposit_preview|kip }} ກີບກ່ອນ · ຈອງໄວ້ {{ reserve_expire_days }} ມື້ · ຈ່າຍສ່ວນຄ້າງເມື່ອມາຮັບທີ່ຮ້ານ</small>
               </span>
             </label>
           </div>
         </div>
 
-        <button class="btn mz-btn-primary btn-lg w-100" id="mzPlaceOrderBtn">{% trans "Place order" %}</button>
+        <button class="btn mz-btn-primary btn-lg w-100" id="mzPlaceOrderBtn">ຢືນຢັນອໍເດີ</button>
+        <p class="small text-muted text-center mt-3 mb-0">ຫຼັງຢືນຢັນ → ຈະເຫັນ QR ໂອນເງິນ ແລະ ອັບຮູບສະລິບ</p>
       </form>
     </div>
   </div>
+
   <div class="col-lg-5 order-1 order-lg-2">
     <div class="mz-checkout-card mb-3">
-      <h2 class="h6 fw-bold text-muted text-uppercase mb-3">{% trans "Your order" %}</h2>
+      <h2 class="mz-card-label">ສະຫຼຸບອໍເດີ</h2>
       <ul class="list-unstyled mb-3 mz-checkout-lines">
         {% for it in items %}
         <li class="d-flex justify-content-between gap-2 mb-2 small">
@@ -78,22 +85,20 @@
         {% endfor %}
       </ul>
       <div class="d-flex justify-content-between mb-2 small text-muted">
-        <span>{% trans "Subtotal" %}</span>
+        <span>ລວມສິນຄ້າ</span>
         <span>{{ total|kip }} ກີບ</span>
       </div>
       <div class="d-flex justify-content-between mb-2 small text-muted">
-        <span>{% trans "Shipping" %}</span>
-        <span>{% trans "Confirm after order" %}</span>
+        <span>ຄ່າສົ່ງ</span>
+        <span>ຢືນຢັນທາງໂທ / WhatsApp</span>
       </div>
       <div class="mz-checkout-total mb-0 pt-2 border-top">
-        <span class="text-muted" id="mzTotalLabel">{% trans "Grand total" %}</span>
+        <span class="text-muted" id="mzTotalLabel">ຍອດທີ່ຕ້ອງຈ່າຍ</span>
         <span class="mz-checkout-amount" id="mzTotalAmount">{{ total|kip }} <small>ກີບ</small></span>
       </div>
       <p class="small text-muted mt-2 mb-0" id="mzReserveNote" style="display:none;">
-        {% trans "Deposit today" %}: <strong>{{ deposit_preview|kip }} ກີບ</strong> ·
-        {% trans "hold" %} {{ reserve_expire_days }} {% trans "days" %}
+        ມັດຈຳມື້ນີ້: <strong>{{ deposit_preview|kip }} ກີບ</strong> · ຈອງໄວ້ {{ reserve_expire_days }} ມື້
       </p>
-      <p class="small text-muted mt-2 mb-0">{% trans "Shipping fee may apply — we confirm via phone or WhatsApp." %}</p>
     </div>
     {% include "store/_payment_hint.html" %}
   </div>
@@ -110,11 +115,12 @@
   var depositHtml = '{{ deposit_preview|kip }} <small>ກີບ</small>';
 
   function sync() {
-    var isReserve = document.querySelector('input[name="order_type"]:checked').value === 'reserve';
-    if (totalLabel) totalLabel.textContent = isReserve ? '{% trans "Deposit due now" %}' : '{% trans "Grand total" %}';
+    var checked = document.querySelector('input[name="order_type"]:checked');
+    var isReserve = checked && checked.value === 'reserve';
+    if (totalLabel) totalLabel.textContent = isReserve ? 'ມັດຈຳທີ່ຕ້ອງຈ່າຍດຽວນີ້' : 'ຍອດທີ່ຕ້ອງຈ່າຍ';
     if (totalAmount) totalAmount.innerHTML = isReserve ? depositHtml : grandTotalHtml;
     if (reserveNote) reserveNote.style.display = isReserve ? '' : 'none';
-    if (placeBtn) placeBtn.textContent = isReserve ? '{% trans "Reserve & pay deposit" %}' : '{% trans "Place order" %}';
+    if (placeBtn) placeBtn.textContent = isReserve ? 'ຈອງ ແລະ ຈ່າຍມັດຈຳ' : 'ຢືນຢັນອໍເດີ';
   }
   radios.forEach(function (r) { r.addEventListener('change', sync); });
   sync();

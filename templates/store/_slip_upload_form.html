@@ -2,33 +2,35 @@
 <form class="mz-slip-form" method="post" action="{% url 'store_confirm_payment' order.id %}" enctype="multipart/form-data">
   {% csrf_token %}
   {% if prefill_order_no %}
-  <div class="mb-4 p-3 bg-light rounded text-center border">
-    <div class="small text-muted mb-1">{% trans "Order no." %} <strong>#{{ prefill_order_no }}</strong></div>
-    <div class="h4 mb-0 text-success fw-bold">{{ prefill_paid_amount|kip }} ກີບ</div>
+  <div class="mz-slip-summary mb-4">
+    <div class="small text-muted mb-1">ເລກອໍເດີ <strong>#{{ prefill_order_no }}</strong></div>
+    <div class="h4 mb-0 fw-bold mz-slip-summary-amount">{{ prefill_paid_amount|kip }} ກີບ</div>
+    <div class="small text-muted mt-1">ຍອດທີ່ຄວນໂອນ</div>
   </div>
   <input type="hidden" name="order_no" value="{{ prefill_order_no }}">
   <input type="hidden" name="paid_amount" value="{{ prefill_paid_amount }}">
   <input type="hidden" name="bank_name" value="{{ prefill_bank_name|default:'' }}">
   {% else %}
   <div class="mb-3">
-    <label class="form-label">{% trans "Order no." %} *</label>
-    <input class="form-control form-control-lg" name="order_no" value="{{ prefill_order_no|default:'' }}" required placeholder="WEB2026...">
+    <label class="form-label">ເລກອໍເດີ *</label>
+    <input class="form-control form-control-lg" name="order_no" value="{{ prefill_order_no|default:'' }}" required placeholder="ເລກອໍເດີ">
   </div>
   <div class="mb-3">
-    <label class="form-label">{% trans "Paid amount" %} *</label>
+    <label class="form-label">ຈຳນວນທີ່ໂອນ (ກີບ) *</label>
     <input class="form-control form-control-lg" name="paid_amount" type="number" step="0.01" value="{{ prefill_paid_amount|default:'' }}" required>
   </div>
   <input type="hidden" name="bank_name" value="{{ prefill_bank_name|default:'' }}">
   {% endif %}
 
   <div class="mb-3">
-    <label class="form-label fw-bold">{% trans "Transfer slip photo" %} *</label>
+    <label class="form-label fw-bold">ຮູບສະລິບໂອນເງິນ *</label>
     <input class="form-control form-control-lg" name="slip_image" type="file" accept="image/*" required>
-    <div class="form-text">{% trans "Screenshot from BCEL One or your bank app." %}</div>
+    <div class="form-text">ແຄັບຈໍຈາກ BCEL One ຫຼື ແອັບທະນາຄານ · ເຫັນຍອດເງິນຊັດເຈນ</div>
   </div>
   <div class="mb-4">
-    <label class="form-label">{% trans "Note" %} <span class="text-muted fw-normal">({% trans "optional" %})</span></label>
-    <input class="form-control" name="note" placeholder="{% trans 'Any extra info for the shop' %}">
+    <label class="form-label">ໝາຍເຫດ <span class="text-muted fw-normal">(ບໍ່ບັງຄັບ)</span></label>
+    <input class="form-control" name="note" placeholder="ຂໍ້ຄວາມເພີ່ມເຕີມເຖິງຮ້ານ">
   </div>
-  <button class="btn mz-btn-primary btn-lg w-100" type="submit">{% trans "Send slip" %}</button>
+  <button class="btn mz-btn-primary btn-lg w-100" type="submit">ສົ່ງສະລິບໃຫ້ຮ້ານ</button>
+  <p class="small text-muted text-center mt-2 mb-0">ພະນັກງານຈະກວດສະລິບ ແລ້ວແຈ້ງຜົນທາງໂທ / WhatsApp</p>
 </form>

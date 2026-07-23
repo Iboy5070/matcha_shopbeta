@@ -1698,3 +1698,30 @@ h1, h2, h3, .mz-section-title, .mz-brand, .mz-hero-title {
     gap: 0.15rem;
   }
 }
+
+
+/* Checkout / pay flow clarity */
+.mz-flow-head .mz-section-title { margin-bottom: 0.35rem; }
+.mz-card-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin: 0 0 1rem;
+}
+.mz-slip-summary {
+  text-align: center;
+  padding: 1rem 1.1rem;
+  border-radius: 0.85rem;
+  background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%);
+  border: 1px solid rgba(15, 118, 110, 0.15);
+}
+.mz-slip-summary-amount {
+  color: #0f766e;
+}
+.mz-pay-step-card .mz-bank-transfer {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}

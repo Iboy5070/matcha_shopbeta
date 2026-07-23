@@ -4,14 +4,15 @@
   <div class="mz-bank-transfer-head">
     <div class="mz-bank-transfer-icon" aria-hidden="true">₭</div>
     <div>
-      <div class="mz-bank-transfer-title">{% trans "Bank transfer (LAO QR)" %}</div>
-      <div class="mz-bank-transfer-sub">{% trans "Scan, transfer, then upload your slip below" %}</div>
+      <div class="mz-bank-transfer-title">ໂອນທະນາຄານ (LAO QR)</div>
+      <div class="mz-bank-transfer-sub">ສະແກນ → ໂອນ → ອັບສະລິບ</div>
     </div>
   </div>
   {% endif %}
+
   {% if transfer_amount %}
   <div class="mz-bank-amount-banner">
-    <span class="mz-bank-amount-label">{% trans "Amount to transfer" %}</span>
+    <span class="mz-bank-amount-label">ຈຳນວນທີ່ຕ້ອງໂອນ</span>
     <span class="mz-bank-amount-value">{{ transfer_amount|kip }} <small>ກີບ</small></span>
   </div>
   {% endif %}
@@ -22,48 +23,48 @@
       <div class="mz-bank-qr-frame">
         <img class="mz-bank-qr"
              src="{% if bank_qr_image_url %}{{ bank_qr_image_url }}{% else %}{% static 'img/bcel-qr.jpg' %}{% endif %}"
-             alt="{% trans 'Scan to pay' %}">
+             alt="ສະແກນເພື່ອຈ່າຍ">
       </div>
-      <div class="mz-bank-qr-caption">{% trans "Scan with BCEL / bank app" %}</div>
+      <div class="mz-bank-qr-caption">ສະແກນດ້ວຍ BCEL One / ແອັບທະນາຄານ</div>
     </div>
 
     <div class="mz-bank-details">
       {% if bank_name %}
       <div class="mz-bank-detail">
-        <span class="mz-bank-detail-label">{% trans "Bank" %}</span>
+        <span class="mz-bank-detail-label">ທະນາຄານ</span>
         <span class="mz-bank-detail-value"><span class="mz-bank-badge">{{ bank_name }}</span></span>
       </div>
       {% endif %}
       {% if bank_account_number %}
       <div class="mz-bank-detail">
-        <span class="mz-bank-detail-label">{% trans "Account no." %}</span>
+        <span class="mz-bank-detail-label">ເລກບັນຊີ</span>
         <span class="mz-bank-detail-value mz-bank-account">{{ bank_account_number }}</span>
       </div>
       {% endif %}
       {% if bank_account_name %}
       <div class="mz-bank-detail">
-        <span class="mz-bank-detail-label">{% trans "Account name" %}</span>
+        <span class="mz-bank-detail-label">ຊື່ບັນຊີ</span>
         <span class="mz-bank-detail-value">{{ bank_account_name }}</span>
       </div>
       {% endif %}
       {% if order_no %}
       <div class="mz-bank-detail">
-        <span class="mz-bank-detail-label">{% trans "Order no." %}</span>
+        <span class="mz-bank-detail-label">ເລກອໍເດີ</span>
         <span class="mz-bank-detail-value mz-bank-account">{{ order_no }}</span>
       </div>
       {% endif %}
       {% if not bank_account_number and not bank_qr_image_url %}
       <p class="mz-bank-note mb-0 text-danger">
-        ⚠ {% trans "Shop has not set up real bank details yet — this is a placeholder QR. Set BANK_ACCOUNT_NUMBER / BANK_QR_IMAGE_URL in .env." %}
+        ຮ້ານຍັງບໍ່ໄດ້ຕັ້ງຂໍ້ມູນບັນຊີຈິງ — ກະລຸນາຕິດຕໍ່ຮ້ານ
       </p>
       {% else %}
-      <p class="mz-bank-note mb-0">{% trans "Transfer the exact amount above. Include your order number in the transfer note if possible." %}</p>
+      <p class="mz-bank-note mb-0">ໂອນ<strong>ຕົງຈຳນວນ</strong>ຂ້າງເທິງ. ຖ້າໄດ້ — ໃສ່ເລກອໍເດີໃນບັນທຶກການໂອນ</p>
       {% endif %}
       {% if not compact %}
       <div class="mz-bank-steps">
-        <span>1. {% trans "Scan QR" %}</span>
-        <span>2. {% trans "Transfer" %}</span>
-        <span>3. {% trans "Upload slip" %}</span>
+        <span>1. ສະແກນ QR</span>
+        <span>2. ໂອນເງິນ</span>
+        <span>3. ອັບສະລິບ</span>
       </div>
       {% endif %}
     </div>

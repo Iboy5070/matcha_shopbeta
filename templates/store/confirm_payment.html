@@ -1,30 +1,43 @@
 {% extends "store/base.html" %}
-{% load i18n static %}
-{% block title %}{% trans "Upload payment slip" %}{% endblock %}
+{% load i18n static mz_extras %}
+{% block title %}ໂອນເງິນ ແລະ ອັບສະລິບ{% endblock %}
 {% block content %}
 
 {% include "store/_checkout_steps.html" with step=3 %}
 
-<div class="text-center mb-4">
-  <h1 class="mz-section-title h3 mb-2">{% trans "Pay & upload slip" %}</h1>
-  <p class="text-muted mb-0">{% trans "Scan the QR to transfer, then upload your slip photo below." %}</p>
+<div class="mz-flow-head text-center mb-4">
+  <h1 class="mz-section-title h3 mb-2">ໂອນເງິນ ແລະ ອັບສະລິບ</h1>
+  <p class="text-muted mb-0">ຂັ້ນຕອນ: <strong>1) ສະແກນ QR</strong> → <strong>2) ໂອນເງິນ</strong> → <strong>3) ອັບຮູບສະລິບ</strong></p>
 </div>
 
 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
 {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
 
 <div class="row g-4 mz-pay-page">
-  <div class="col-lg-7 order-2 order-lg-1">
+  {# QR first on both mobile and desktop #}
+  <div class="col-lg-5">
     <div class="mz-pay-step-card">
       <div class="mz-pay-step-head">
         <span class="mz-pay-step-badge">1</span>
-        <h2 class="h6 fw-bold text-muted text-uppercase mb-0">{% trans "Upload your transfer slip" %}</h2>
+        <h2 class="h6 fw-bold mb-0">ສະແກນ QR ແລ້ວໂອນເງິນ</h2>
       </div>
-      {% include "store/_slip_upload_form.html" %}
+      <div class="p-3 pt-0">
+        {% include "store/_bank_transfer.html" with compact=1 %}
+      </div>
     </div>
   </div>
-  <div class="col-lg-5 order-1 order-lg-2">
-    {% include "store/_bank_transfer.html" %}
+
+  <div class="col-lg-7">
+    <div class="mz-pay-step-card">
+      <div class="mz-pay-step-head">
+        <span class="mz-pay-step-badge">2</span>
+        <h2 class="h6 fw-bold mb-0">ອັບຮູບສະລິບໂອນເງິນ</h2>
+      </div>
+      <div class="p-3 pt-0">
+        <p class="small text-muted mb-3">ຫຼັງໂອນແລ້ວ — ຖ່າຍ/ແຄັບຈໍສະລິບຈາກແອັບທະນາຄານ ແລ້ວອັບໂຫຼດທີ່ນີ້</p>
+        {% include "store/_slip_upload_form.html" %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
