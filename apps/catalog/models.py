@@ -13,10 +13,21 @@ def _pick_lang(lang, lo, th="", en=""):
 
 
 class Category(models.Model):
-    name = models.CharField("Cas_Name", max_length=100, unique=True)
-    name_th = models.CharField("ชื่อ (ไทย)", max_length=100, blank=True)
-    name_en = models.CharField("Name (EN)", max_length=100, blank=True)
-    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    name = models.CharField(
+        "ຊື່ໝວດ (ລາວ)",
+        max_length=100,
+        unique=True,
+        help_text="ຊື່ຫຼັກທີ່ລູກຄ້າເຫັນເມື່ອເລືອກພາສາລາວ",
+    )
+    name_th = models.CharField("ຊື່ໝວດ (ไทย)", max_length=100, blank=True, help_text="ປ່ອຍວ່າງໄດ້ຖ້າບໍ່ໃຊ້ພາສາໄທ")
+    name_en = models.CharField("ຊື່ໝວດ (EN)", max_length=100, blank=True, help_text="ປ່ອຍວ່າງໄດ້ຖ້າບໍ່ໃຊ້ພາສາອັງກິດ")
+    slug = models.SlugField(
+        "ລະຫັດ URL",
+        max_length=120,
+        unique=True,
+        blank=True,
+        help_text="ໃຊ້ໃນ URL ເຊັ່ນ /shop/?category=matcha — ປ່ອຍວ່າງລະບົບຈະສ້າງໃຫ້",
+    )
 
     def name_for(self, lang):
         return _pick_lang(lang, self.name, self.name_th, self.name_en)
@@ -35,38 +46,69 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "ໝວດໝູ່ (Category)"
-        verbose_name_plural = "ໝວດໝູ່ (Categories)"
+        verbose_name = "ໝວດໝູ່ສິນຄ້າ"
+        verbose_name_plural = "ໝວດໝູ່ສິນຄ້າ"
 
     def __str__(self):
         return self.name
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products", verbose_name="Cas_ID")
-    name = models.CharField("Pro_Name", max_length=200)
-    name_th = models.CharField("ชื่อ (ไทย)", max_length=200, blank=True)
-    name_en = models.CharField("Name (EN)", max_length=200, blank=True)
-    slug = models.SlugField(max_length=220, unique=True, blank=True)
-    description = models.TextField("Description", blank=True)
-    description_th = models.TextField("คำอธิบาย (ไทย)", blank=True)
-    description_en = models.TextField("Description (EN)", blank=True)
-    
-    price = models.DecimalField("Price", max_digits=12, decimal_places=2, default=0)
-    stock_qty = models.PositiveIntegerField(
-        "Stock_qty (impl.)",
-        default=0,
-        help_text="ເພີ່ມຕອນ implement — ຈຳນວນພ້ອມຂาย (ບົດບໍ່ມີ)",
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.PROTECT,
+        related_name="products",
+        verbose_name="ໝວດໝູ່",
+        help_text="ເລືອກໝວດທີ່ສິນຄ້ານີ້ຢູ່",
     )
-    image = models.ImageField("Img_path (upload)", upload_to="products/", blank=True)
-    image_url = models.URLField(
-        "Img_path (URL)",
+    name = models.CharField("ຊື່ສິນຄ້າ (ລາວ)", max_length=200, help_text="ຊື່ທີ່ສະແດງໃນໜ້າຮ້ານ")
+    name_th = models.CharField("ຊື່ສິນຄ້າ (ไทย)", max_length=200, blank=True)
+    name_en = models.CharField("ຊື່ສິນຄ້າ (EN)", max_length=200, blank=True)
+    slug = models.SlugField(
+        "ລະຫັດ URL",
+        max_length=220,
+        unique=True,
         blank=True,
-        help_text="ບົດ: Img_path — ລິ້ງຮູບ CDN/Supabase",
+        help_text="ປ່ອຍວ່າງໄດ້ — ລະບົບຈະສ້າງອັດຕະໂນມັດ",
     )
-    is_featured = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField("Created_at", auto_now_add=True)
+    description = models.TextField("ລາຍລະອຽດ (ລາວ)", blank=True, help_text="ອະທິບາຍສັ້ນໆໃຫ້ລູກຄ້າອ່ານ")
+    description_th = models.TextField("ລາຍລະອຽດ (ไทย)", blank=True)
+    description_en = models.TextField("ລາຍລະອຽດ (EN)", blank=True)
+
+    price = models.DecimalField(
+        "ລາຄາ (ກີບ)",
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        help_text="ລາຄາຂາຍເປັນກີບລາວ — ຕົວຢ່າງ 120000",
+    )
+    stock_qty = models.PositiveIntegerField(
+        "ຈຳນວນຄົງເຫຼືອ",
+        default=0,
+        help_text="ຈຳນວນທີ່ຂາຍໄດ້ດຽວນີ້. ຖ້າ = 0 ລູກຄ້າຈະເຫັນ 'ໝົດ — ຈອງໄດ້'",
+    )
+    image = models.ImageField(
+        "ຮູບສິນຄ້າ (ອັບໂຫຼດ)",
+        upload_to="products/",
+        blank=True,
+        help_text="ອັບໂຫຼດຈາກເຄື່ອງ — ໃນ production ແນະນຳໃຊ້ລິ້ງ URL ຂ້າງລຸ່ມ",
+    )
+    image_url = models.URLField(
+        "ລິ້ງຮູບ (URL)",
+        blank=True,
+        help_text="ວາງລິ້ງຮູບຈາກ CDN/Supabase — ບໍ່ຫາຍເມື່ອ redeploy",
+    )
+    is_featured = models.BooleanField(
+        "ແນະນຳໜ້າຫຼັກ",
+        default=False,
+        help_text="ຕິກເພື່ອໃຫ້ສິນຄ້າຂຶ້ນໜ້າທຳອິດຂອງຮ້ານ",
+    )
+    is_active = models.BooleanField(
+        "ເປີດຂາຍ",
+        default=True,
+        help_text="ປິດ = ລູກຄ້າບໍ່ເຫັນສິນຄ້ານີ້ໃນຮ້ານ",
+    )
+    created_at = models.DateTimeField("ວັນທີສ້າງ", auto_now_add=True)
 
     def name_for(self, lang):
         return _pick_lang(lang, self.name, self.name_th, self.name_en)
@@ -94,8 +136,8 @@ class Product(models.Model):
         return ""
 
     class Meta:
-        verbose_name = "ສິນຄ້າ (Product)"
-        verbose_name_plural = "ສິນຄ້າ (Products)"
+        verbose_name = "ສິນຄ້າ"
+        verbose_name_plural = "ສິນຄ້າ"
 
     def __str__(self):
         return self.name

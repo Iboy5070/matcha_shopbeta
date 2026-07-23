@@ -1,88 +1,85 @@
 {% extends "staff/app.html" %}
 {% load i18n static mz_extras %}
-{% block title %}ກວດສອບສະລິບ (Verify Slips){% endblock %}
+{% block title %}ກວດສະລິບ{% endblock %}
+{% block page_title %}ກວດສະລິບ{% endblock %}
 
 {% block staff_page %}
 <div class="sp-page-head">
-  <p class="sp-page-lead">ກວດສອບສະລິບໂອນເງິນຈາກລູກຄ້າໜ້າເວັບ</p>
+  <p class="sp-page-lead">ກວດຮູບໂອນເງິນຈາກລູກຄ້າ — ອະນຸມັດເມື່ອເງິນຖືກ · ປະຕິເສດຖ້າສະລິບບໍ່ຖືກຕ້ອງ</p>
 </div>
 
-<div class="row g-3 g-lg-4 mb-4">
-  <div class="col-lg-12">
-    <div class="sp-panel">
-      <div class="sp-panel-head">
-        <h2>ລາຍການລໍຖ້າກວດສອບ (Pending Verifications)</h2>
-      </div>
-      <div class="sp-panel-body">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} mb-4">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
+<div class="sp-howto mb-4">
+  <strong>ວິທີເຮັດ:</strong>
+  <ol>
+    <li>ເບິ່ງຍອດເງິນທີ່ຕ້ອງໄດ້ຮັບ</li>
+    <li>ເປີດຮູບສະລິບ ແລະ ກວດວ່າກົງກັນ</li>
+    <li>ກົດ <em>ອະນຸມັດ</em> ຫຼື <em>ປະຕິເສດ</em></li>
+  </ol>
+</div>
 
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>ວັນທີສັ່ງຊື້</th>
-                <th>ລູກຄ້າ</th>
-                <th>ຍອດໂອນ</th>
-                <th>ສະລິບ (Slip)</th>
-                <th>ການຈັດການ (Actions)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for order in pending_orders %}
-              <tr>
-                <td><strong>#{{ order.id }}</strong></td>
-                <td>{{ order.order_date|date:"d/m/Y H:i" }}</td>
-                <td>
-                  {% if order.customer %}
-                    {{ order.customer.cus_name }} {{ order.customer.cus_last }}
-                    <br><small class="text-muted">{{ order.customer.cus_tel }}</small>
-                  {% else %}
-                    -
-                  {% endif %}
-                </td>
-                <td><strong class="text-success">{{ order.bill.total_amount|floatformat:0|kip }} ₭</strong></td>
-                <td>
-                  {% with payment=order.bill.payments.first %}
-                    {% if payment and payment.slip_url %}
-                      <a href="{{ payment.slip_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                        🖼️ ເບິ່ງຮູບສະລິບ
-                      </a>
-                    {% else %}
-                      <span class="text-muted">ບໍ່ມີຮູບ</span>
-                    {% endif %}
-                  {% endwith %}
-                </td>
-                <td>
-                  <form method="POST" action="{% url 'verify_slip' order.id %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" name="action" value="approve" class="btn btn-sm btn-success" onclick="return confirm('ຢືນຢັນວ່າໄດ້ຮັບເງິນແລ້ວ?');">
-                      ✅ ອະນຸມັດ (Approve)
-                    </button>
-                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger ms-1" onclick="return confirm('ປະຕິເສດສະລິບນີ້?');">
-                      ❌ ປະຕິເສດ (Reject)
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="6" class="text-center py-5 text-muted">
-                  <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
-                  <h4>ບໍ່ມີລາຍການລໍຖ້າກວດສອບ</h4>
-                  <p>ອໍເດີທັງໝົດຖືກກວດສອບແລ້ວ</p>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+{% if pending_orders %}
+<div class="sp-slip-grid">
+  {% for order in pending_orders %}
+  {% with payment=order.bill.payments.first %}
+  <article class="sp-slip-card">
+    <header class="sp-slip-card__head">
+      <div>
+        <span class="sp-slip-id">ອໍເດີ #{{ order.id }}</span>
+        <time class="sp-slip-date">{{ order.order_date|date:"d/m/Y H:i" }}</time>
+      </div>
+      <div class="sp-slip-amount">{{ order.bill.total_amount|floatformat:0|kip }} <span>₭</span></div>
+    </header>
+
+    <div class="sp-slip-card__body">
+      <div class="sp-slip-meta">
+        <p>
+          <span class="sp-meta-label">ລູກຄ້າ</span>
+          {% if order.customer %}
+            {{ order.customer.cus_name }} {{ order.customer.cus_last }}
+            {% if order.customer.cus_tel %}<br><small>{{ order.customer.cus_tel }}</small>{% endif %}
+          {% else %}
+            —
+          {% endif %}
+        </p>
+        <p>
+          <span class="sp-meta-label">ຕ້ອງໄດ້ຮັບ</span>
+          <strong>{{ order.bill.total_amount|floatformat:0|kip }} ₭</strong>
+        </p>
+      </div>
+
+      <div class="sp-slip-preview">
+        {% if payment and payment.slip_url %}
+          <a href="{{ payment.slip_url }}" target="_blank" rel="noopener" class="sp-slip-thumb-link">
+            <img src="{{ payment.slip_url }}" alt="ສະລິບ #{{ order.id }}" class="sp-slip-thumb" loading="lazy">
+            <span>ເປີດຮູບເຕັມ</span>
+          </a>
+        {% else %}
+          <div class="sp-slip-missing">ບໍ່ມີຮູບສະລິບ</div>
+        {% endif %}
       </div>
     </div>
-  </div>
+
+    <footer class="sp-slip-card__actions">
+      <form method="POST" action="{% url 'verify_slip' order.id %}" class="sp-slip-actions-form">
+        {% csrf_token %}
+        <button type="submit" name="action" value="approve" class="sp-btn sp-btn--ok"
+          onclick="return confirm('ຢືນຢັນວ່າໄດ້ຮັບເງິນ {{ order.bill.total_amount|floatformat:0|kip }} ₭ ແລ້ວ?');">
+          ອະນຸມັດ
+        </button>
+        <button type="submit" name="action" value="reject" class="sp-btn sp-btn--no"
+          onclick="return confirm('ປະຕິເສດສະລິບອໍເດີ #{{ order.id }}?');">
+          ປະຕິເສດ
+        </button>
+      </form>
+    </footer>
+  </article>
+  {% endwith %}
+  {% endfor %}
 </div>
+{% else %}
+<div class="sp-empty">
+  <p class="sp-empty-title">ບໍ່ມີສະລິບລໍຖ້າກວດ</p>
+  <p class="sp-empty-text">ເມື່ອລູກຄ້າອັບໂຫຼດສະລິບ — ລາຍການຈະຂຶ້ນທີ່ນີ້</p>
+</div>
+{% endif %}
 {% endblock %}

@@ -38,3 +38,19 @@ body {
 .pa-badge--muted {
   color: #9ca3af;
 }
+
+/* Clearer field hints for Lao staff */
+.help,
+.form-row .help,
+div.help {
+  font-size: 0.85rem !important;
+  line-height: 1.45 !important;
+  color: #4b5563 !important;
+  margin-top: 0.35rem !important;
+}
+
+fieldset h2,
+.module caption,
+.module h2 {
+  font-family: "Noto Sans Lao", sans-serif !important;
+}

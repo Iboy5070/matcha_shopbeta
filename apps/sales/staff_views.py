@@ -77,11 +77,11 @@ def verify_slip(request, order_id):
             for item in order.items.all():
                 deduct_stock(item.product_id, item.quantity)
 
-            messages.success(request, f"Order #{order.id} approved successfully!")
+            messages.success(request, f"ອະນຸມັດອໍເດີ #{order.id} ແລ້ວ — ຕັດສະຕັອກ ແລະ ໝາຍວ່າຊຳລະຄົບ")
         elif action == "reject":
             order.status = Order.Status.CANCELLED
             order.save()
-            messages.warning(request, f"Order #{order.id} payment rejected.")
+            messages.warning(request, f"ປະຕິເສດສະລິບອໍເດີ #{order.id} ແລ້ວ")
             
     return redirect("staff_slips")
 

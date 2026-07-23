@@ -6,14 +6,14 @@
   <div class="sp-main">
     <header class="sp-topbar">
       <div class="sp-topbar-title">
-        <span class="sp-zone-badge">STAFF</span>
-        <h1>{% block page_title %}{% trans "Dashboard" %}{% endblock %}</h1>
-        <span class="sp-topbar-sub">{% trans "Daily shop work" %}</span>
+        <span class="sp-zone-badge">ພະນັກງານ</span>
+        <h1>{% block page_title %}ໜ້າຫຼັກ{% endblock %}</h1>
+        <span class="sp-topbar-sub">ງານຮ້ານປະຈຳວັນ</span>
       </div>
       <div class="sp-topbar-actions">
-        <a class="sp-topbar-link" href="{% url 'store_home' %}">{% trans "Shop" %}</a>
+        <a class="sp-topbar-link" href="{% url 'store_home' %}">ຮ້ານ</a>
         <span class="sp-topbar-user">{{ user.get_username }}</span>
-        <a class="sp-topbar-icon" href="{% url 'staff_logout' %}" title="{% trans 'Log out' %}">⏻</a>
+        <a class="sp-topbar-icon" href="{% url 'staff_logout' %}" title="ອອກລະບົບ">⏻</a>
       </div>
     </header>
     {% if messages %}
