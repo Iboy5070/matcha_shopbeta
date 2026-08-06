@@ -53,14 +53,14 @@
   </div>
 
   {% if featured_products %}
-  <section class="mb-5">
-    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+  <section class="mb-5 mz-featured-section">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
       <h2 class="mz-section-title mb-0">{% trans "Featured products" %}</h2>
       <a class="mz-link-arrow" href="{% url 'store_shop' %}">{% trans "View all" %} →</a>
     </div>
-    <div class="row g-4 justify-content-center">
+    <div class="row g-3 g-md-4">
       {% for product in featured_products %}
-      <div class="col-sm-6 col-lg-5 col-xl-4">
+      <div class="col-6 col-md-3">
         {% include "store/_product_card.html" with product=product home_style=True %}
       </div>
       {% endfor %}

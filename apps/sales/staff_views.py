@@ -5,19 +5,19 @@ from urllib.parse import urlencode
 
 
 def staff_login(request):
-    """Redirect to admin login since store_login is removed."""
+    """Staff login uses the same store login page (thesis 4.2.2 / ຮູບ 4.13)."""
     next_url = request.GET.get("next") or request.POST.get("next") or "/staff/"
     query = urlencode({"next": next_url})
-    return redirect(f"/admin/login/?{query}")
+    return redirect(f"/login/?{query}")
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def staff_dashboard(request):
     from django.contrib.auth import logout
 
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
         logout(request)
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/")
         
     from .staff_stats import get_staff_dashboard_stats
 
@@ -33,69 +33,100 @@ def staff_logout(request):
     logout(request)
     return redirect("/pos/")
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def staff_slips(request):
+    from django.db.models import Q
     from .models import Order
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/slips/")
         
-    # Get orders that are PENDING and have a bill with a payment that has a slip_url
-    pending_orders = Order.objects.filter(
-        status="PENDING",
-        bill__payments__slip_url__isnull=False
-    ).exclude(bill__payments__slip_url="").distinct().order_by("-order_date")
+    # Buy-now PENDING slips + reserve deposits awaiting staff check
+    pending_orders = (
+        Order.objects.filter(
+            Q(status="PENDING") | Q(status="RESERVED"),
+            bill__payments__slip_url__isnull=False,
+        )
+        .exclude(bill__payments__slip_url="")
+        .filter(
+            Q(status="PENDING")
+            | Q(status="RESERVED", reservations__status="RESERVED")
+        )
+        .distinct()
+        .order_by("-order_date")
+    )
     
     return render(request, "staff/slips.html", {
         "staff_section": "slips",
         "pending_orders": pending_orders,
     })
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def verify_slip(request, order_id):
     from decimal import Decimal
-    from .models import Order, Bill
+    from django.shortcuts import get_object_or_404
+    from .models import Order, Bill, Reserved
     from django.contrib import messages
     
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/slips/")
         
     if request.method == "POST":
-        order = Order.objects.get(id=order_id)
+        order = get_object_or_404(Order, id=order_id)
         action = request.POST.get("action")
         
         if action == "approve":
-            order.status = Order.Status.COMPLETED
-            order.save()
-            if hasattr(order, "bill"):
-                bill = order.bill
-                bill.status = Bill.Status.PAID
-                bill.paid_amount = bill.total_amount
-                bill.balance_due = Decimal("0")
-                bill.save()
+            if order.status == Order.Status.RESERVED:
+                # Deposit slip only — keep reservation open until pickup
+                for reserved in order.reservations.filter(status=Reserved.Status.RESERVED):
+                    reserved.status = Reserved.Status.PAID
+                    reserved.save(update_fields=["status"])
+                if hasattr(order, "bill"):
+                    bill = order.bill
+                    # Deposit already recorded on upload; keep remainder due
+                    if bill.balance_due > 0:
+                        bill.status = Bill.Status.PARTIAL
+                    else:
+                        bill.status = Bill.Status.PAID
+                    bill.save()
+                messages.success(
+                    request,
+                    f"ອະນຸມັດມັດຈຳອໍເດີ #{order.id} ແລ້ວ — ລໍຖ້າລູກຄ້າມາຮັບ ແລະ ຊຳລະສ່ວນທີ່ເຫຼືອ",
+                )
+            else:
+                order.status = Order.Status.COMPLETED
+                order.save()
+                if hasattr(order, "bill"):
+                    bill = order.bill
+                    bill.status = Bill.Status.PAID
+                    bill.paid_amount = bill.total_amount
+                    bill.balance_due = Decimal("0")
+                    bill.save()
 
-            from apps.catalog.stock import deduct_stock
-            for item in order.items.all():
-                deduct_stock(item.product_id, item.quantity)
+                from apps.catalog.stock import deduct_stock
+                for item in order.items.all():
+                    deduct_stock(item.product_id, item.quantity)
 
-            messages.success(request, f"ອະນຸມັດອໍເດີ #{order.id} ແລ້ວ — ຕັດສະຕັອກ ແລະ ໝາຍວ່າຊຳລະຄົບ")
+                messages.success(request, f"ອະນຸມັດອໍເດີ #{order.id} ແລ້ວ — ຕັດສະຕັອກ ແລະ ໝາຍວ່າຊຳລະຄົບ")
         elif action == "reject":
             order.status = Order.Status.CANCELLED
             order.save()
+            if order.reservations.exists():
+                order.reservations.exclude(status=Reserved.Status.CANCELLED).update(
+                    status=Reserved.Status.CANCELLED
+                )
             messages.warning(request, f"ປະຕິເສດສະລິບອໍເດີ #{order.id} ແລ້ວ")
             
     return redirect("staff_slips")
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def staff_inventory(request):
-    """Read-only stock view for staff — they can see quantities but all
-    editing (adding new stock batches, correcting numbers) stays in the
-    Admin database, superuser only."""
+    """Thesis 4.2.3 / ຮູບ 4.14 — staff checks warehouse stock (read-only)."""
     from apps.catalog.models import Product
     from apps.inventory.models import Inventory
 
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/inventory/")
 
     products = (
         Product.objects.filter(is_active=True)
@@ -111,13 +142,14 @@ def staff_inventory(request):
     })
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def staff_reserved(request):
+    """Thesis 4.2.4 / ຮູບ 4.16 — staff reservation list."""
     from django.utils import timezone
     from .models import Reserved
 
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/reserved/")
 
     reservations = (
         Reserved.objects.select_related("order", "product", "order__customer", "order__employee")
@@ -130,7 +162,7 @@ def staff_reserved(request):
     })
 
 
-@login_required(login_url="/admin/login/")
+@login_required(login_url="/login/")
 def staff_reserved_action(request, reserved_id):
     from decimal import Decimal
     from django.shortcuts import get_object_or_404
@@ -138,7 +170,7 @@ def staff_reserved_action(request, reserved_id):
     from .models import Reserved, Order, Bill
 
     if not request.user.is_staff and not hasattr(request.user, "employee_profile"):
-        return redirect("/admin/login/")
+        return redirect("/login/?next=/staff/reserved/")
 
     reserved = get_object_or_404(Reserved, id=reserved_id)
 
@@ -147,6 +179,16 @@ def staff_reserved_action(request, reserved_id):
         order = reserved.order
 
         if action == "complete":
+            # Deposit must be staff-confirmed (status -> PAID via verify_slip)
+            # before goods can be handed over — regardless of whether a slip
+            # was ever uploaded, so an unpaid reservation can never slip through.
+            if reserved.status != Reserved.Status.PAID:
+                messages.error(
+                    request,
+                    f"ຈອງ #{reserved.id} ຍັງບໍ່ໄດ້ຢືນຢັນການຈ່າຍມັດຈຳ — ໄປ Payment slips ອະນຸມັດສະລິບກ່ອນ",
+                )
+                return redirect("staff_slips")
+
             reserved.status = Reserved.Status.COMPLETED
             reserved.remain_amount = Decimal("0")
             reserved.save()

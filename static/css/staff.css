@@ -52,7 +52,7 @@
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--sp-accent);
+  color: #5eead4;
   text-transform: uppercase;
 }
 
@@ -62,10 +62,14 @@
   margin-top: 0.5rem;
   padding: 0.5rem;
   font-size: 0.8rem;
-  color: var(--sp-accent-dark);
+  color: rgba(232, 245, 242, 0.85);
   text-decoration: none;
-  border: 1px dashed rgba(15, 118, 110, 0.35);
+  border: 1px dashed rgba(255, 255, 255, 0.28);
   border-radius: 0.45rem;
+}
+.sp-btn-admin-link:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .pa-login-note--staff {
@@ -167,8 +171,8 @@
 .sp-sidebar {
   width: var(--sp-sidebar-w);
   flex-shrink: 0;
-  background: #fff;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, #1a3d36 0%, #0f2f2a 100%);
+  border-right: none;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -176,12 +180,13 @@
   left: 0;
   bottom: 0;
   z-index: 100;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+  color: #e8f5f2;
 }
 
 .sp-sidebar-brand {
   padding: 1.25rem 1.25rem 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sp-sidebar-brand a {
@@ -189,7 +194,7 @@
   align-items: center;
   gap: 0.65rem;
   text-decoration: none;
-  color: var(--mz-staff-green-dark);
+  color: #fff;
   font-weight: 700;
   font-size: 0.95rem;
 }
@@ -199,7 +204,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sp-avatar {
@@ -219,11 +224,12 @@
   font-weight: 600;
   font-size: 0.9rem;
   line-height: 1.2;
+  color: #fff;
 }
 
 .sp-user-role {
   font-size: 0.75rem;
-  color: var(--mz-staff-muted);
+  color: rgba(232, 245, 242, 0.7);
 }
 
 .sp-sidebar-nav {
@@ -241,7 +247,7 @@
   gap: 0.65rem;
   padding: 0.6rem 0.85rem;
   border-radius: 0.5rem;
-  color: #374151;
+  color: rgba(232, 245, 242, 0.88);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -249,25 +255,32 @@
 }
 
 .sp-nav-item:hover {
-  background: rgba(45, 90, 61, 0.06);
-  color: var(--mz-staff-green);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 
 .sp-nav-item.is-active {
-  background: linear-gradient(90deg, rgba(45, 90, 61, 0.14), rgba(45, 90, 61, 0.04));
-  color: var(--mz-staff-green-dark);
+  background: rgba(20, 184, 166, 0.22);
+  color: #fff;
   font-weight: 700;
 }
 
 .sp-nav-icon {
-  width: 1.25rem;
-  text-align: center;
-  opacity: 0.85;
+  width: 1.35rem;
+  height: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+.sp-nav-icon svg {
+  display: block;
 }
 
 .sp-sidebar-footer {
   padding: 1rem 1.25rem 1.25rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sp-btn-add {
@@ -399,16 +412,17 @@
   right: -20px;
 }
 
+/* Thesis-style KPI colors (orange / blue / green) */
 .sp-stat-card--a {
-  background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+  background: linear-gradient(135deg, #e879a6 0%, #f0a060 100%);
 }
 
 .sp-stat-card--b {
-  background: linear-gradient(135deg, #115e59 0%, #0d9488 100%);
+  background: linear-gradient(135deg, #3b82c4 0%, #60a5e8 100%);
 }
 
 .sp-stat-card--c {
-  background: linear-gradient(135deg, #134e4a 0%, #2dd4bf 100%);
+  background: linear-gradient(135deg, #2d8a6e 0%, #4aba8a 100%);
 }
 
 .sp-stat-label {
@@ -432,8 +446,18 @@
 
 .sp-stat-icon {
   font-size: 2rem;
-  opacity: 0.35;
+  opacity: 0.45;
   line-height: 1;
+  display: flex;
+  align-items: center;
+}
+.sp-stat-icon img {
+  opacity: 0.9;
+  filter: brightness(0) invert(1);
+}
+.sp-stat-icon svg {
+  display: block;
+  opacity: 0.9;
 }
 
 /* Panels & tables */
@@ -535,9 +559,17 @@
 }
 
 .sp-quick-icon {
-  font-size: 1.5rem;
-  line-height: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--mz-staff-green);
+  background: rgba(15, 118, 110, 0.1);
+  border-radius: 0.65rem;
 }
+.sp-quick-icon svg { display: block; }
 
 @media (max-width: 991px) {
   .sp-sidebar {

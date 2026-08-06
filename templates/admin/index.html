@@ -1,57 +1,99 @@
 {% extends "admin/base.html" %}
-{% load i18n %}
+{% load i18n static mz_extras %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+
+{% block extrastyle %}
+{{ block.super }}
+<link href="{% static 'css/unfold_custom.css' %}?v=20260807" rel="stylesheet">
+{% endblock %}
 
 {% block branding %}
     {% include "unfold/helpers/site_branding.html" %}
 {% endblock %}
 
 {% block content %}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-  <div class="bg-base-50 dark:bg-base-800 rounded-default p-4 border border-base-400/10 dark:border-base-800 shadow-xs">
-    <p class="text-font-subtle-light dark:text-font-subtle-dark text-sm mb-1">{% trans "Sales today" %}</p>
-    <p class="text-2xl font-semibold text-base-900 dark:text-base-100">{{ stat_today_sales|default:0|floatformat:0 }} ₭</p>
+<div class="ad-dash">
+  <div class="ad-dash-lead">
+    <p class="ad-dash-kicker">{% trans "Admin Dashboard" %}</p>
+    <p class="ad-dash-sub">{% trans "ສະຫຼຸບຍອດຂາຍ ແລະ ຈັດການລະບົບຮ້ານ" %}</p>
   </div>
-  <div class="bg-base-50 dark:bg-base-800 rounded-default p-4 border border-base-400/10 dark:border-base-800 shadow-xs">
-    <p class="text-font-subtle-light dark:text-font-subtle-dark text-sm mb-1">{% trans "Orders today" %}</p>
-    <p class="text-2xl font-semibold text-base-900 dark:text-base-100">{{ stat_today_orders|default:0 }}</p>
-  </div>
-  <div class="bg-base-50 dark:bg-base-800 rounded-default p-4 border border-base-400/10 dark:border-base-800 shadow-xs">
-    <p class="text-font-subtle-light dark:text-font-subtle-dark text-sm mb-1">{% trans "Active products" %}</p>
-    <p class="text-2xl font-semibold text-base-900 dark:text-base-100">{{ stat_active_products|default:0 }}</p>
-  </div>
-  <div class="bg-base-50 dark:bg-base-800 rounded-default p-4 border border-base-400/10 dark:border-base-800 shadow-xs">
-    <p class="text-font-subtle-light dark:text-font-subtle-dark text-sm mb-1">{% trans "Staff / Admin accounts" %}</p>
-    <p class="text-2xl font-semibold text-base-900 dark:text-base-100">{{ staff_users|default:0 }} / {{ admin_users|default:0 }}</p>
-  </div>
-</div>
 
-{% if recent_orders %}
-<div class="bg-base-50 dark:bg-base-800 rounded-default p-4 border border-base-400/10 dark:border-base-800 shadow-xs mb-6">
-  <p class="font-semibold text-base-900 dark:text-base-100 mb-3">{% trans "Recent orders" %}</p>
-  <table class="w-full text-sm">
-    <thead>
-      <tr class="text-left text-font-subtle-light dark:text-font-subtle-dark border-b border-base-200 dark:border-base-700">
-        <th class="py-2 pr-3">ID</th>
-        <th class="py-2 pr-3">{% trans "Date" %}</th>
-        <th class="py-2 pr-3">{% trans "Employee" %}</th>
-        <th class="py-2">{% trans "Status" %}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for order in recent_orders %}
-      <tr class="border-b border-base-100 dark:border-base-800 last:border-0">
-        <td class="py-2 pr-3 text-base-900 dark:text-base-100">#{{ order.id }}</td>
-        <td class="py-2 pr-3 text-font-subtle-light dark:text-font-subtle-dark">{{ order.order_date|date:"d/m/Y H:i" }}</td>
-        <td class="py-2 pr-3 text-font-subtle-light dark:text-font-subtle-dark">{{ order.employee.emp_name|default:"—" }}</td>
-        <td class="py-2 text-base-900 dark:text-base-100">{{ order.get_status_display }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="ad-stat-grid">
+    <div class="ad-stat ad-stat--sales">
+      <div class="ad-stat-body">
+        <p class="ad-stat-label">{% trans "Sales today" %}</p>
+        <p class="ad-stat-value">{{ stat_today_sales|default:0|kip }} ₭</p>
+        <p class="ad-stat-hint">{% trans "ຈາກບິນທີ່ຊຳລະແລ້ວໃນມື້ນີ້" %}</p>
+      </div>
+      <span class="material-symbols-outlined ad-stat-icon" aria-hidden="true">payments</span>
+    </div>
+    <div class="ad-stat ad-stat--orders">
+      <div class="ad-stat-body">
+        <p class="ad-stat-label">{% trans "Orders today" %}</p>
+        <p class="ad-stat-value">{{ stat_today_orders|default:0 }}</p>
+        <p class="ad-stat-hint">{% trans "ຈຳນວນອໍເດີໃນມື້ນີ້" %}</p>
+      </div>
+      <span class="material-symbols-outlined ad-stat-icon" aria-hidden="true">shopping_cart</span>
+    </div>
+    <div class="ad-stat ad-stat--products">
+      <div class="ad-stat-body">
+        <p class="ad-stat-label">{% trans "Active products" %}</p>
+        <p class="ad-stat-value">{{ stat_active_products|default:0 }}</p>
+        <p class="ad-stat-hint">{% trans "ສິນຄ້າທີ່ເປີດຂາຍຢູ່" %}</p>
+      </div>
+      <span class="material-symbols-outlined ad-stat-icon" aria-hidden="true">inventory_2</span>
+    </div>
+    <div class="ad-stat ad-stat--users">
+      <div class="ad-stat-body">
+        <p class="ad-stat-label">{% trans "Staff / Admin accounts" %}</p>
+        <p class="ad-stat-value">{{ staff_users|default:0 }} / {{ admin_users|default:0 }}</p>
+        <p class="ad-stat-hint">{% trans "ບັນຊີພະນັກງານ / ແອັດມິນ" %}</p>
+      </div>
+      <span class="material-symbols-outlined ad-stat-icon" aria-hidden="true">group</span>
+    </div>
+  </div>
+
+  {% if recent_orders %}
+  <div class="ad-panel">
+    <div class="ad-panel-head">
+      <p class="ad-panel-title">{% trans "Recent orders" %}</p>
+      <a class="ad-panel-link" href="{% url 'admin:sales_order_changelist' %}">{% trans "ເບິ່ງທັງໝົດ" %} →</a>
+    </div>
+    <div class="ad-table-wrap">
+      <table class="ad-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Customer / Staff" %}</th>
+            <th>{% trans "Total" %}</th>
+            <th>{% trans "Status" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td class="ad-mono">#{{ order.id }}</td>
+            <td class="ad-muted">{{ order.order_date|date:"d/m/Y H:i" }}</td>
+            <td>
+              {% if order.customer %}{{ order.customer.cus_name }}
+              {% elif order.employee %}{{ order.employee.emp_name }} <span class="ad-muted">(POS)</span>
+              {% else %}—{% endif %}
+            </td>
+            <td>{{ order.bill.total_amount|default:0|kip }} ₭</td>
+            <td>
+              <span class="ad-badge ad-badge--{{ order.status|lower }}">{{ order.get_status_display }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
 </div>
-{% endif %}
 
 <div class="flex flex-col lg:flex-row lg:gap-8">
     <div class="grow">

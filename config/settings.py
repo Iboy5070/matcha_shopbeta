@@ -155,7 +155,7 @@ SITE_URL = os.getenv("SITE_URL", _default_site_url).rstrip("/")
 SHOP_NAME = os.getenv("SHOP_NAME", "The 196 Haus")
 SHOP_TAGLINE = os.getenv("SHOP_TAGLINE", "MATCHA")
 SHOP_BRAND = os.getenv("SHOP_BRAND", f"{SHOP_NAME} {SHOP_TAGLINE}")
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 CUSTOMER_LOGIN_URL = "store_login"
 
@@ -191,6 +191,9 @@ if EMAIL_HOST:
     EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
     EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
     EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "1") == "1"
+elif DEBUG:
+    # Local: print reset links in the runserver console
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
     EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
 
@@ -228,24 +231,26 @@ from django.templatetags.static import static
 UNFOLD = {
     "SITE_TITLE": SHOP_NAME,
     "SITE_HEADER": SHOP_NAME,
+    "SITE_SUBHEADER": "Admin · The 196 Haus Matcha",
     "SITE_URL": "/",
     "SITE_ICON": {
         "light": lambda request: static("img/icons/logo-cup.png"),
         "dark": lambda request: static("img/icons/logo-cup.png"),
     },
+    "BORDER_RADIUS": "10px",
     "COLORS": {
         "primary": {
-            "50": "246 250 247",
-            "100": "232 243 236",
-            "200": "206 229 216",
-            "300": "167 207 184",
-            "400": "122 178 144",
-            "500": "88 149 112",
-            "600": "65 119 86",
-            "700": "53 96 70",
-            "800": "45 78 58",
-            "900": "37 64 48",
-            "950": "20 37 27",
+            "50": "240 253 244",
+            "100": "220 252 231",
+            "200": "187 247 208",
+            "300": "134 239 172",
+            "400": "74 186 138",
+            "500": "45 138 110",
+            "600": "34 112 88",
+            "700": "30 96 74",
+            "800": "26 78 60",
+            "900": "20 61 48",
+            "950": "10 37 28",
         },
     },
     "SIDEBAR": {
@@ -355,6 +360,7 @@ UNFOLD = {
         ],
     },
     "STYLES": [
-        "/static/css/unfold_custom.css",
+        # Cache-bust so browsers pick up dashboard theme updates
+        lambda request: static("css/unfold_custom.css") + "?v=20260807e",
     ],
 }

@@ -2,54 +2,140 @@
 {% load i18n static mz_extras catalog_i18n %}
 {% block title %}{% product_name product LANGUAGE_CODE %}{% endblock %}
 {% block content %}
-<div class="row g-4 align-items-start">
-  <div class="col-md-6">
+<nav class="mz-breadcrumb" aria-label="Breadcrumb">
+  <a class="mz-breadcrumb-link" href="{% url 'store_shop' %}">{% trans "Products" %}</a>
+  <span class="mz-breadcrumb-sep" aria-hidden="true">/</span>
+  <span class="mz-breadcrumb-current">{% product_name product LANGUAGE_CODE %}</span>
+</nav>
+
+<div class="row g-4 g-xl-5 align-items-start mz-product-detail">
+  <div class="col-lg-6">
     <div class="mz-product-detail-media">
       {% if product.display_image %}
       <img id="mz-detail-img" src="{{ product.display_image }}" alt="{% product_name product LANGUAGE_CODE %}">
       {% else %}
-      <div class="mz-product-placeholder" style="height: 400px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 1rem;">
+      <div class="mz-product-placeholder mz-product-detail-placeholder">
         <img src="{% static 'img/icons/matcha.png' %}" alt="" width="80" height="80">
       </div>
       {% endif %}
     </div>
   </div>
-  <div class="col-md-6">
+
+  <div class="col-lg-6">
     <div class="mz-product-detail-info">
-      <div class="mz-product-cat">{% cat_name product.category LANGUAGE_CODE %}</div>
-      <h1 class="mz-product-detail-title">{% product_name product LANGUAGE_CODE %}</h1>
-      
-      {% product_description product LANGUAGE_CODE as product_desc %}
-      {% if product_desc %}
-      <p class="mz-product-desc">{{ product_desc }}</p>
-      {% endif %}
-      
-      <div class="mz-product-price mb-3" id="mz-detail-price">
-        {{ product.price|kip }}
-        <span>ກີບ</span>
+      <div class="mz-product-detail-meta">
+        {% if product.is_featured %}
+        <span class="mz-product-rec-tag">{% trans "Featured products" %}</span>
+        {% endif %}
+        {% if product.category %}
+        <span class="mz-product-cat">{% cat_name product.category LANGUAGE_CODE %}</span>
+        {% endif %}
       </div>
 
-      {% if product.stock_qty <= 0 %}
-      <p class="text-danger small mb-3" id="mz-detail-oos">
-        ⚠ {% trans "Out of stock — you can still reserve it below and pick a deposit option at checkout." %}
-      </p>
-      {% elif product.stock_qty <= 5 %}
-      <p class="text-warning small mb-3">{% trans "Only" %} {{ product.stock_qty }} {% trans "left in stock" %}</p>
+      <h1 class="mz-product-detail-title">{% product_name product LANGUAGE_CODE %}</h1>
+
+      {% product_description product LANGUAGE_CODE as product_desc %}
+      {% if product_desc %}
+      <p class="mz-product-desc mz-product-desc--lead">{{ product_desc }}</p>
       {% endif %}
 
-      <form method="post" action="{% url 'store_add_to_cart' product.id %}" class="mz-product-buy" id="mz-product-buy">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="cart">
-        <div class="d-flex flex-wrap align-items-center gap-3 mb-3 d-none">
-          <!-- Hidden quantity inputs as cart view currently adds 1 at a time -->
+      <div class="mz-buy-panel" data-unit-price="{{ product.price }}">
+        {% if product.stock_qty <= 0 %}
+        <p class="mz-product-stock mz-product-stock--out" id="mz-detail-oos">
+          {% trans "Out of stock — you can still reserve it below and pick a deposit option at checkout." %}
+        </p>
+        {% elif product.stock_qty <= 5 %}
+        <p class="mz-product-stock mz-product-stock--low">{% trans "Only" %} {{ product.stock_qty }} {% trans "left in stock" %}</p>
+        {% endif %}
+
+        <div class="mz-product-price" id="mz-detail-price">
+          <span id="mz-detail-price-value">{{ product.price|kip }}</span>
+          <span>ກີບ</span>
+        </div>
+        <p class="mz-buy-unit-hint" id="mz-buy-unit-hint">
+          <span id="mz-unit-price-label">{{ product.price|kip }}</span> ກີບ / ຊິ້ນ
+        </p>
+
+        <form method="post" action="{% url 'store_add_to_cart' product.id %}" class="mz-product-buy" id="mz-product-buy">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="cart">
           <input type="hidden" name="qty" id="mz-qty-input" value="1">
-        </div>
-        <div class="d-flex flex-wrap gap-2">
-          <button class="btn mz-btn-primary btn-lg" type="submit" id="mz-detail-add-btn">{% trans "Add to cart" %}</button>
-          <a class="btn mz-btn-outline btn-lg" href="{% url 'store_shop' %}">{% trans "Back to shop" %}</a>
-        </div>
-      </form>
+          <div class="mz-buy-row">
+            <div class="mz-cart-qty mz-cart-qty-detail" aria-label="{% trans 'Quantity' %}">
+              <button type="button" class="mz-qty-btn" id="mz-qty-minus" aria-label="-1">−</button>
+              <span class="mz-qty-val" id="mz-qty-display">1</span>
+              <button type="button" class="mz-qty-btn" id="mz-qty-plus" aria-label="+1">+</button>
+            </div>
+            <button class="btn mz-btn-primary mz-buy-add" type="submit" id="mz-detail-add-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
+                <path d="M2 3h2l2.4 12.4a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L21 7H6"/>
+              </svg>
+              {% trans "Add to cart" %}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
+
+<section class="mz-product-longform">
+  <h2 class="mz-product-longform-title">ລາຍລະອຽດສິນຄ້າ</h2>
+  {% if product_desc %}
+  <div class="mz-product-longform-body">
+    <p>{{ product_desc }}</p>
+  </div>
+  {% endif %}
+  {% if product.highlights %}
+  <div class="mz-product-longform-body">
+    <p class="mz-product-longform-label">ຈຸດເດັ່ນ</p>
+    <ul class="mz-product-longform-list">
+      {% for tip in product.highlights %}
+      <li>{{ tip }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  <div class="mz-product-longform-body">
+    <p class="mz-product-longform-label">ການເກັບຮັກສາ</p>
+    <p>ເກັບໃນທີ່ແຫ້ງ · ຫຼີກແສງແດດ ແລະ ຄວາມຊຸ່ມ · ປິດຝາຫຼັງໃຊ້ທຸກຄັ້ງ ເພື່ອຮັກສາກິ່ນ ແລະ ສີຂຽວ.</p>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var panel = document.querySelector(".mz-buy-panel");
+  var input = document.getElementById("mz-qty-input");
+  var display = document.getElementById("mz-qty-display");
+  var minus = document.getElementById("mz-qty-minus");
+  var plus = document.getElementById("mz-qty-plus");
+  var priceEl = document.getElementById("mz-detail-price-value");
+  var hint = document.getElementById("mz-buy-unit-hint");
+  if (!panel || !input || !display || !minus || !plus || !priceEl) return;
+
+  var unit = parseFloat(panel.getAttribute("data-unit-price") || "0");
+  if (!isFinite(unit) || unit < 0) unit = 0;
+
+  function formatKip(n) {
+    return Math.round(n).toLocaleString("en-US");
+  }
+
+  function setQty(n) {
+    n = Math.max(1, Math.min(99, n));
+    input.value = n;
+    display.textContent = n;
+    priceEl.textContent = formatKip(unit * n);
+    if (hint) {
+      hint.style.visibility = n > 1 ? "visible" : "hidden";
+    }
+  }
+
+  if (hint) hint.style.visibility = "hidden";
+  minus.addEventListener("click", function () { setQty(parseInt(input.value, 10) - 1); });
+  plus.addEventListener("click", function () { setQty(parseInt(input.value, 10) + 1); });
+})();
+</script>
 {% endblock %}

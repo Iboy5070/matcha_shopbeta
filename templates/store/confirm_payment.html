@@ -5,36 +5,34 @@
 
 {% include "store/_checkout_steps.html" with step=3 %}
 
-<div class="mz-flow-head text-center mb-4">
+<div class="mz-flow-head mz-pay-hero text-center mb-4">
   <h1 class="mz-section-title h3 mb-2">ໂອນເງິນ ແລະ ອັບສະລິບ</h1>
-  <p class="text-muted mb-0">ຂັ້ນຕອນ: <strong>1) ສະແກນ QR</strong> → <strong>2) ໂອນເງິນ</strong> → <strong>3) ອັບຮູບສະລິບ</strong></p>
+  <p class="mz-flow-lead mb-0">ຫຼັງໂອນແລ້ວ ອັບສະລິບ — ພະນັກງານຈະກວດແລ້ວແຈ້ງຜົນທາງໂທ / WhatsApp</p>
 </div>
 
 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
 {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
 
-<div class="row g-4 mz-pay-page">
-  {# QR first on both mobile and desktop #}
+<div class="row g-3 g-lg-4 mz-pay-page">
   <div class="col-lg-5">
-    <div class="mz-pay-step-card">
+    <div class="mz-pay-step-card mz-pay-step-card--qr">
       <div class="mz-pay-step-head">
         <span class="mz-pay-step-badge">1</span>
-        <h2 class="h6 fw-bold mb-0">ສະແກນ QR ແລ້ວໂອນເງິນ</h2>
+        <h2 class="mz-pay-step-title mb-0">ສະແກນ QR ແລ້ວໂອນເງິນ</h2>
       </div>
-      <div class="p-3 pt-0">
+      <div class="mz-pay-step-body">
         {% include "store/_bank_transfer.html" with compact=1 %}
       </div>
     </div>
   </div>
 
   <div class="col-lg-7">
-    <div class="mz-pay-step-card">
+    <div class="mz-pay-step-card mz-pay-step-card--slip">
       <div class="mz-pay-step-head">
         <span class="mz-pay-step-badge">2</span>
-        <h2 class="h6 fw-bold mb-0">ອັບຮູບສະລິບໂອນເງິນ</h2>
+        <h2 class="mz-pay-step-title mb-0">ອັບຮູບສະລິບໂອນເງິນ</h2>
       </div>
-      <div class="p-3 pt-0">
-        <p class="small text-muted mb-3">ຫຼັງໂອນແລ້ວ — ຖ່າຍ/ແຄັບຈໍສະລິບຈາກແອັບທະນາຄານ ແລ້ວອັບໂຫຼດທີ່ນີ້</p>
+      <div class="mz-pay-step-body">
         {% include "store/_slip_upload_form.html" %}
       </div>
     </div>

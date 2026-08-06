@@ -76,7 +76,14 @@ def store_cart(request):
 def store_add_to_cart(request, product_id):
     cart = request.session.get("store_cart", {})
     pid = str(product_id)
-    cart[pid] = cart.get(pid, 0) + 1
+    qty = 1
+    raw_qty = request.POST.get("qty") or request.GET.get("qty")
+    if raw_qty is not None:
+        try:
+            qty = max(1, min(99, int(raw_qty)))
+        except (TypeError, ValueError):
+            qty = 1
+    cart[pid] = cart.get(pid, 0) + qty
     request.session["store_cart"] = cart
     messages.success(request, "ເພີ່ມລົງກະຕ່າສຳເລັດແລ້ວ")
     return redirect("store_cart")
@@ -270,10 +277,15 @@ def store_confirm_payment(request, order_id):
         if order.status == Order.Status.RESERVED:
             messages.success(
                 request,
-                "ຈ່າຍມັດຈຳສຳເລັດ! ການຈອງຂອງທ່ານຢືນຢັນແລ້ວ — ມາຮັບເຄື່ອງ ແລະ ຊຳລະສ່ວນທີ່ເຫຼືອຢູ່ຮ້ານພາຍໃນກຳນົດ",
+                "ສົ່ງສະລິບມັດຈຳສຳເລັດແລ້ວ! ລໍຖ້າຮ້ານກວດສອບ — ຫຼັງອະນຸມັດຈຶ່ງຖືວ່າຈອງຢືນຢັນ",
+                extra_tags="slip-sent",
             )
         else:
-            messages.success(request, "ສະລິບຂອງທ່ານຖືກສົ່ງສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້.")
+            messages.success(
+                request,
+                "ສົ່ງສະລິບສຳເລັດແລ້ວ! ທາງຮ້ານຈະກວດສອບ ແລະ ຈັດສົ່ງສິນຄ້າໃຫ້ — ກະລຸນາລໍການແຈ້ງເຕືອນ",
+                extra_tags="slip-sent",
+            )
         return redirect("store_home")
         
     return render(request, "store/confirm_payment.html", {
@@ -368,7 +380,10 @@ def store_privacy(request):
     return render(request, "store/privacy.html")
 
 def store_google_login(request):
-    return redirect("store_home")
+    from django.contrib import messages
+
+    messages.info(request, "ການເຂົ້າດ້ວຍ Google ຍັງບໍ່ເປີດໃຊ້ — ກະລຸນາ login ດ້ວຍອີເມວ/ລະຫັດ")
+    return redirect("store_login")
 
 def store_logout(request):
     logout(request)

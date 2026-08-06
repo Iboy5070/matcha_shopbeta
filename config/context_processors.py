@@ -21,9 +21,7 @@ def site_context(request):
         "shop_brand": settings.SHOP_BRAND,
         "wake_page_url": settings.WAKE_PAGE_URL,
         "ga_measurement_id": settings.GA_MEASUREMENT_ID,
-        "google_oauth_enabled": bool(
-            getattr(settings, "GOOGLE_CLIENT_ID", "") and getattr(settings, "GOOGLE_CLIENT_SECRET", "")
-        ),
+        "google_oauth_enabled": False,  # stub only — hide until OAuth is wired
         # Testimonials/CMS app was removed in the DB rewrite; keep the key so
         # {% if active_testimonials %} guards in templates stay safe.
         "active_testimonials": [],

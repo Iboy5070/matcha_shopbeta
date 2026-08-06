@@ -5,42 +5,34 @@
 
 {% block staff_page %}
 <div class="sp-page-head">
-  <p class="sp-page-lead">ລູກຄ້າຈ່າຍມັດຈຳກ່ອນ — ເມື່ອສິນຄ້າພ້ອມ ໃຫ້ກົດສຳເລັດຫຼັງຮັບເງິນຄົບ</p>
+  <p class="sp-page-lead"></p>
 </div>
 
 <div class="row g-3 g-lg-4 mb-4">
   <div class="col-lg-12">
     <div class="sp-panel">
       <div class="sp-panel-head">
-        <h2>ລາຍການຈອງທັງໝົດ</h2>
+        <h2>ລາຍການຈອງໃນລະບົບ</h2>
       </div>
       <div class="sp-panel-body">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th>ID</th>
                 <th>ວັນທີຈອງ</th>
                 <th>ສິນຄ້າ</th>
                 <th>ຈຳນວນ</th>
                 <th>ມັດຈຳ</th>
-                <th>ຄ້າງຈ່າຍ</th>
+                <th>ຄ້າງຊຳລະ</th>
                 <th>ໝົດອາຍຸ</th>
-                <th>ສະຖານະ</th>
-                <th>ພ້ອມຮັບ</th>
-                <th>ຈັດການ</th>
+                <th>ສະຖານະໃບຈອງ</th>
+                <th>ສະຖານະສິນຄ້າ</th>
+                <th>ຢັ້ງຢືນ</th>
               </tr>
             </thead>
             <tbody>
               {% for r in reservations %}
               <tr>
-                <td class="font-monospace">#{{ r.id }}</td>
                 <td class="small text-muted">{{ r.res_date|date:"d/m/Y H:i" }}</td>
                 <td>
                   {{ r.product.name }}
@@ -54,7 +46,7 @@
                   {{ r.deposit_amount|floatformat:0|kip }} ₭
                   {% with payment=r.order.bill.payments.first %}
                   {% if payment and payment.slip_url %}
-                  <br><a href="{{ payment.slip_url }}" target="_blank" class="small">🖼️ ເບິ່ງສະລິບ</a>
+                  <br><a href="{{ payment.slip_url }}" target="_blank" class="small">ເບິ່ງສະລິບ</a>
                   {% endif %}
                   {% endwith %}
                 </td>
@@ -65,9 +57,9 @@
                 <td><span class="badge text-bg-{{ r.status|status_badge }}">{{ r.get_status_display }}</span></td>
                 <td>
                   {% if r.stock_ready %}
-                  <span class="badge text-bg-success">✅ ພ້ອມ</span>
+                  <span class="badge text-bg-success">ພ້ອມ</span>
                   {% elif r.status == "RESERVED" %}
-                  <span class="badge text-bg-secondary">⏳ ລໍສິນຄ້າ</span>
+                  <span class="badge text-bg-secondary">ລໍສິນຄ້າ</span>
                   {% else %}
                   <span class="text-muted small">—</span>
                   {% endif %}
@@ -77,10 +69,10 @@
                   <form method="POST" action="{% url 'staff_reserved_action' r.id %}" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" name="action" value="complete" class="btn btn-sm btn-success" onclick="return confirm('ລູກຄ້າມາຮັບເຄື່ອງ ແລະ ຊຳລະຄົບແລ້ວ?');">
-                      ✅ ສຳເລັດ
+                      ຢັ້ງຢືນ
                     </button>
-                    <button type="submit" name="action" value="cancel" class="btn btn-sm btn-danger ms-1" onclick="return confirm('ຍົກເລີກການຈອງນີ້?');">
-                      ❌ ຍົກເລີກ
+                    <button type="submit" name="action" value="cancel" class="btn btn-sm btn-outline-danger ms-1" onclick="return confirm('ຍົກເລີກການຈອງນີ້?');">
+                      ຍົກເລີກ
                     </button>
                   </form>
                   {% else %}
@@ -90,11 +82,7 @@
               </tr>
               {% empty %}
               <tr>
-                <td colspan="10" class="text-center py-5 text-muted">
-                  <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
-                  <h4>ຍັງບໍ່ມີການຈອງສິນຄ້າ</h4>
-                  <p>ໄປທີ່ POS → ໃສ່ສິນຄ້າໃນກະຕ່າ → ກົດ "ຈອງສິນຄ້າ (ມັດຈຳ)"</p>
-                </td>
+                <td colspan="9" class="text-center py-5 text-muted">ຍັງບໍ່ມີການຈອງສິນຄ້າ</td>
               </tr>
               {% endfor %}
             </tbody>

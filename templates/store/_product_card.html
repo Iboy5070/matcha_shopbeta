@@ -3,10 +3,10 @@
 <div class="mz-product-card{% if home_style %} mz-product-card-home{% endif %}">
   <a class="mz-product-image-link" href="{% url 'store_product_detail' p.id %}">
     {% if p.display_image %}
-      <img src="{{ p.display_image }}" alt="{% product_name p LANGUAGE_CODE %}">
+      <img src="{{ p.display_image }}" alt="{% product_name p LANGUAGE_CODE %}" loading="lazy">
     {% else %}
       <div class="mz-product-placeholder">
-        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="{% if home_style %}48{% else %}40{% endif %}" height="{% if home_style %}48{% else %}40{% endif %}">
+        <img src="{% static 'img/icons/matcha.png' %}" alt="" width="40" height="40">
       </div>
     {% endif %}
     {% if p.stock_qty <= 0 %}
@@ -16,15 +16,24 @@
     {% endif %}
   </a>
   <div class="mz-product-card-body">
+    {% if p.category %}
     <div class="mz-product-cat">{% cat_name p.category LANGUAGE_CODE %}</div>
-    <div class="mz-product-name">{% product_name p LANGUAGE_CODE %}</div>
+    {% endif %}
+    <span
+      class="mz-product-name"
+      role="link"
+      tabindex="0"
+      data-href="{% url 'store_product_detail' p.id %}"
+      onclick="window.location.href=this.dataset.href"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href=this.dataset.href;}"
+    >{% product_name p LANGUAGE_CODE %}</span>
     <div class="mz-product-price">
       {{ p.price|kip }}
       <span>ກີບ</span>
     </div>
     {% if home_style %}
     <a class="mz-product-cart-btn" href="{% url 'store_add_to_cart' p.id %}">
-      <svg class="mz-cart-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <svg class="mz-cart-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
         <path d="M2 3h2l2.4 12.4a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L21 7H6"/>
       </svg>

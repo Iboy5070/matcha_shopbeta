@@ -5,7 +5,7 @@
 
 {% block staff_page %}
 <div class="sp-page-head">
-  <p class="sp-page-lead">ເບິ່ງຈຳນວນສິນຄ້າໃນສາງ (ອ່ານຢ່າງດຽວ) — ເພີ່ມ/ແກ້ສະຕັອກຜ່ານ Admin</p>
+  <p class="sp-page-lead">ກວດສອບສິນຄ້າໃນສາງ — ເບິ່ງວ່າຍັງເຫຼືອຫຼາຍ ຫຼື ໜ້ອຍ ແລະ ປະຫວັດເພີ່ມສະຕັອກ (ອ່ານຢ່າງດຽວ)</p>
 </div>
 
 <div class="row g-3 g-lg-4 mb-4">
@@ -42,7 +42,7 @@
                 </td>
               </tr>
               {% empty %}
-              <tr><td colspan="4" class="text-center text-muted py-4">ຍັງບໍ່ມີສິນຄ້າ</td></tr>
+              <tr><td colspan="4" class="text-center text-muted py-4">ຍັງບໍ່ມີສິນຄ້າ — ໃຫ້ Admin ເພີ່ມສິນຄ້າກ່ອນ</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -54,7 +54,7 @@
   <div class="col-lg-5">
     <div class="sp-panel">
       <div class="sp-panel-head">
-        <h2>ປະຫວັດການເຕີມສິນຄ້າ (Recent Stock In)</h2>
+        <h2>ປະຫວັດການເຕີມສິນຄ້າ</h2>
       </div>
       <div class="sp-panel-body">
         <div class="table-responsive">
@@ -74,7 +74,7 @@
                 <td class="text-end">+{{ b.quantity }}</td>
               </tr>
               {% empty %}
-              <tr><td colspan="3" class="text-center text-muted py-4">ຍັງບໍ່ມີການເຕີມສິນຄ້າ</td></tr>
+              <tr><td colspan="3" class="text-center text-muted py-4">ຍັງບໍ່ມີປະຫວັດເພີ່ມສະຕັອກ</td></tr>
               {% endfor %}
             </tbody>
           </table>

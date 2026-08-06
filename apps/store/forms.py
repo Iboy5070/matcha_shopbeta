@@ -1,7 +1,22 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
 
 User = get_user_model()
+
+
+class CustomerSetPasswordForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["new_password1"].label = "ລະຫັດຜ່ານໃໝ່"
+        self.fields["new_password2"].label = "ຢືນຢັນລະຫັດຜ່ານໃໝ່"
+        self.fields["new_password1"].help_text = "ຢ່າງໜ້ອຍ 8 ຕົວ · ຢ່າໃຊ້ລະຫັດງ່າຍເກີນໄປ"
+        self.fields["new_password2"].help_text = ""
+        for name in ("new_password1", "new_password2"):
+            self.fields[name].widget.attrs.update({
+                "class": "form-control form-control-lg",
+                "placeholder": "ລະຫັດຜ່ານໃໝ່" if name.endswith("1") else "ພິມອີກຄັ້ງ",
+            })
 
 
 class CustomerRegistrationForm(forms.Form):

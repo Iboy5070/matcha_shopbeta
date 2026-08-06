@@ -1,7 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Q
@@ -9,8 +8,9 @@ from django.utils import timezone
 from apps.catalog.models import Product
 from apps.store.models import Employee
 from .models import Order, OrderItem, Bill, Reserved
+from .staff_utils import staff_required
 
-@login_required
+@staff_required
 def pos_view(request):
     q = request.GET.get("q", "").strip()
     products_qs = Product.objects.filter(is_active=True).order_by("name")
@@ -50,7 +50,7 @@ def pos_view(request):
     return render(request, "pos.html", context)
 
 
-@login_required
+@staff_required
 def add_to_cart(request, product_id):
     cart = request.session.get("pos_cart", {})
     pid = str(product_id)
@@ -59,7 +59,7 @@ def add_to_cart(request, product_id):
     return redirect("pos")
 
 
-@login_required
+@staff_required
 def remove_from_cart(request, product_id):
     cart = request.session.get("pos_cart", {})
     pid = str(product_id)
@@ -71,13 +71,13 @@ def remove_from_cart(request, product_id):
     return redirect("pos")
 
 
-@login_required
+@staff_required
 def clear_cart(request):
     request.session["pos_cart"] = {}
     return redirect("pos")
 
 
-@login_required
+@staff_required
 @transaction.atomic
 def pos_checkout(request):
     if request.method != "POST":
@@ -160,7 +160,7 @@ def _pos_cart_items(request):
     return cart_items, total
 
 
-@login_required
+@staff_required
 def pos_reserve_form(request):
     cart_items, total = _pos_cart_items(request)
     if not cart_items:
@@ -175,7 +175,7 @@ def pos_reserve_form(request):
     })
 
 
-@login_required
+@staff_required
 @transaction.atomic
 def pos_reserve_checkout(request):
     if request.method != "POST":

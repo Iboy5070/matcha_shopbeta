@@ -17,7 +17,6 @@ def sitemap_xml(_request):
         "store_about",
         "store_faq",
         "store_contact",
-        "store_confirm_payment",
         "store_returns",
         "store_privacy",
         "store_blog_list",

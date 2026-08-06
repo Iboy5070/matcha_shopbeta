@@ -34,4 +34,9 @@ class AdminSuperuserOnlyMiddleware:
                 messages.error(request, _("ບັນຊີລູກຄ້າບໍ່ມີສິດເຂົ້າ Staff portal"))
                 return redirect("store_home")
 
+        if path.startswith("/pos"):
+            if user.is_authenticated and not user.is_staff:
+                messages.error(request, _("ບັນຊີລູກຄ້າບໍ່ມີສິດເຂົ້າ POS"))
+                return redirect("store_home")
+
         return self.get_response(request)

@@ -5,64 +5,86 @@
 
 {% include "store/_checkout_steps.html" with step=1 %}
 
-<div class="mz-flow-head mb-4">
-  <h1 class="mz-section-title h3 mb-2">ກະຕ່າສິນຄ້າ</h1>
-  <p class="text-muted mb-0">ກວດລາຍການ ແລ້ວກົດ “ໄປຊຳລະ” ເພື່ອຕື່ມຂໍ້ມູນ</p>
-</div>
+<section class="mz-cart-page">
+  <header class="mz-cart-hero">
+    <div>
+      <h1 class="mz-cart-title">ກະຕ່າສິນຄ້າ</h1>
+      <p class="mz-cart-subtitle">ກວດລາຍການ ແລ້ວກົດ <strong>ໄປຊຳລະ</strong> ເພື່ອຕື່ມຂໍ້ມູນ</p>
+    </div>
+    {% if items %}
+    <a class="mz-cart-continue" href="{% url 'store_shop' %}">ຊື້ຕໍ່</a>
+    {% endif %}
+  </header>
 
 {% if items %}
-<div class="mz-cart-panel">
-  {% for it in items %}
-  <div class="mz-cart-item">
-    <div class="mz-cart-item-media">
-      {% if it.product.display_image %}
-        <img src="{{ it.product.display_image }}" alt="{% product_name it.product LANGUAGE_CODE %}">
-      {% else %}
-        <div class="mz-product-placeholder">MATCHA</div>
-      {% endif %}
+  <div class="mz-cart-shell">
+    <div class="mz-cart-main">
+      {% for it in items %}
+      <article class="mz-cart-row">
+        <div class="mz-cart-thumb">
+          {% if it.product.display_image %}
+            <img src="{{ it.product.display_image }}" alt="{% product_name it.product LANGUAGE_CODE %}">
+          {% else %}
+            <div class="mz-product-placeholder">M</div>
+          {% endif %}
+        </div>
+        <div class="mz-cart-info">
+          <div class="mz-cart-meta">
+            {% if it.product.category %}
+            <span class="mz-cart-cat">{% cat_name it.product.category LANGUAGE_CODE %}</span>
+            {% endif %}
+            {% if it.product.stock_qty <= 0 %}
+            <span class="mz-cart-badge mz-cart-badge--warn">ຈອງໄດ້</span>
+            {% elif it.product.stock_qty <= 5 %}
+            <span class="mz-cart-badge">ເຫຼືອ {{ it.product.stock_qty }}</span>
+            {% endif %}
+          </div>
+          <h2 class="mz-cart-name">{% product_name it.product LANGUAGE_CODE %}</h2>
+          <p class="mz-cart-unit">{{ it.unit_price|kip }} ກີບ / ຊິ້ນ</p>
+          <div class="mz-cart-qty" aria-label="ຈຳນວນ">
+            <a class="mz-qty-btn" href="{% url 'store_remove_one' it.product.id %}" aria-label="-1">−</a>
+            <span class="mz-qty-val">{{ it.qty }}</span>
+            <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.product.id %}" aria-label="+1">+</a>
+          </div>
+        </div>
+        <div class="mz-cart-line">
+          <span class="mz-cart-line-label">ລວມ</span>
+          <span class="mz-cart-line-value">{{ it.line_total|kip }} <small>ກີບ</small></span>
+        </div>
+      </article>
+      {% endfor %}
     </div>
-    <div class="mz-cart-item-body">
-      <div class="mz-product-cat">{% cat_name it.product.category LANGUAGE_CODE %}</div>
-      <div class="mz-cart-item-name">{% product_name it.product LANGUAGE_CODE %}</div>
-      <div class="mz-cart-item-price">{{ it.unit_price|kip }} <span>ກີບ</span></div>
-      {% if it.product.stock_qty <= 0 %}
-      <div class="small text-warning mt-1">ໝົດສະຕັອກ — ຈອງໄດ້ໃນຂັ້ນຕໍ່ໄປ</div>
-      {% endif %}
-      <div class="mz-cart-qty">
-        <a class="mz-qty-btn" href="{% url 'store_remove_one' it.product.id %}" aria-label="-1">−</a>
-        <span class="mz-qty-val">{{ it.qty }}</span>
-        <a class="mz-qty-btn" href="{% url 'store_add_to_cart' it.product.id %}" aria-label="+1">+</a>
-      </div>
-    </div>
-    <div class="mz-cart-item-total">{{ it.line_total|kip }} <small>ກີບ</small></div>
-  </div>
-  {% endfor %}
 
-  <div class="mz-cart-summary">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <span>ລວມສິນຄ້າ</span>
-      <span>{{ total|kip }} <small>ກີບ</small></span>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-3 small text-muted">
-      <span>ຄ່າສົ່ງ</span>
-      <span>ຢືນຢັນຫຼັງສັ່ງ (ໂທ / WhatsApp)</span>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <span class="fw-bold">ຍອດລວມ</span>
-      <span class="mz-cart-grand">{{ total|kip }} <small>ກີບ</small></span>
-    </div>
-    <div class="d-flex flex-wrap gap-2">
-      <a class="btn mz-btn-outline" href="{% url 'store_shop' %}">ຊື້ຕໍ່</a>
-      <a class="btn btn-outline-danger" href="{% url 'store_clear_cart' %}">ລ້າງກະຕ່າ</a>
-      <a class="btn mz-btn-primary flex-grow-1" href="{% url 'store_checkout' %}">ໄປຊຳລະ</a>
-    </div>
+    <aside class="mz-cart-aside">
+      <div class="mz-cart-aside-glow" aria-hidden="true"></div>
+      <h2 class="mz-cart-aside-title">ສະຫຼຸບຍອດ</h2>
+      <dl class="mz-cart-dl">
+        <div>
+          <dt>ລວມສິນຄ້າ</dt>
+          <dd>{{ total|kip }} ກີບ</dd>
+        </div>
+        <div>
+          <dt>ຄ່າສົ່ງ</dt>
+          <dd class="mz-cart-ship">ຢືນຢັນຫຼັງສັ່ງ</dd>
+        </div>
+      </dl>
+      <div class="mz-cart-aside-total">
+        <span>ຍອດລວມ</span>
+        <strong>{{ total|kip }} <small>ກີບ</small></strong>
+      </div>
+      <a class="btn mz-btn-primary mz-cart-pay-btn" href="{% url 'store_checkout' %}">ໄປຊຳລະ →</a>
+      <a class="mz-cart-clear" href="{% url 'store_clear_cart' %}">ລ້າງກະຕ່າ</a>
+    </aside>
   </div>
-</div>
 {% else %}
-<div class="mz-empty-state text-center">
-  <img src="{% static 'img/icons/cart.png' %}" alt="" width="64" height="64" class="mb-3 opacity-50">
-  <p class="text-muted mb-3">ຍັງບໍ່ມີສິນຄ້າໃນກະຕ່າ</p>
-  <a class="btn mz-btn-primary btn-lg" href="{% url 'store_shop' %}">ເລືອກສິນຄ້າ</a>
-</div>
+  <div class="mz-cart-empty">
+    <div class="mz-cart-empty-icon" aria-hidden="true">
+      <img src="{% static 'img/icons/cart.png' %}" alt="" width="48" height="48">
+    </div>
+    <h2>ກະຕ່າວ່າງຢູ່</h2>
+    <p>ເລືອກມັດຊາທີ່ທ່ານມັກ ແລ້ວກັບມາຊຳລະໄດ້ທຸກເວລາ</p>
+    <a class="btn mz-btn-primary btn-lg" href="{% url 'store_shop' %}">ເລືອກສິນຄ້າ</a>
+  </div>
 {% endif %}
+</section>
 {% endblock %}

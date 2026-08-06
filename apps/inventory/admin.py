@@ -1,5 +1,7 @@
 from django.contrib import admin
+from django.db import models
 from unfold.admin import ModelAdmin, TabularInline
+from unfold.widgets import UnfoldAdminTextInputWidget
 from .models import Supplier, PurchaseOrder, PODetail, Imports, ImportDetail, Inventory
 
 
@@ -7,6 +9,12 @@ from .models import Supplier, PurchaseOrder, PODetail, Imports, ImportDetail, In
 class SupplierAdmin(ModelAdmin):
     list_display = ("sup_name", "sup_tel", "email")
     search_fields = ("sup_name", "sup_tel", "email")
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if isinstance(db_field, models.TextField) and db_field.name == "sup_address":
+            kwargs["widget"] = UnfoldAdminTextInputWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     fieldsets = (
         ("ຜູ້ສະໜອງ", {
             "fields": ("sup_name", "sup_tel", "email", "sup_address"),

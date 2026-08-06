@@ -3,34 +3,59 @@
   {% csrf_token %}
   {% if prefill_order_no %}
   <div class="mz-slip-summary mb-4">
-    <div class="small text-muted mb-1">ເລກອໍເດີ <strong>#{{ prefill_order_no }}</strong></div>
-    <div class="h4 mb-0 fw-bold mz-slip-summary-amount">{{ prefill_paid_amount|kip }} ກີບ</div>
-    <div class="small text-muted mt-1">ຍອດທີ່ຄວນໂອນ</div>
+    <div class="mz-slip-summary-label">ເລກອໍເດີ <strong>#{{ prefill_order_no }}</strong></div>
+    <div class="mz-slip-summary-amount">{{ prefill_paid_amount|kip }} ກີບ</div>
+    <div class="mz-slip-summary-hint">ຍອດທີ່ຄວນໂອນ</div>
   </div>
   <input type="hidden" name="order_no" value="{{ prefill_order_no }}">
   <input type="hidden" name="paid_amount" value="{{ prefill_paid_amount }}">
   <input type="hidden" name="bank_name" value="{{ prefill_bank_name|default:'' }}">
   {% else %}
   <div class="mb-3">
-    <label class="form-label">ເລກອໍເດີ *</label>
+    <label class="form-label mz-form-label">ເລກອໍເດີ *</label>
     <input class="form-control form-control-lg" name="order_no" value="{{ prefill_order_no|default:'' }}" required placeholder="ເລກອໍເດີ">
   </div>
   <div class="mb-3">
-    <label class="form-label">ຈຳນວນທີ່ໂອນ (ກີບ) *</label>
+    <label class="form-label mz-form-label">ຈຳນວນທີ່ໂອນ (ກີບ) *</label>
     <input class="form-control form-control-lg" name="paid_amount" type="number" step="0.01" value="{{ prefill_paid_amount|default:'' }}" required>
   </div>
   <input type="hidden" name="bank_name" value="{{ prefill_bank_name|default:'' }}">
   {% endif %}
 
   <div class="mb-3">
-    <label class="form-label fw-bold">ຮູບສະລິບໂອນເງິນ *</label>
-    <input class="form-control form-control-lg" name="slip_image" type="file" accept="image/*" required>
-    <div class="form-text">ແຄັບຈໍຈາກ BCEL One ຫຼື ແອັບທະນາຄານ · ເຫັນຍອດເງິນຊັດເຈນ</div>
+    <label class="form-label mz-form-label" for="id_slip_image">ຮູບສະລິບໂອນເງິນ *</label>
+    <label class="mz-file-pick" for="id_slip_image">
+      <input id="id_slip_image" class="mz-file-pick-input" name="slip_image" type="file" accept="image/*" required>
+      <span class="mz-file-pick-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 16V5"/><path d="M8 9l4-4 4 4"/><path d="M4 19h16"/>
+        </svg>
+      </span>
+      <span class="mz-file-pick-btn">ເລືອກຮູບສະລິບ</span>
+      <span class="mz-file-pick-name" data-empty="ຍັງບໍ່ໄດ້ເລືອກໄຟລ໌">ຍັງບໍ່ໄດ້ເລືອກໄຟລ໌</span>
+      <span class="mz-file-pick-hint">ແຄັບຈໍຈາກ BCEL One ຫຼື ແອັບທະນາຄານ ໃຫ້ເຫັນຍອດເງິນຊັດເຈນ</span>
+    </label>
   </div>
   <div class="mb-4">
-    <label class="form-label">ໝາຍເຫດ <span class="text-muted fw-normal">(ບໍ່ບັງຄັບ)</span></label>
-    <input class="form-control" name="note" placeholder="ຂໍ້ຄວາມເພີ່ມເຕີມເຖິງຮ້ານ">
+    <label class="form-label mz-form-label">ໝາຍເຫດ <span class="fw-normal text-muted">(ບໍ່ບັງຄັບ)</span></label>
+    <input class="form-control form-control-lg" name="note" placeholder="ຂໍ້ຄວາມເພີ່ມເຕີມເຖິງຮ້ານ">
   </div>
   <button class="btn mz-btn-primary btn-lg w-100" type="submit">ສົ່ງສະລິບໃຫ້ຮ້ານ</button>
-  <p class="small text-muted text-center mt-2 mb-0">ພະນັກງານຈະກວດສະລິບ ແລ້ວແຈ້ງຜົນທາງໂທ / WhatsApp</p>
+  <p class="mz-slip-reassure">ພະນັກງານຈະກວດສະລິບ ແລ້ວແຈ້ງຜົນທາງໂທ / WhatsApp</p>
 </form>
+<script>
+(function () {
+  var input = document.getElementById("id_slip_image");
+  if (!input) return;
+  var pick = input.closest(".mz-file-pick");
+  var nameEl = pick && pick.querySelector(".mz-file-pick-name");
+  if (!nameEl) return;
+  var empty = nameEl.getAttribute("data-empty") || "";
+  input.addEventListener("change", function () {
+    var file = input.files && input.files[0];
+    nameEl.textContent = file ? file.name : empty;
+    nameEl.classList.toggle("is-filled", !!file);
+    if (pick) pick.classList.toggle("is-filled", !!file);
+  });
+})();
+</script>

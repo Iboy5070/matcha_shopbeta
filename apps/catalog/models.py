@@ -135,6 +135,44 @@ class Product(models.Model):
             return self.image.url
         return ""
 
+    @property
+    def highlights(self):
+        """Short selling points for product detail (Lao-first)."""
+        by_slug = {
+            "ceremonial-matcha": [
+                "ເກຣດ ceremonial — ເໝາະດື່ມເປັນຈອກ (usucha / koicha)",
+                "ສີຂຽວສົດ · ກິ່ນຫອມຫຍ້າ · ລົດຂົມນ້ອຍກວ່າ culinary",
+                "ແພັກໃນກະປ໋ອງປິດສະນິດ ຮັກສາຄວາມສົດ",
+            ],
+            "culinary-matcha": [
+                "ເໝາະ latte · ເຂົ້າໜົມ · smoothie · ice cream",
+                "ລາຄາດີ · ລົດມັດຊາຊັດ ເຖິງຈະປະສົມນົມ/ນ້ຳຕານ",
+                "ໃຊ້ງ່າຍໃນຄົວເຮືອນ ແລະ ຮ້ານເຄື່ອງດື່ມ",
+            ],
+            "houjicha": [
+                "ຊາຂຽວຄັວຍ — ກິ່ນຫອມເຂົ້າຂົ້ວ · ຄາເຟອີນຕ່ຳ",
+                "ດື່ມໄດ້ທຸກເວລາ ລວມຕອນບ່າຍ–ຄ່ຳ",
+                "ຊົງກັບນ້ຳຮ້ອນ ຫຼື ເຢັນເປັນ iced tea",
+            ],
+            "bamboo-whisk": [
+                "Chasen ໄມ້ໄຜ່ ດັ້ງເດີມ ສຳລັບຕີມັດຊາໃຫ້ເປັນໂຟມ",
+                "ໃຊ້ຄູ່ຈອກ chawan ແລະ ຜົງ ceremonial",
+                "ເບົາ · ຈັບສະດວກ · ລ້າງງ່າຍຫຼັງໃຊ້",
+            ],
+        }
+        tips = by_slug.get(self.slug)
+        if tips:
+            return tips
+        if self.category_id and getattr(self.category, "slug", "") == "matcha":
+            return [
+                "ມັດຊາຄຸນນະພາບ ສຳລັບຜູ້ຮັກດື່ມເຂຍວ",
+                "ເກັບໃນທີ່ແຫ້ງ · ຫຼີກແສງແດດ",
+            ]
+        return [
+            "ສິນຄ້າຈາກ The 196 Haus MATCHA",
+            "ສອບຖາມລາຍລະອຽດເພີ່ມຜ່ານ WhatsApp / LINE",
+        ]
+
     class Meta:
         verbose_name = "ສິນຄ້າ"
         verbose_name_plural = "ສິນຄ້າ"

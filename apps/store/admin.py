@@ -1,10 +1,28 @@
 from django.contrib import admin
+from django.db import models
 from unfold.admin import ModelAdmin
+from unfold.widgets import UnfoldAdminTextInputWidget
 from .models import Employee, Customer
 
 
+_ADDRESS_WIDGET = UnfoldAdminTextInputWidget()
+
+
+class _SingleLineTextAdmin(ModelAdmin):
+    """Render TextField address boxes as single-line inputs like other fields."""
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if isinstance(db_field, models.TextField) and db_field.name in {
+            "address",
+            "emp_address",
+            "sup_address",
+        }:
+            kwargs["widget"] = _ADDRESS_WIDGET
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
 @admin.register(Employee)
-class EmployeeAdmin(ModelAdmin):
+class EmployeeAdmin(_SingleLineTextAdmin):
     list_display = ("emp_name", "emp_last", "emp_tel", "user")
     search_fields = ("emp_name", "emp_last", "emp_tel")
     fieldsets = (
@@ -19,7 +37,7 @@ class EmployeeAdmin(ModelAdmin):
 
 
 @admin.register(Customer)
-class CustomerAdmin(ModelAdmin):
+class CustomerAdmin(_SingleLineTextAdmin):
     list_display = ("cus_name", "cus_last", "cus_tel", "gender", "user")
     search_fields = ("cus_name", "cus_last", "cus_tel")
     fieldsets = (
