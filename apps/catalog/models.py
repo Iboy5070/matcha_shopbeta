@@ -127,13 +127,31 @@ class Product(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    # Bundled demo images in git (survive Render redeploy; /media/ uploads do not)
+    STATIC_IMAGE_BY_SLUG = {
+        "ceremonial-matcha": "/static/img/products/matcha-ceremonial-50g.jpg",
+        "culinary-matcha": "/static/img/products/matcha-premium-30g.jpg",
+        "houjicha": "/static/img/products/matcha-classic-100g.jpg",
+        "bamboo-whisk": "/static/img/products/bamboo-whisk-chasen.jpg",
+    }
+
     @property
     def display_image(self):
-        if self.image_url:
-            return self.image_url
+        url = (self.image_url or "").strip()
+        # Prefer permanent static/CDN links over ephemeral /media/ on Render
+        if url and not url.startswith("/media/"):
+            return url
         if self.image:
-            return self.image.url
-        return ""
+            try:
+                if self.image.storage.exists(self.image.name):
+                    return self.image.url
+            except Exception:
+                pass
+        # Demo products: bundled files in git (always available after deploy)
+        bundled = self.STATIC_IMAGE_BY_SLUG.get(self.slug or "", "")
+        if bundled:
+            return bundled
+        return url
 
     @property
     def highlights(self):
