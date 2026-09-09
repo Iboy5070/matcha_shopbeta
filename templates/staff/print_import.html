@@ -1,0 +1,66 @@
+{% extends "staff/print_base.html" %}
+{% load mz_extras %}
+{% block title %}ໃບນຳເຂົ້າ #{{ imp.id }}{% endblock %}
+{% block toolbar_left %}
+  <a href="{% url 'admin:inventory_imports_changelist' %}">← Admin ນຳເຂົ້າ</a>
+  <a href="{% url 'staff_print_po' imp.purchase_order_id %}">ໃບສັ່ງຊື້ #{{ imp.purchase_order_id }}</a>
+{% endblock %}
+
+{% block sheet %}
+<header class="doc-head">
+  <div class="brand">{{ shop_brand }}</div>
+  <div class="doc-title">ໃບກວດສອບນຳເຂົ້າສິນຄ້າ</div>
+  <div class="doc-sub">Goods Receipt · Import #{{ imp.id }} · PO #{{ imp.purchase_order_id }}</div>
+</header>
+
+<dl class="meta">
+  <div>
+    <dt>ວັນທີນຳເຂົ້າ</dt>
+    <dd>{{ imp.imp_date|date:"d/m/Y H:i" }}</dd>
+    <dt>ຜູ້ສະໜອງ</dt>
+    <dd>
+      {{ imp.supplier.sup_name }}
+      {% if imp.supplier.sup_tel %}<br><span style="font-weight:400">{{ imp.supplier.sup_tel }}</span>{% endif %}
+    </dd>
+  </div>
+  <div>
+    <dt>ໃບສັ່ງຊື້</dt>
+    <dd>PO #{{ imp.purchase_order_id }}</dd>
+    <dt>ພະນັກງານຮັບເຂົ້າ</dt>
+    <dd>{% if imp.employee %}{{ imp.employee.emp_name }} {{ imp.employee.emp_last }}{% else %}—{% endif %}</dd>
+  </div>
+</dl>
+
+<table>
+  <thead>
+    <tr>
+      <th>ສິນຄ້າ</th>
+      <th class="num">ຈຳນວນ</th>
+      <th class="num">ຕົ້ນທຶນ/ໜ່ວຍ</th>
+      <th class="num">ລວມແຖວ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in details %}
+    <tr>
+      <td>{{ d.product.name }}</td>
+      <td class="num">{{ d.quantity }}</td>
+      <td class="num">{{ d.cost_price|floatformat:0|kip }} ₭</td>
+      <td class="num">{{ d.subtotal|floatformat:0|kip }} ₭</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">ບໍ່ມີລາຍການ</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="totals">
+  <div class="row grand"><span>ຍອດລວມ</span><span>{{ imp.total_amount|floatformat:0|kip }} ₭</span></div>
+</div>
+
+<div class="stamp">
+  <div><div class="line">ຜູ້ສົ່ງ / ຜູ້ສະໜອງ</div></div>
+  <div><div class="line">ພະນັກງານຮັບເຂົ້າ</div></div>
+</div>
+<p class="footer-note">ເອກະສານນີ້ໃຊ້ກວດສອບການຮັບສິນຄ້າເຂົ້າສາງ — Import #{{ imp.id }}</p>
+{% endblock %}

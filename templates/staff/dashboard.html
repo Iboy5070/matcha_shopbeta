@@ -51,7 +51,7 @@
     <div class="sp-panel">
       <div class="sp-panel-head">
         <h2>ອໍເດີຫຼ້າສຸດ (Recent Orders)</h2>
-        <a class="sp-panel-meta text-decoration-none" href="{% url 'staff_slips' %}">ໄປກວດສະລິບ →</a>
+        <a class="sp-panel-meta text-decoration-none" href="{% url 'staff_daily_report' %}">ລາຍງານລາຍວັນ →</a>
       </div>
       <div class="sp-panel-body">
         <div class="table-responsive">
@@ -109,6 +109,17 @@
       <div>
         <strong>ກວດສະລິບ</strong>
         <small>ອະນຸມັດ / ປະຕິເສດການໂອນເງິນ</small>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6 col-xl-4">
+    <a class="sp-quick-card" href="{% url 'staff_daily_report' %}">
+      <span class="sp-quick-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>
+      </span>
+      <div>
+        <strong>ລາຍງານລາຍວັນ</strong>
+        <small>ເບິ່ງ / ພິມຍອດຂາຍ</small>
       </div>
     </a>
   </div>

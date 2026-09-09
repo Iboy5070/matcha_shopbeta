@@ -17,8 +17,18 @@
       <div>
         <span class="sp-slip-id">ອໍເດີ #{{ order.id }}{% if order.status == 'RESERVED' %} · ມັດຈຳຈອງ{% endif %}</span>
         <time class="sp-slip-date">ວັນທີສັ່ງ: {{ order.order_date|date:"d/m/Y H:i" }}</time>
+        <div class="mt-1">
+          <a class="small" href="{% url 'staff_order_detail' order.id %}">ເບິ່ງລາຍລະອຽດອໍເດີ</a>
+        </div>
       </div>
-      <div class="sp-slip-amount">{{ order.bill.total_amount|floatformat:0|kip }} <span>₭</span></div>
+      <div class="sp-slip-amount">
+        {% if payment and payment.pay_amount %}
+          {{ payment.pay_amount|floatformat:0|kip }}
+        {% else %}
+          {{ order.bill.balance_due|floatformat:0|kip }}
+        {% endif %}
+        <span>₭</span>
+      </div>
     </header>
 
     <div class="sp-slip-card__body">
@@ -33,9 +43,21 @@
           {% endif %}
         </p>
         <p>
-          <span class="sp-meta-label">ຍອດການໂອນ</span>
-          <strong>{{ order.bill.total_amount|floatformat:0|kip }} ₭</strong>
+          <span class="sp-meta-label">{% if order.status == 'RESERVED' %}ຍອດໂອນມັດຈຳ{% else %}ຍອດການໂອນ{% endif %}</span>
+          <strong>
+            {% if payment and payment.pay_amount %}
+              {{ payment.pay_amount|floatformat:0|kip }} ₭
+            {% else %}
+              {{ order.bill.balance_due|floatformat:0|kip }} ₭
+            {% endif %}
+          </strong>
         </p>
+        {% if order.status == 'RESERVED' %}
+        <p>
+          <span class="sp-meta-label">ຍອດທັງໝົດອໍເດີ</span>
+          {{ order.bill.total_amount|floatformat:0|kip }} ₭
+        </p>
+        {% endif %}
       </div>
 
       <div class="sp-slip-preview">
@@ -54,7 +76,7 @@
       <form method="POST" action="{% url 'verify_slip' order.id %}" class="sp-slip-actions-form">
         {% csrf_token %}
         <button type="submit" name="action" value="approve" class="sp-btn sp-btn--ok"
-          onclick="return confirm('ຢືນຢັນວ່າໄດ້ຮັບເງິນ {{ order.bill.total_amount|floatformat:0|kip }} ₭ ແລ້ວ?');">
+          onclick="return confirm('ຢືນຢັນວ່າໄດ້ຮັບເງິນ {% if payment and payment.pay_amount %}{{ payment.pay_amount|floatformat:0|kip }}{% else %}{{ order.bill.balance_due|floatformat:0|kip }}{% endif %} ₭ ແລ້ວ?');">
           ຢັ້ງຢືນອໍເດີ
         </button>
         <button type="submit" name="action" value="reject" class="sp-btn sp-btn--no"

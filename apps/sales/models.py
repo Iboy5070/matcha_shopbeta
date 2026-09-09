@@ -19,7 +19,6 @@ class Order(models.Model):
         blank=True,
         related_name="orders",
         verbose_name="ລູກຄ້າ",
-        help_text="ອໍເດີຈາກເວັບມັກມີລູກຄ້າ · POS ອາດບໍ່ມີ",
     )
     employee = models.ForeignKey(
         Employee,
@@ -28,14 +27,12 @@ class Order(models.Model):
         blank=True,
         related_name="processed_orders",
         verbose_name="ພະນັກງານ",
-        help_text="ຜູ້ຂາຍໜ້າຮ້ານ (POS). ອໍເດີເວັບອາດປ່ອຍວ່າງໄດ້",
     )
     status = models.CharField(
         "ສະຖານະ",
         max_length=30,
         choices=Status.choices,
         default=Status.PENDING,
-        help_text="ລໍຖ້າ = ຍັງບໍ່ຈ່າຍ · ສຳເລັດ = ຈ່າຍ/ຮັບເຄື່ອງແລ້ວ",
     )
 
     class Meta:
@@ -50,12 +47,42 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items", verbose_name="ອໍເດີ")
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="ສິນຄ້າ")
     quantity = models.PositiveIntegerField("ຈຳນວນ", default=1)
-    price = models.DecimalField("ລາຄາ/ຫນ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    price = models.DecimalField("ລາຄາ/ໜ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
     subtotal = models.DecimalField("ລວມແຖວ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     class Meta:
         verbose_name = "ລາຍການໃນອໍເດີ"
         verbose_name_plural = "ລາຍການໃນອໍເດີ"
+
+    def save(self, *args, **kwargs):
+        from decimal import ROUND_HALF_UP
+        qty = Decimal(self.quantity or 0)
+        unit = Decimal(self.price or 0)
+        self.subtotal = (qty * unit).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        super().save(*args, **kwargs)
+        self._refresh_bill_total()
+
+    def delete(self, *args, **kwargs):
+        order_id = self.order_id
+        super().delete(*args, **kwargs)
+        self._refresh_bill_total_for(order_id)
+
+    def _refresh_bill_total(self):
+        self._refresh_bill_total_for(self.order_id)
+
+    @staticmethod
+    def _refresh_bill_total_for(order_id):
+        from django.db.models import Sum
+        bill = Bill.objects.filter(order_id=order_id).first()
+        if not bill:
+            return
+        total = (
+            OrderItem.objects.filter(order_id=order_id).aggregate(s=Sum("subtotal"))["s"]
+            or Decimal("0.00")
+        )
+        bill.total_amount = total
+        bill.balance_due = max(total - (bill.paid_amount or Decimal("0.00")), Decimal("0.00"))
+        bill.save(update_fields=["total_amount", "balance_due"])
 
     def __str__(self):
         return f"{self.order} - {self.product.name}"

@@ -14,21 +14,21 @@ from .staff_utils import staff_required
 def pos_view(request):
     q = request.GET.get("q", "").strip()
     products_qs = Product.objects.filter(is_active=True).order_by("name")
-    
+
     if q:
         products_qs = products_qs.filter(Q(name__icontains=q) | Q(slug__icontains=q))
 
     # Initialize cart
     cart = request.session.get("pos_cart", {})
-    
+
     # Calculate cart total and prepare items for template
     cart_items = []
     total = Decimal("0")
-    
+
     # Fetch all products in cart to avoid N+1
     product_ids = cart.keys()
     cart_products = {str(p.id): p for p in Product.objects.filter(id__in=product_ids)}
-    
+
     for pid, qty in cart.items():
         if pid in cart_products:
             p = cart_products[pid]
@@ -131,7 +131,7 @@ def pos_checkout(request):
                 subtotal=p.price * qty
             )
             deduct_stock(p.id, qty)
-            
+
     # Create Bill
     Bill.objects.create(
         order=order,
@@ -232,3 +232,76 @@ def pos_reserve_checkout(request):
         f"ຈອງສິນຄ້າສຳເລັດ! ອໍເດີ #{order.id} — ມັດຈຳ {int(deposit):,} ກີບ, ໝົດອາຍຸ {expire_at.strftime('%d/%m/%Y')}",
     )
     return redirect("pos")
+
+
+@staff_required
+def pos_collect_balance(request, order_id):
+    """POS: collect remaining balance for a reservation order (option B)."""
+    from django.contrib import messages
+    from .models import Payment
+
+    order = get_object_or_404(
+        Order.objects.select_related("customer", "bill").prefetch_related(
+            "items__product",
+            "reservations__product",
+        ),
+        pk=order_id,
+    )
+    bill = getattr(order, "bill", None)
+    if not bill:
+        messages.error(request, f"ອໍເດີ #{order.id} ບໍ່ມີບິນ")
+        return redirect("staff_reserved")
+
+    open_reservations = order.reservations.filter(
+        status__in=[Reserved.Status.RESERVED, Reserved.Status.PAID]
+    )
+    if not open_reservations.exists():
+        messages.info(request, f"ອໍເດີ #{order.id} ບໍ່ມີການຈອງທີ່ຕ້ອງຮັບເງິນ")
+        return redirect("staff_reserved")
+
+    # Deposit must be approved first (PAID), otherwise send to slips
+    if open_reservations.filter(status=Reserved.Status.RESERVED).exists():
+        messages.error(
+            request,
+            f"ອໍເດີ #{order.id} ຍັງບໍ່ອະນຸມັດມັດຈຳ — ໄປ Payment slips ກ່ອນ",
+        )
+        return redirect("staff_slips")
+
+    balance = Decimal(bill.balance_due or 0)
+    if balance <= 0:
+        # Sync line remains if bill already paid
+        open_reservations.filter(remain_amount__gt=0).update(remain_amount=Decimal("0"))
+        messages.info(request, f"ອໍເດີ #{order.id} ຊຳລະຄົບແລ້ວ — ກັບໄປຢັ້ງຢືນມອບເຄື່ອງໄດ້")
+        return redirect("staff_reserved")
+
+    if request.method == "POST":
+        pay_with = request.POST.get("pay_with", Payment.PayWith.CASH)
+        if pay_with not in {Payment.PayWith.CASH, Payment.PayWith.TRANSFER, Payment.PayWith.QR}:
+            pay_with = Payment.PayWith.CASH
+
+        employee = getattr(request.user, "employee_profile", None)
+        Payment.objects.create(
+            bill=bill,
+            employee=employee,
+            pay_amount=balance,
+            pay_with=pay_with,
+        )
+        bill.paid_amount = (bill.paid_amount or Decimal("0")) + balance
+        bill.balance_due = Decimal("0")
+        bill.status = Bill.Status.PAID
+        bill.save()
+
+        open_reservations.update(remain_amount=Decimal("0"))
+
+        messages.success(
+            request,
+            f"ຮັບເງິນຄ້າງອໍເດີ #{order.id} ສຳເລັດ {int(balance):,} ₭ — ກັບໄປຢັ້ງຢືນມອບເຄື່ອງໄດ້",
+        )
+        return redirect("staff_reserved")
+
+    return render(request, "pos_collect.html", {
+        "order": order,
+        "bill": bill,
+        "balance": balance,
+        "reservations": open_reservations,
+    })

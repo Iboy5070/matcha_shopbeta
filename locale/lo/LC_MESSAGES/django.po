@@ -338,9 +338,8 @@ msgstr "ສຽງຕອບຮັບຈາກລູກຄ້າ"
 
 #: templates/store/home.html:83
 msgid ""
-"Ask about products — we are happy to help via email, LINE, or our contact "
-"form."
-msgstr "ສອບຖາມລາຍລະອຽດສິນຄ້າໄດ້ທາງອີເມວ LINE ຫຼື ຟອມຕິດຕໍ່ເຮົາ"
+"Ask about products — we are happy to help via WhatsApp, Facebook, or our contact form."
+msgstr "ສອບຖາມສິນຄ້າໄດ້ທາງ WhatsApp, Facebook ຫຼື ຟອມຕິດຕໍ່ເຮົາ"
 
 #: templates/store/home.html:85
 msgid "Chat with us"

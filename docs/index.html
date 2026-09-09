@@ -4,175 +4,42 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <title>The 196 Haus Matcha — ກຳລັງເປີດ...</title>
+  <title>The 196 Haus Matcha — Local Demo</title>
   <style>
     * { box-sizing: border-box; }
     body {
-      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      font-family: system-ui, "Sarabun", sans-serif; background: #f7f5f0; color: #1a1a1a; padding: 1.5rem;
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      padding: 1.5rem; background: #f7f5f0; color: #1f2d24;
+      font-family: system-ui, "Sarabun", sans-serif;
     }
-    .card {
-      max-width: 420px; width: 100%; background: #fff; border-radius: 1rem; padding: 2rem; text-align: center;
+    main {
+      width: min(520px, 100%); padding: 2rem; text-align: center;
+      background: white; border-radius: 1rem;
       box-shadow: 0 8px 30px rgba(45, 90, 61, 0.12);
     }
-    h1 { color: #2d5a3d; font-size: 1.5rem; margin: 0 0 0.25rem; }
-    p { color: #5c5c5c; line-height: 1.5; margin: 0.5rem 0; }
-    .spinner {
-      width: 40px; height: 40px; margin: 1rem auto; border: 3px solid #e8e8e8;
-      border-top-color: #2d5a3d; border-radius: 50%; animation: spin 0.8s linear infinite;
+    h1 { margin: 0 0 0.5rem; color: #2d5a3d; }
+    .badge {
+      display: inline-block; margin: 0.5rem 0 1rem; padding: 0.35rem 0.75rem;
+      border-radius: 999px; background: #e8f1eb; color: #2d5a3d; font-weight: 700;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .progress { height: 6px; background: #e8e8e8; border-radius: 999px; overflow: hidden; margin: 1rem 0; }
-    .progress > i {
-      display: block; height: 100%; width: 0%;
-      background: linear-gradient(90deg, #2d5a3d, #4a8f62); transition: width 0.35s ease;
-    }
-    a { color: #2d5a3d; font-weight: 600; }
-    .actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
-    .btn {
-      display: inline-block; padding: 0.65rem 1.2rem; border-radius: 999px;
-      text-decoration: none; font-weight: 600;
-    }
-    .btn-wa { background: #25d366; color: #fff !important; }
-    .btn-fb { background: #1877f2; color: #fff !important; }
-    .btn-ghost { background: #f0f0f0; color: #333 !important; font-size: 0.875rem; }
-    .small { font-size: 0.875rem; opacity: 0.85; }
-    .hint { color: #2d5a3d; font-weight: 600; }
+    p { line-height: 1.65; color: #5c665f; }
+    a { color: #2d5a3d; font-weight: 700; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>The 196 Haus <small>MATCHA</small></h1>
-    <div class="spinner" aria-hidden="true"></div>
-    <p id="msg" class="hint">ກຳລັງເປີດຮ້ານ... ລໂຝອັດຕະໂນມັດ</p>
-    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
-    <p class="small" id="sub">ບໍ່ຕ້ອງ reload — ລະບົບຈະເຊື່ອມຕໍ່ໃຫ້ເອງ</p>
-    <div class="actions">
-      <a class="btn btn-wa" id="wa" href="#" target="_blank" rel="noopener" hidden>ສັ່ງຊື້ຜ່ານ WhatsApp</a>
-      <a class="btn btn-fb" id="fb" href="#" target="_blank" rel="noopener" hidden>Facebook</a>
-      <a class="btn btn-ghost" id="direct" href="#">ເຂົ້າເວັບໂດຍກົງ</a>
-    </div>
-  </div>
-  <script>
-    const SHOP = "https://matcha-shopbeta.onrender.com/";
-    const HEALTH = SHOP + "healthz/";
-    const qs = new URLSearchParams(location.search);
-    const WHATSAPP = qs.get("wa")
-      ? (qs.get("wa").startsWith("http") ? qs.get("wa") : "https://wa.me/" + qs.get("wa"))
-      : "";
-    const FACEBOOK = qs.get("fb") || "";
-
-    const msg = document.getElementById("msg");
-    const sub = document.getElementById("sub");
-    const bar = document.getElementById("bar");
-    document.getElementById("direct").href = SHOP;
-
-    if (WHATSAPP) {
-      document.getElementById("wa").href = WHATSAPP;
-      document.getElementById("wa").hidden = false;
-    }
-    if (FACEBOOK) {
-      document.getElementById("fb").href = FACEBOOK;
-      document.getElementById("fb").hidden = false;
-    }
-
-    let done = false;
-    const started = Date.now();
-    const TXT_GO = 'ເປີດແລ້ວ! ກຳລັງເຂົ້າຮ້ານ...';
-    const TXT_CONN = 'ກຳລັງເຊື່ອມຕໍ່... ';
-    const TXT_A = 'ກຳລັງຕື່ນເຊີເວີ (free) — ປົກກະຕິ 20–60 ວິນາທີ';
-    const TXT_B = 'ຍັງຕື່ນຍູ່ — ບໍ່ຕ້ອງ reload';
-    const TXT_C = 'ໃຊ້ເວລາດົນກວ່າປົກກະຕິ — ກຳລັງລອງຕໍ່...';
-
-    function goShop() {
-      if (done) return;
-      done = true;
-      msg.textContent = TXT_GO;
-      bar.style.width = "100%";
-      window.location.replace(SHOP);
-    }
-
-    function setProgress() {
-      if (done) return;
-      const sec = (Date.now() - started) / 1000;
-      const pct = Math.min(92, Math.round(8 + sec * 1.4));
-      bar.style.width = pct + "%";
-      msg.textContent = TXT_CONN + pct + "%";
-      if (sec < 20) sub.textContent = TXT_A;
-      else if (sec < 60) sub.textContent = TXT_B;
-      else sub.textContent = TXT_C;
-    }
-
-    function pingImage() {
-      return new Promise(function (resolve) {
-        const img = new Image();
-        const finish = function (ok) {
-          img.onload = img.onerror = null;
-          resolve(ok);
-        };
-        img.onload = function () { finish(true); };
-        img.onerror = function () { finish(false); };
-        img.src = HEALTH + "?_=" + Date.now();
-        setTimeout(function () { finish(false); }, 12000);
-      });
-    }
-
-    async function tryFetch(timeoutMs) {
-      const ctrl = new AbortController();
-      const t = setTimeout(function () { ctrl.abort(); }, timeoutMs);
-      try {
-        const r = await fetch(HEALTH + "?_=" + Date.now(), {
-          cache: "no-store",
-          mode: "cors",
-          signal: ctrl.signal,
-        });
-        clearTimeout(t);
-        return r.ok;
-      } catch (e) {
-        clearTimeout(t);
-        return false;
-      }
-    }
-
-    async function tryWake(timeoutMs) {
-      return Promise.race([
-        Promise.any([
-          tryFetch(timeoutMs).then(function (ok) { if (!ok) throw 0; return true; }),
-          pingImage().then(function (ok) { if (!ok) throw 0; return true; }),
-        ]).catch(function () { return false; }),
-        new Promise(function (r) { setTimeout(function () { r(false); }, timeoutMs); }),
-      ]);
-    }
-
-    // Long wake: Render free cold start often needs 45-90s
-    (function longWake() {
-      tryFetch(90000).then(function (ok) { if (ok) goShop(); });
-      setTimeout(function () {
-        tryFetch(90000).then(function (ok) { if (ok) goShop(); });
-      }, 3000);
-    })();
-
-    const progressTimer = setInterval(setProgress, 400);
-    setProgress();
-
-    async function loop() {
-      let i = 0;
-      while (!done) {
-        i += 1;
-        const timeout = i <= 3 ? 8000 : i <= 8 ? 15000 : 25000;
-        if (await tryWake(timeout)) {
-          goShop();
-          return;
-        }
-        if (done) return;
-        const wait = i < 6 ? 600 : 1200;
-        await new Promise(function (r) { setTimeout(r, wait); });
-      }
-    }
-
-    loop().finally(function () { clearInterval(progressTimer); });
-  </script>
+  <main>
+    <h1>The 196 Haus Matcha</h1>
+    <div class="badge">Prototype / Local Demo</div>
+    <p>
+      ໂຄງການນີ້ເປັນ Demo ສຳລັບການສຶກສາ
+      ແລະຍັງບໍ່ເປີດເປັນເວັບໃຊ້ງານຈິງ.
+    </p>
+    <p>
+      ໃຫ້ Download source code ແລ້ວເປີດ
+      <strong>RUN_DEMO.command</strong> ສຳລັບ Mac ຫຼື
+      <strong>RUN_DEMO_WINDOWS.bat</strong> ສຳລັບ Windows.
+    </p>
+    <p><a href="https://github.com/Iboy5070/matcha_shopbeta/">ເບິ່ງ Source code ໃນ GitHub</a></p>
+  </main>
 </body>
 </html>

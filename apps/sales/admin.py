@@ -7,8 +7,15 @@ from .models import Order, OrderItem, Bill, Payment, Reserved
 class OrderItemInline(TabularInline):
     model = OrderItem
     extra = 0
+    fields = ("product", "quantity", "price", "subtotal")
     verbose_name = "ລາຍການສິນຄ້າ"
     verbose_name_plural = "ລາຍການສິນຄ້າໃນອໍເດີ"
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if formfield and db_field.name == "subtotal":
+            formfield.widget.attrs["readonly"] = True
+        return formfield
 
 
 @admin.register(Order)
@@ -20,9 +27,11 @@ class OrderAdmin(ModelAdmin):
     fieldsets = (
         ("ອໍເດີ", {
             "fields": ("customer", "employee", "status"),
-            "description": "ອໍເດີເວັບ = ມີລູກຄ້າ · ອໍເດີ POS = ມີພະນັກງານ",
         }),
     )
+
+    class Media:
+        js = ("admin/js/order_line_calc.js",)
 
 
 @admin.register(Bill)
@@ -32,7 +41,6 @@ class BillAdmin(ModelAdmin):
     fieldsets = (
         ("ບິນ", {
             "fields": ("order", "total_amount", "paid_amount", "balance_due", "status"),
-            "description": "ຍອດເງິນຂອງອໍເດີ — ພະນັກງານກວດສະລິບໃນໜ້າ Staff",
         }),
     )
 
@@ -44,7 +52,6 @@ class PaymentAdmin(ModelAdmin):
     fieldsets = (
         ("ການຊຳລະ", {
             "fields": ("bill", "employee", "pay_amount", "pay_with", "slip_url"),
-            "description": "ຖ້າມີລິ້ງສະລິບ — ໄປກວດທີ່ Staff → ກວດສະລິບ",
         }),
     )
 
@@ -62,6 +69,5 @@ class ReservedAdmin(ModelAdmin):
     fieldsets = (
         ("ການຈອງ", {
             "fields": ("order", "product", "quantity", "deposit_amount", "remain_amount", "status", "stock_ready", "expire_at"),
-            "description": "ຈອງ = ຈ່າຍມັດຈຳກ່ອນ · ຕິກ 'ສິນຄ້າພ້ອມ' ເມື່ອຈັດສິນຄ້າໃຫ້ແລ້ວ",
         }),
     )

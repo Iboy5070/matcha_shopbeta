@@ -1,0 +1,97 @@
+{% extends "staff/print_base.html" %}
+{% load mz_extras %}
+{% block title %}ໃບຢືນຢັນມັດຈຳ #{{ order.id }}{% endblock %}
+{% block toolbar_left %}
+  <a href="{% url 'staff_order_detail' order.id %}">← ກັບອໍເດີ</a>
+  <a href="{% url 'staff_print_bill' order.id %}">ໃບບິນ</a>
+{% endblock %}
+
+{% block sheet %}
+<header class="doc-head">
+  <div class="brand">{{ shop_brand }}</div>
+  <div class="doc-title">ໃບຢືນຢັນການຈອງ / ມັດຈຳ</div>
+  <div class="doc-sub">Deposit Confirmation · ອໍເດີ #{{ order.id }}</div>
+</header>
+
+<dl class="meta">
+  <div>
+    <dt>ວັນທີຈອງ</dt>
+    <dd>{{ order.order_date|date:"d/m/Y H:i" }}</dd>
+    <dt>ລູກຄ້າ</dt>
+    <dd>
+      {% if order.customer %}
+        {{ order.customer.cus_name }} {{ order.customer.cus_last }}
+        {% if order.customer.cus_tel %}<br><span style="font-weight:400">{{ order.customer.cus_tel }}</span>{% endif %}
+      {% else %}—{% endif %}
+    </dd>
+  </div>
+  <div>
+    <dt>ສະຖານະອໍເດີ</dt>
+    <dd>{{ order.get_status_display }}</dd>
+    <dt>ບິນ</dt>
+    <dd>{% if bill %}#{{ bill.id }} · {{ bill.get_status_display }}{% else %}—{% endif %}</dd>
+  </div>
+</dl>
+
+<table>
+  <thead>
+    <tr>
+      <th>ສິນຄ້າ</th>
+      <th class="num">ຈຳນວນ</th>
+      <th class="num">ມັດຈຳ</th>
+      <th class="num">ຄ້າງຊຳລະ</th>
+      <th>ສະຖານະ</th>
+      <th>ໝົດອາຍຸ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reservations %}
+    <tr>
+      <td>{{ r.product.name }}</td>
+      <td class="num">{{ r.quantity }}</td>
+      <td class="num">{{ r.deposit_amount|floatformat:0|kip }} ₭</td>
+      <td class="num">{{ r.remain_amount|floatformat:0|kip }} ₭</td>
+      <td>{{ r.get_status_display }}</td>
+      <td>{{ r.expire_at|date:"d/m/Y" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="totals">
+  <div class="row"><span>ລວມມັດຈຳ</span><strong>{{ deposit_total|floatformat:0|kip }} ₭</strong></div>
+  <div class="row"><span>ລວມຄ້າງຊຳລະ</span><strong>{{ remain_total|floatformat:0|kip }} ₭</strong></div>
+  {% if bill %}
+  <div class="row"><span>ຍອດທັງໝົດອໍເດີ</span><strong>{{ bill.total_amount|floatformat:0|kip }} ₭</strong></div>
+  <div class="row"><span>ຈ່າຍແລ້ວ (ບິນ)</span><strong>{{ bill.paid_amount|floatformat:0|kip }} ₭</strong></div>
+  {% endif %}
+</div>
+
+{% if payments %}
+<p style="margin-top:20px;font-weight:600;">ການໂອນ / ສະລິບທີ່ບັນທຶກ</p>
+<table>
+  <thead>
+    <tr>
+      <th>ວັນທີ</th>
+      <th>ວິທີ</th>
+      <th class="num">ຍອດ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.pay_date|date:"d/m/Y H:i" }}</td>
+      <td>{{ p.get_pay_with_display }}</td>
+      <td class="num">{{ p.pay_amount|floatformat:0|kip }} ₭</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<div class="stamp">
+  <div><div class="line">ລູກຄ້າ</div></div>
+  <div><div class="line">ພະນັກງານ / ຮ້ານ</div></div>
+</div>
+<p class="footer-note">ເອກະສານນີ້ຢືນຢັນການຈອງ ແລະ ການຈ່າຍມັດຈຳ — ບໍ່ແມ່ນໃບບິນຊຳລະຄົບ</p>
+{% endblock %}

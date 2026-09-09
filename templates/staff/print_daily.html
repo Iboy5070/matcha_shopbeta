@@ -1,0 +1,74 @@
+{% extends "staff/print_base.html" %}
+{% load mz_extras %}
+{% block title %}ລາຍງານຍອດຂາຍ {{ report_date|date:"d/m/Y" }}{% endblock %}
+{% block toolbar_left %}
+  <a href="{% url 'staff_dashboard' %}">← Dashboard</a>
+{% endblock %}
+{% block toolbar_extra %}
+<form method="get" style="display:flex;gap:8px;align-items:center;">
+  <label style="font-size:13px;">ວັນທີ
+    <input type="date" name="date" value="{{ report_date|date:'Y-m-d' }}" style="margin-left:6px;padding:6px 8px;border:1px solid #c5d0c8;border-radius:8px;font:inherit;">
+  </label>
+  <button type="submit">ເບິ່ງ</button>
+</form>
+{% endblock %}
+
+{% block sheet %}
+<header class="doc-head">
+  <div class="brand">{{ shop_brand }}</div>
+  <div class="doc-title">ລາຍງານຍອດຂາຍລາຍວັນ</div>
+  <div class="doc-sub">Daily Sales Report · {{ report_date|date:"d/m/Y" }}</div>
+</header>
+
+<dl class="meta">
+  <div>
+    <dt>ຈຳນວນອໍເດີທັງໝົດ (ມື້ນີ້)</dt>
+    <dd>{{ orders_count }}</dd>
+  </div>
+  <div>
+    <dt>ບິນທີ່ຊຳລະຄົບ</dt>
+    <dd>{{ paid_count }}</dd>
+  </div>
+</dl>
+
+<table>
+  <thead>
+    <tr>
+      <th>ບິນ</th>
+      <th>ອໍເດີ</th>
+      <th>ເວລາ</th>
+      <th>ລູກຄ້າ / ພະນັກງານ</th>
+      <th class="num">ຍອດ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bill in bills %}
+    <tr>
+      <td>#{{ bill.id }}</td>
+      <td>#{{ bill.order_id }}</td>
+      <td>{{ bill.bill_date|date:"H:i" }}</td>
+      <td>
+        {% if bill.order.customer %}
+          {{ bill.order.customer.cus_name }}
+        {% elif bill.order.employee %}
+          {{ bill.order.employee.emp_name }} (POS)
+        {% else %}—{% endif %}
+      </td>
+      <td class="num">{{ bill.total_amount|floatformat:0|kip }} ₭</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" style="text-align:center;color:#5a6b60;padding:24px;">ບໍ່ມີບິນຊຳລະຄົບໃນວັນນີ້</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="totals">
+  <div class="row grand"><span>ຍອດຂາຍລວມ (ບິນຊຳລະຄົບ)</span><span>{{ total_sales|floatformat:0|kip }} ₭</span></div>
+</div>
+
+<div class="stamp">
+  <div><div class="line">ຜູ້ຈັດທຳລາຍງານ</div></div>
+  <div><div class="line">ຜູ້ກວດ</div></div>
+</div>
+<p class="footer-note">ລາຍງານນີ້ສະຫຼຸບຈາກບິນສະຖານະ «ຊຳລະຄົບ» ໃນວັນທີທີ່ເລືອກ</p>
+{% endblock %}

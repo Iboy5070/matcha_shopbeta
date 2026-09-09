@@ -1,7 +1,12 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from django.db import models
+from django.db.models import Sum
 from apps.store.models import Employee
 from apps.catalog.models import Product
+
+
+def _money(value) -> Decimal:
+    return Decimal(value or 0).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 
 class Supplier(models.Model):
@@ -46,12 +51,34 @@ class PODetail(models.Model):
     )
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="ສິນຄ້າ")
     quantity = models.PositiveIntegerField("ຈຳນວນ", default=1)
-    cost_price = models.DecimalField("ຕົ້ນທຶນ/ຫນ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    cost_price = models.DecimalField("ຕົ້ນທຶນ/ໜ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
     subtotal = models.DecimalField("ລວມແຖວ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
 
     class Meta:
         verbose_name = "ລາຍການໃບສັ່ງຊື້"
         verbose_name_plural = "ລາຍການໃບສັ່ງຊື້"
+
+    def save(self, *args, **kwargs):
+        self.subtotal = _money(Decimal(self.quantity or 0) * Decimal(self.cost_price or 0))
+        super().save(*args, **kwargs)
+        self._refresh_po_total()
+
+    def delete(self, *args, **kwargs):
+        po_id = self.purchase_order_id
+        super().delete(*args, **kwargs)
+        total = (
+            PODetail.objects.filter(purchase_order_id=po_id).aggregate(s=Sum("subtotal"))["s"]
+            or Decimal("0.00")
+        )
+        PurchaseOrder.objects.filter(pk=po_id).update(total_amount=_money(total))
+
+    def _refresh_po_total(self):
+        total = (
+            self.purchase_order.details.aggregate(s=Sum("subtotal"))["s"] or Decimal("0.00")
+        )
+        PurchaseOrder.objects.filter(pk=self.purchase_order_id).update(
+            total_amount=_money(total)
+        )
 
     def __str__(self):
         return f"PO Detail #{self.id}"
@@ -82,7 +109,7 @@ class ImportDetail(models.Model):
         default=1,
         help_text="ເມື່ອບັນທຶກ — ລະບົບເພີ່ມສະຕັອກອັດຕະໂນມັດ",
     )
-    cost_price = models.DecimalField("ຕົ້ນທຶນ/ຫນ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    cost_price = models.DecimalField("ຕົ້ນທຶນ/ໜ່ວຍ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
     subtotal = models.DecimalField("ລວມແຖວ (ກີບ)", max_digits=12, decimal_places=2, default=Decimal("0.00"))
     created_at = models.DateTimeField("ວັນທີບັນທຶກ", auto_now_add=True, null=True, blank=True)
 
@@ -92,10 +119,26 @@ class ImportDetail(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        self.subtotal = _money(Decimal(self.quantity or 0) * Decimal(self.cost_price or 0))
         super().save(*args, **kwargs)
+        self._refresh_import_total()
         if is_new and self.quantity > 0:
-            from apps.catalog.stock import receive_stock
-            receive_stock(self.product_id, self.quantity)
+            # Create visible warehouse batch; Inventory.save() bumps shop stock once.
+            batch = Inventory(product_id=self.product_id, quantity=self.quantity)
+            batch.save()
+
+    def delete(self, *args, **kwargs):
+        imports_id = self.imports_id
+        super().delete(*args, **kwargs)
+        total = (
+            ImportDetail.objects.filter(imports_id=imports_id).aggregate(s=Sum("subtotal"))["s"]
+            or Decimal("0.00")
+        )
+        Imports.objects.filter(pk=imports_id).update(total_amount=_money(total))
+
+    def _refresh_import_total(self):
+        total = self.imports.details.aggregate(s=Sum("subtotal"))["s"] or Decimal("0.00")
+        Imports.objects.filter(pk=self.imports_id).update(total_amount=_money(total))
 
     def __str__(self):
         return f"Import Detail #{self.id}"
@@ -117,8 +160,9 @@ class Inventory(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        skip_receive = bool(kwargs.pop("skip_receive", False) or getattr(self, "_skip_receive", False))
         super().save(*args, **kwargs)
-        if is_new and self.quantity > 0:
+        if is_new and self.quantity > 0 and not skip_receive:
             from apps.catalog.stock import receive_stock
             receive_stock(self.product_id, self.quantity)
 

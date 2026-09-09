@@ -27,7 +27,7 @@
 
 <div class="mz-shop-grid">
   {% for product in products %}
-  {% include "store/_product_card.html" with product=product %}
+    {% include "store/_product_card.html" with product=product %}
   {% empty %}
   <p class="text-muted mz-shop-empty">{% trans "No products found." %}</p>
   {% endfor %}

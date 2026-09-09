@@ -5,7 +5,7 @@
 
 {% block staff_page %}
 <div class="sp-page-head">
-  <p class="sp-page-lead"></p>
+  <p class="sp-page-lead">ລວມຕາມອໍເດີ — ຢັ້ງຢືນ/ຍົກເລີກທັງກຸ່ມຄັ້ງດຽວ</p>
 </div>
 
 <div class="row g-3 g-lg-4 mb-4">
@@ -20,58 +20,81 @@
             <thead class="table-light">
               <tr>
                 <th>ວັນທີຈອງ</th>
-                <th>ສິນຄ້າ</th>
+                <th>ອໍເດີ / ສິນຄ້າ</th>
                 <th>ຈຳນວນ</th>
                 <th>ມັດຈຳ</th>
                 <th>ຄ້າງຊຳລະ</th>
                 <th>ໝົດອາຍຸ</th>
-                <th>ສະຖານະໃບຈອງ</th>
-                <th>ສະຖານະສິນຄ້າ</th>
+                <th>ສະຖານະ</th>
                 <th>ຢັ້ງຢືນ</th>
               </tr>
             </thead>
             <tbody>
-              {% for r in reservations %}
+              {% for g in reservation_groups %}
               <tr>
-                <td class="small text-muted">{{ r.res_date|date:"d/m/Y H:i" }}</td>
+                <td class="small text-muted">{{ g.order.order_date|date:"d/m/Y H:i" }}</td>
                 <td>
-                  {{ r.product.name }}
-                  <br>
-                  <small class="text-muted">
-                    {% if r.order.customer %}{{ r.order.customer.cus_name }}{% elif r.order.employee %}{{ r.order.employee.emp_name }} (POS){% else %}-{% endif %}
+                  <div class="fw-semibold">
+                    {% if g.order.customer %}{{ g.order.customer.cus_name }}{% elif g.order.employee %}{{ g.order.employee.emp_name }} (POS){% else %}-{% endif %}
+                    · <a href="{% url 'staff_order_detail' g.order.id %}">ອໍເດີ #{{ g.order.id }}</a>
+                  </div>
+                  <ul class="mb-1 mt-1 ps-3 small">
+                    {% for r in g.lines %}
+                    <li>{{ r.product.name }} × {{ r.quantity }}
+                      <span class="text-muted">({{ r.get_status_display }})</span>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                  <small>
+                    <a href="{% url 'staff_print_deposit' g.order.id %}" target="_blank">ໃບມັດຈຳ</a>
+                    · <a href="{% url 'staff_print_bill' g.order.id %}" target="_blank">ໃບບິນ</a>
                   </small>
                 </td>
-                <td>{{ r.quantity }}</td>
+                <td>{{ g.qty_total }}</td>
                 <td class="text-success fw-semibold">
-                  {{ r.deposit_amount|floatformat:0|kip }} ₭
-                  {% with payment=r.order.bill.payments.first %}
+                  {{ g.deposit_total|floatformat:0|kip }} ₭
+                  {% if g.order.bill %}
+                  {% with payment=g.order.bill.payments.first %}
                   {% if payment and payment.slip_url %}
-                  <br><a href="{{ payment.slip_url }}" target="_blank" class="small">ເບິ່ງສະລິບ</a>
+                  <br><a href="{{ payment.slip_url }}" target="_blank" rel="noopener" class="small">ເບິ່ງສະລິບ</a>
                   {% endif %}
                   {% endwith %}
+                  {% endif %}
                 </td>
-                <td>{{ r.remain_amount|floatformat:0|kip }} ₭</td>
-                <td class="small {% if r.expire_at < now and r.status == 'RESERVED' %}text-danger fw-bold{% else %}text-muted{% endif %}">
-                  {{ r.expire_at|date:"d/m/Y" }}
+                <td>{{ g.remain_total|floatformat:0|kip }} ₭</td>
+                <td class="small {% if g.expire_at and g.expire_at < now and g.group_status == 'RESERVED' %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                  {% if g.expire_at %}{{ g.expire_at|date:"d/m/Y" }}{% else %}—{% endif %}
                 </td>
-                <td><span class="badge text-bg-{{ r.status|status_badge }}">{{ r.get_status_display }}</span></td>
                 <td>
-                  {% if r.stock_ready %}
-                  <span class="badge text-bg-success">ພ້ອມ</span>
-                  {% elif r.status == "RESERVED" %}
-                  <span class="badge text-bg-secondary">ລໍສິນຄ້າ</span>
+                  {% if g.group_status == "COMPLETED" %}
+                  <span class="badge text-bg-success">ສຳເລັດ</span>
+                  {% elif g.group_status == "CANCELLED" %}
+                  <span class="badge text-bg-danger">ຍົກເລີກ</span>
+                  {% elif g.group_status == "PAID" %}
+                  <span class="badge text-bg-success">ຊຳລະຄົບ</span>
                   {% else %}
-                  <span class="text-muted small">—</span>
+                  <span class="badge text-bg-primary">ຈອງ</span>
                   {% endif %}
                 </td>
                 <td>
-                  {% if r.status == "RESERVED" %}
-                  <form method="POST" action="{% url 'staff_reserved_action' r.id %}" class="d-inline">
+                  {% if g.can_cancel %}
+                  <form method="POST" action="{% url 'staff_reserved_order_action' g.order.id %}">
                     {% csrf_token %}
-                    <button type="submit" name="action" value="complete" class="btn btn-sm btn-success" onclick="return confirm('ລູກຄ້າມາຮັບເຄື່ອງ ແລະ ຊຳລະຄົບແລ້ວ?');">
-                      ຢັ້ງຢືນ
+                    {% if g.needs_slip %}
+                    <div class="small text-muted mb-1">ຕ້ອງອະນຸມັດສະລິບກ່ອນ</div>
+                    {% elif g.needs_pos %}
+                    <a href="{% url 'pos_collect_balance' g.order.id %}" class="btn btn-sm btn-warning mb-1">
+                      ຮັບເງິນຄ້າງ (POS)
+                    </a>
+                    <div class="small text-muted mb-1">ຕ້ອງຮັບຄ້າງທີ່ POS ກ່ອນ</div>
+                    {% elif g.can_complete %}
+                    <button type="submit" name="action" value="complete" class="btn btn-sm btn-success"
+                      onclick="return confirm('ຢັ້ງຢືນມອບເຄື່ອງອໍເດີ #{{ g.order.id }} ທັງໝົດ {{ g.open_count }} ລາຍການ?');">
+                      ຢັ້ງຢືນທັງອໍເດີ
                     </button>
-                    <button type="submit" name="action" value="cancel" class="btn btn-sm btn-outline-danger ms-1" onclick="return confirm('ຍົກເລີກການຈອງນີ້?');">
+                    {% endif %}
+                    <button type="submit" name="action" value="cancel" class="btn btn-sm btn-outline-danger ms-1"
+                      onclick="return confirm('ຍົກເລີກການຈອງອໍເດີ #{{ g.order.id }} ທັງໝົດ?');">
                       ຍົກເລີກ
                     </button>
                   </form>
@@ -82,7 +105,7 @@
               </tr>
               {% empty %}
               <tr>
-                <td colspan="9" class="text-center py-5 text-muted">ຍັງບໍ່ມີການຈອງສິນຄ້າ</td>
+                <td colspan="8" class="text-center py-5 text-muted">ຍັງບໍ່ມີການຈອງສິນຄ້າ</td>
               </tr>
               {% endfor %}
             </tbody>

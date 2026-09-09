@@ -1,15 +1,15 @@
 from django.contrib import admin
 from django.db import models
 from unfold.admin import ModelAdmin
-from unfold.widgets import UnfoldAdminTextInputWidget
+from unfold.widgets import UnfoldAdminTextareaWidget
 from .models import Employee, Customer
 
 
-_ADDRESS_WIDGET = UnfoldAdminTextInputWidget()
+_ADDRESS_WIDGET = UnfoldAdminTextareaWidget(attrs={"rows": 3})
 
 
-class _SingleLineTextAdmin(ModelAdmin):
-    """Render TextField address boxes as single-line inputs like other fields."""
+class _AddressTextAdmin(ModelAdmin):
+    """Address fields: multi-line so Enter starts a new line."""
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if isinstance(db_field, models.TextField) and db_field.name in {
@@ -22,7 +22,7 @@ class _SingleLineTextAdmin(ModelAdmin):
 
 
 @admin.register(Employee)
-class EmployeeAdmin(_SingleLineTextAdmin):
+class EmployeeAdmin(_AddressTextAdmin):
     list_display = ("emp_name", "emp_last", "emp_tel", "user")
     search_fields = ("emp_name", "emp_last", "emp_tel")
     fieldsets = (
@@ -37,7 +37,7 @@ class EmployeeAdmin(_SingleLineTextAdmin):
 
 
 @admin.register(Customer)
-class CustomerAdmin(_SingleLineTextAdmin):
+class CustomerAdmin(_AddressTextAdmin):
     list_display = ("cus_name", "cus_last", "cus_tel", "gender", "user")
     search_fields = ("cus_name", "cus_last", "cus_tel")
     fieldsets = (

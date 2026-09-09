@@ -1,9 +1,7 @@
-# Offset ping — together with keep-warm.yml this hits ~every 2 minutes.
-name: Keep Render warm (offset)
+# Local Demo mode: no scheduled Render ping.
+name: Wake Render manually (backup)
 
 on:
-  schedule:
-    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
   workflow_dispatch:
 
 jobs:

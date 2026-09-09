@@ -4,66 +4,80 @@
 {% block page_title %}ສາງສິນຄ້າ{% endblock %}
 
 {% block staff_page %}
-<div class="sp-page-head">
-  <p class="sp-page-lead">ກວດສອບສິນຄ້າໃນສາງ — ເບິ່ງວ່າຍັງເຫຼືອຫຼາຍ ຫຼື ໜ້ອຍ ແລະ ປະຫວັດເພີ່ມສະຕັອກ (ອ່ານຢ່າງດຽວ)</p>
-</div>
+<section class="mb-4">
+  <h2 class="sp-section-title">ຍອດສິນຄ້າປັດຈຸບັນ <span class="text-muted fw-normal">(ຂາຍໄດ້ເທົ່າໃດ)</span></h2>
+  <div class="row g-3">
+    {% for p in products %}
+    <div class="col-6 col-md-3">
+      <div class="sp-stock-tile{% if p.stock_qty <= 0 %} is-empty{% elif p.stock_qty <= 5 %} is-low{% endif %}">
+        <div class="sp-stock-name">{{ p.name }}</div>
+        <div class="sp-stock-qty">{{ p.stock_qty }}</div>
+        <div class="sp-stock-meta">
+          {{ p.category.name }}
+          {% if p.stock_qty <= 0 %}
+          · <span class="text-danger">ໝົດແລ້ວ</span>
+          {% elif p.stock_qty <= 5 %}
+          · <span class="text-warning">ໃກ້ໝົດ</span>
+          {% else %}
+          · ພຽງພໍ
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><p class="text-muted">ຍັງບໍ່ມີສິນຄ້າ — ໃຫ້ Admin ເພີ່ມກ່ອນ</p></div>
+    {% endfor %}
+  </div>
+</section>
 
 <div class="row g-3 g-lg-4 mb-4">
-  <div class="col-lg-7">
+  <div class="col-lg-5">
     <div class="sp-panel">
       <div class="sp-panel-head">
-        <h2>ຈຳນວນສິນຄ້າປັດຈຸບັນ</h2>
+        <h2>1) ຮັບຂອງເຂົ້າ (+ສະຕັອກ)</h2>
       </div>
       <div class="sp-panel-body">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ສິນຄ້າ</th>
-                <th>ໝວດໝູ່</th>
-                <th class="text-end">ຈຳນວນ</th>
-                <th>ສະຖານະ</th>
-              </tr>
-            </thead>
-            <tbody>
+        <form method="post" action="{% url 'staff_inventory' %}" class="vstack gap-3">
+          {% csrf_token %}
+          <div>
+            <label class="form-label" for="product_id">ເລືອກສິນຄ້າ</label>
+            <select class="form-select" name="product_id" id="product_id" required>
+              <option value="">— ເລືອກ —</option>
               {% for p in products %}
-              <tr>
-                <td>{{ p.name }}</td>
-                <td class="text-muted small">{{ p.category.name }}</td>
-                <td class="text-end fw-semibold">{{ p.stock_qty }}</td>
-                <td>
-                  {% if p.stock_qty <= 0 %}
-                  <span class="badge text-bg-danger">ໝົດແລ້ວ</span>
-                  {% elif p.stock_qty <= 5 %}
-                  <span class="badge text-bg-warning">ໃກ້ໝົດ</span>
-                  {% else %}
-                  <span class="badge text-bg-success">ພຽງພໍ</span>
-                  {% endif %}
-                </td>
-              </tr>
-              {% empty %}
-              <tr><td colspan="4" class="text-center text-muted py-4">ຍັງບໍ່ມີສິນຄ້າ — ໃຫ້ Admin ເພີ່ມສິນຄ້າກ່ອນ</td></tr>
+              <option value="{{ p.id }}">{{ p.name }} (ຍັງ {{ p.stock_qty }})</option>
               {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            </select>
+          </div>
+          <div>
+            <label class="form-label" for="quantity">ຈຳນວນທີ່ຮັບເຂົ້າມື້ນີ້</label>
+            <input class="form-control" type="number" name="quantity" id="quantity" min="1" value="1" required>
+          </div>
+          <div>
+            <label class="form-label" for="expiry_date">ວັນໝົດອາຍຸ <span class="text-muted">(ບໍ່ບັງຄັບ)</span></label>
+            <input class="form-control" type="date" name="expiry_date" id="expiry_date">
+          </div>
+          <button type="submit" class="btn btn-success">+ ເພີ່ມສະຕັອກ</button>
+        </form>
+        <p class="small text-muted mt-3 mb-0">ຫຼັງກົດ — ຕົວເລກເທິງຈະເພີ່ມທັນ. ຖ້າມີຄົນຈອງລໍຖ້າ ລະບົບຈອງໃຫ້ກ່ອນ.</p>
       </div>
     </div>
   </div>
 
-  <div class="col-lg-5">
+  <div class="col-lg-7">
     <div class="sp-panel">
       <div class="sp-panel-head">
-        <h2>ປະຫວັດການເຕີມສິນຄ້າ</h2>
+        <h2>2) ປະຫວັດທີ່ເພີ່ມມາ</h2>
+        <span class="sp-panel-meta"></span>
       </div>
       <div class="sp-panel-body">
         <div class="table-responsive">
           <table class="table table-sm align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th>ວັນທີ</th>
+                <th>ວັນ/ເວລາ</th>
                 <th>ສິນຄ້າ</th>
-                <th class="text-end">ຈຳນວນ</th>
+                <th class="text-end">ເພີ່ມ</th>
+                <th>ໝົດອາຍຸ</th>
               </tr>
             </thead>
             <tbody>
@@ -71,10 +85,11 @@
               <tr>
                 <td class="small text-muted">{{ b.created_at|date:"d/m/Y H:i" }}</td>
                 <td>{{ b.product.name }}</td>
-                <td class="text-end">+{{ b.quantity }}</td>
+                <td class="text-end text-success fw-semibold">+{{ b.quantity }}</td>
+                <td class="small text-muted">{% if b.expiry_date %}{{ b.expiry_date|date:"d/m/Y" }}{% else %}—{% endif %}</td>
               </tr>
               {% empty %}
-              <tr><td colspan="3" class="text-center text-muted py-4">ຍັງບໍ່ມີປະຫວັດເພີ່ມສະຕັອກ</td></tr>
+              <tr><td colspan="4" class="text-center text-muted py-4">ຍັງບໍ່ມີປະຫວັດ</td></tr>
               {% endfor %}
             </tbody>
           </table>

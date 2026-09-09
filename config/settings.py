@@ -137,6 +137,7 @@ LINE_URL = os.getenv("LINE_URL", "")
 FACEBOOK_URL = os.getenv("FACEBOOK_URL", "")
 
 # WhatsApp: ໃຊ້ WHATSAPP_URL ຫຼື WHATSAPP_PHONE (ເຊັ່ນ 8562012345678)
+# Storefront shows channels only when the matching env var is set.
 WHATSAPP_URL = os.getenv("WHATSAPP_URL", "")
 if not WHATSAPP_URL:
     _wa_phone = os.getenv("WHATSAPP_PHONE", "").strip().lstrip("+").replace(" ", "").replace("-", "")
@@ -171,8 +172,9 @@ MESSAGE_TAGS = {
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
-# ໜ້າ wake ຟຣີ (GitHub Pages) — ແຊຮລິ້ກນີ້ໃນ Facebook/LINE ແທນ Render URL ໂດຍກົງ
-WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", "https://iboy5070.github.io/matcha_shopbeta/").rstrip("/") + "/"
+# Local Demo shares localhost. Production can override this with WAKE_PAGE_URL.
+_default_wake_url = SITE_URL if DEBUG else "https://iboy5070.github.io/matcha_shopbeta/"
+WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", _default_wake_url).rstrip("/") + "/"
 NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
@@ -299,22 +301,22 @@ UNFOLD = {
                 "separator": True,
                 "items": [
                     {
-                        "title": "ສິນຄ້າໃນສາງ (Stock)",
+                        "title": "ຮັບເຂົ້າ / ເພີ່ມສະຕັອກ",
                         "icon": "inventory_2",
                         "link": reverse_lazy("admin:inventory_inventory_changelist"),
                     },
                     {
-                        "title": "ນຳເຂົ້າ (Imports)",
+                        "title": "ນຳເຂົ້າຈາກໃບສັ່ງ",
                         "icon": "local_shipping",
                         "link": reverse_lazy("admin:inventory_imports_changelist"),
                     },
                     {
-                        "title": "ໃບສັ່ງຊື້ (Purchase Orders)",
+                        "title": "ໃບສັ່ງຊື້",
                         "icon": "receipt_long",
                         "link": reverse_lazy("admin:inventory_purchaseorder_changelist"),
                     },
                     {
-                        "title": "ຜູ້ສະໜອງ (Suppliers)",
+                        "title": "ຜູ້ສະໜອງ",
                         "icon": "storefront",
                         "link": reverse_lazy("admin:inventory_supplier_changelist"),
                     },

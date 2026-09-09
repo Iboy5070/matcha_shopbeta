@@ -16,6 +16,9 @@ pgdata/
 # Media uploads
 media/
 
+# Local submission packages
+*.zip
+
 # collectstatic output (regenerated on deploy / local)
 staticfiles/
 
