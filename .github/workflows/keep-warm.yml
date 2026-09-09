@@ -1,7 +1,9 @@
-# Local Demo mode: Render wake-up is available manually only.
-name: Wake Render manually
+# Ping Render every 5 min so the free tier stays awake (15 min idle = sleep).
+name: Keep Render warm
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:

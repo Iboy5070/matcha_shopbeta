@@ -172,9 +172,8 @@ MESSAGE_TAGS = {
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
-# Local Demo shares localhost. Production can override this with WAKE_PAGE_URL.
-_default_wake_url = SITE_URL if DEBUG else "https://iboy5070.github.io/matcha_shopbeta/"
-WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", _default_wake_url).rstrip("/") + "/"
+# ໜ້າ wake ຟຣີ (GitHub Pages) — ແຊຮລິ້ກນີ້ໃນ Facebook/LINE ແທນ Render URL ໂດຍກົງ
+WAKE_PAGE_URL = os.getenv("WAKE_PAGE_URL", "https://iboy5070.github.io/matcha_shopbeta/").rstrip("/") + "/"
 NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", CONTACT_EMAIL)
 GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN", "")
