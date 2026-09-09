@@ -13,7 +13,8 @@
 
 ### 2. ເປີດໂປຣແກຣມ
 
-- Mac: double-click ໄຟລ໌ `RUN_DEMO.command`
+- Mac: ເປີດ Terminal ໃນໂຟລເດີໂປຣແກຣມ ແລ້ວພິມ `./RUN_DEMO.command`
+  - ຖ້າຂຶ້ນ `Permission denied` ໃຫ້ພິມ `chmod +x RUN_DEMO.command` ແລ້ວພິມ `./RUN_DEMO.command` ອີກຄັ້ງ
 - Windows: double-click ໄຟລ໌ `RUN_DEMO_WINDOWS.bat`
 
 ລໍຖ້າໃຫ້ Browser ເປີດໜ້າ http://127.0.0.1:8000/ ອັດຕະໂນມັດ.
