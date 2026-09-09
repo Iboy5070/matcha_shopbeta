@@ -1,23 +1,44 @@
-# Matcha Shop Beta
+# ລະບົບຮ້ານ The 196 Haus Matcha
 
-Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, bilingual storefront, and POS for staff.
+ໂປຣແກຣມຮ້ານຂາຍມັດຊະ: ໜ້າຮ້ານອອນລາຍ, ຮັບອໍເດີ, ກວດສະລິບ,
+ຂາຍຜ່ານ POS, ຈັດການສາງ ແລະພິມລາຍງານ.
 
-## ເປີດໂປຣແກຣມສຳລັບກວດສອບ
+## ຄູ່ມືສຳລັບອາຈານ
 
-ຕ້ອງມີ [Python 3](https://www.python.org/downloads/) ໃນເຄື່ອງ.
-ຄັ້ງທຳອິດຕ້ອງມີ Internet ເພື່ອຕິດຕັ້ງ package ປະມານ 2–5 ນາທີ;
-ຄັ້ງຕໍ່ໄປຈະເປີດໄວ.
+### 1. ກ່ອນເປີດ
 
-- **Mac:** double-click `RUN_DEMO.command`
-- **Windows:** double-click `RUN_DEMO_WINDOWS.bat`
+ເຄື່ອງຕ້ອງມີ [Python 3](https://www.python.org/downloads/).
+ຄັ້ງທຳອິດຕ້ອງຕໍ່ Internet ແລະລໍຖ້າປະມານ 2–5 ນາທີ.
+ຫຼັງຈາກຕິດຕັ້ງຄັ້ງທຳອິດແລ້ວ ຄັ້ງຕໍ່ໄປຈະເປີດໄວ.
 
-Browser ຈະເປີດ http://127.0.0.1:8000/ ອັດຕະໂນມັດ.
-ຢ່າປິດ Terminal ໃນຂະນະກວດສອບ; ກົດ `Control + C` ເພື່ອຢຸດ.
+### 2. ເປີດໂປຣແກຣມ
 
-ບັນຊີທົດສອບ:
+- Mac: double-click ໄຟລ໌ `RUN_DEMO.command`
+- Windows: double-click ໄຟລ໌ `RUN_DEMO_WINDOWS.bat`
 
-- Staff/POS: `staff` / `StaffMatcha2026!`
-- Admin: `admin` / `AdminMatcha2026!`
+ລໍຖ້າໃຫ້ Browser ເປີດໜ້າ http://127.0.0.1:8000/ ອັດຕະໂນມັດ.
+ຢ່າປິດໜ້າ Terminal ໃນຂະນະໃຊ້ໂປຣແກຣມ.
+
+### 3. ເຂົ້າລະບົບ
+
+ບັນຊີຂ້າງລຸ່ມໃຊ້ສຳລັບໂປຣແກຣມໃນ ZIP ເທົ່ານັ້ນ.
+ຕ້ອງພິມຕົວໃຫຍ່-ຕົວນ້ອຍໃຫ້ຖືກ ແລະບໍ່ໃສ່ຊ່ອງວ່າງ.
+
+- ພະນັກງານ (Staff/POS)
+  - ເຂົ້າທີ່: http://127.0.0.1:8000/staff/
+  - ຊື່ຜູ້ໃຊ້: `staff`
+  - ລະຫັດຜ່ານ: `StaffMatcha2026!`
+  - ໃຊ້ສຳລັບ: ຂາຍສິນຄ້າ, ເບິ່ງອໍເດີ, ກວດສະລິບ ແລະເບິ່ງລາຍງານ
+
+- ຜູ້ຄຸ້ມຄອງ (Admin)
+  - ເຂົ້າທີ່: http://127.0.0.1:8000/admin/
+  - ຊື່ຜູ້ໃຊ້: `admin`
+  - ລະຫັດຜ່ານ: `AdminMatcha2026!`
+  - ໃຊ້ສຳລັບ: ຈັດການສິນຄ້າ, ຜູ້ໃຊ້, ອໍເດີ ແລະສາງ
+
+### 4. ປິດໂປຣແກຣມ
+
+ກັບໄປທີ່ໜ້າ Terminal ແລ້ວກົດ `Control + C`.
 
 ## ສຳລັບຜູ້ກວດສອບ / For reviewers
 
