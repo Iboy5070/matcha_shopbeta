@@ -2,6 +2,23 @@
 
 Django store for **The 196 Haus Matcha** — matcha e-commerce with PostgreSQL, bilingual storefront, and POS for staff.
 
+## ເປີດໂປຣແກຣມສຳລັບກວດສອບ
+
+ຕ້ອງມີ [Python 3](https://www.python.org/downloads/) ໃນເຄື່ອງ.
+ຄັ້ງທຳອິດຕ້ອງມີ Internet ເພື່ອຕິດຕັ້ງ package ປະມານ 2–5 ນາທີ;
+ຄັ້ງຕໍ່ໄປຈະເປີດໄວ.
+
+- **Mac:** double-click `RUN_DEMO.command`
+- **Windows:** double-click `RUN_DEMO_WINDOWS.bat`
+
+Browser ຈະເປີດ http://127.0.0.1:8000/ ອັດຕະໂນມັດ.
+ຢ່າປິດ Terminal ໃນຂະນະກວດສອບ; ກົດ `Control + C` ເພື່ອຢຸດ.
+
+ບັນຊີທົດສອບ:
+
+- Staff/POS: `staff` / `StaffMatcha2026!`
+- Admin: `admin` / `AdminMatcha2026!`
+
 ## ສຳລັບຜູ້ກວດສອບ / For reviewers
 
 | | Link |
